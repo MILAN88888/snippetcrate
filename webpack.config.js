@@ -1,4 +1,3 @@
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const DependencyExtractionWebpackPlugin = require("@wordpress/dependency-extraction-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
@@ -17,9 +16,7 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(process.cwd(), "dist"),
-      filename: `[name].js`,
-      libraryTarget: "this",
-      publicPath: "http://localhost:3000/dist"
+      filename: `[name].js`
     },
     module: {
       rules: [
@@ -28,16 +25,6 @@ module.exports = (env, argv) => {
           exclude: /node_modules/,
           use: {
             loader: "babel-loader",
-            options: {
-              presets: [
-                "@babel/preset-env",
-                "@babel/preset-react",
-                "@babel/preset-typescript"
-              ],
-              plugins: isDevelopment
-                ? [require.resolve("react-refresh/babel")]
-                : []
-            }
           }
         },
         {
@@ -81,10 +68,6 @@ module.exports = (env, argv) => {
       new ForkTsCheckerPlugin({
         async: false
       }),
-      isDevelopment &&
-        new ReactRefreshWebpackPlugin({
-          overlay: false
-        }),
       !isDevelopment &&
         new MiniCSSExtractPlugin({
           filename: "[name].css"
@@ -98,15 +81,6 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: [".js", ".jsx", ".ts", ".tsx"]
     },
-    devtool: isDevelopment ? "source-map" : false,
-    devServer: {
-      headers: { "Access-Control-Allow-Origin": "*" },
-      allowedHosts: "all",
-      host: "localhost",
-      port: 3000,
-      client: {
-        overlay: false
-      }
-    }
+    devtool: isDevelopment ? "source-map" : false
   };
 };

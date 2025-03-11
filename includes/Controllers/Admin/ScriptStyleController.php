@@ -99,11 +99,11 @@ class ScriptStyleController {
 		);
 
 		// $this->styles = array(
-		// 	'main' => array(
-		// 		'src'     => self::get_asset_url( 'main.css' ),
-		// 		'version' => CCSNPT_VERSION,
-		// 		'deps'    => array(),
-		// 	),
+		// 'main' => array(
+		// 'src'     => self::get_asset_url( 'main.css' ),
+		// 'version' => CCSNPT_VERSION,
+		// 'deps'    => array(),
+		// ),
 		// );
 
 		$this->scripts = apply_filters( 'ccsnpt_scripts', $this->scripts );
@@ -151,7 +151,7 @@ class ScriptStyleController {
 	 */
 	public function localize_admin_scripts() {
 		wp_localize_script(
-			'ccsnpt-script',
+			'ccsnpt-main',
 			'ccsnpt_script_data',
 			array(
 				'adminURL'           => esc_url( admin_url() ),

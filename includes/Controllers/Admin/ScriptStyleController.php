@@ -98,13 +98,13 @@ class ScriptStyleController {
 			),
 		);
 
-		// $this->styles = array(
-		// 'main' => array(
-		// 'src'     => self::get_asset_url( 'main.css' ),
-		// 'version' => CCSNPT_VERSION,
-		// 'deps'    => array(),
-		// ),
-		// );
+		$this->styles = array(
+			'main' => array(
+				'src'     => self::get_asset_url( 'main.css' ),
+				'version' => CCSNPT_VERSION,
+				'deps'    => array(),
+			),
+		);
 
 		$this->scripts = apply_filters( 'ccsnpt_scripts', $this->scripts );
 		$this->styles  = apply_filters( 'ccsnpt_styles', $this->styles );

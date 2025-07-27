@@ -34,7 +34,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
       <Stack>
         <Stack spacing={3} direction="row" gap="5px" alignItems="center">
           <Text fontSize="14px" fontWeight="500" lineHeight="normal">
-            {__("Per Page", "custom-code-snippets")}
+            {__("Per Page", "snippet-master")}
           </Text>
           <Select
             onChange={(option) => {

@@ -1,14 +1,14 @@
 <?php
 /**
- * Custom Code Snippets SnippetsController class.
+ * Snippet Master SnippetsController class.
  *
- * @package  namespace CCSNPT\Controllers\SnippetsController
+ * @package  namespace SnippetMaster\Controllers\SnippetsController
  */
 
-namespace CCSNPT\Controllers;
+namespace SnippetMaster\Controllers;
 
-use CCSNPT\Models\Snippets;
-use CCSNPT\Helper;
+use SnippetMaster\Models\Snippets;
+use SnippetMaster\Helper;
 
 /**
  * Add Snippets Routes class.
@@ -43,9 +43,9 @@ class SnippetsController {
 		$title  = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
 
 		if ( empty( $title ) ) {
-			$errors['title'] = esc_html__( 'Title is required.', 'custom-code-snippets' );
+			$errors['title'] = esc_html__( 'Title is required.', 'snippet-master' );
 		} elseif ( ! is_string( $title ) || strlen( $title ) > 255 ) {
-			$errors['title'] = esc_hmtl__( 'Title must be a string and less than 255 characters.', 'custom-code-snippets' );
+			$errors['title'] = esc_hmtl__( 'Title must be a string and less than 255 characters.', 'snippet-master' );
 		}
 
 		$codesnippet = isset( $params['codesnippet'] ) ? $params['codesnippet'] : '';
@@ -53,31 +53,31 @@ class SnippetsController {
 		$codesnippet = preg_replace( '|\?>\s*$|', '', $codesnippet );
 
 		if ( empty( $codesnippet ) ) {
-			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'custom-code-snippets' );
+			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'snippet-master' );
 		} elseif ( ! is_string( $codesnippet ) ) {
-			$errors['codesnippet'] = esc_html__( 'Code snippet must be a string.', 'custom-code-snippets' );
+			$errors['codesnippet'] = esc_html__( 'Code snippet must be a string.', 'snippet-master' );
 		}
 
 		$priority = isset( $params['priority'] ) ? absint( $params['priority'] ) : '';
 
 		if ( ! is_int( $priority ) ) {
-			$errors['priority'] = esc_html__( 'Priority is required and must be an integer.', 'custom-code-snippets' );
+			$errors['priority'] = esc_html__( 'Priority is required and must be an integer.', 'snippet-master' );
 		} elseif ( $priority < 0 ) {
-			$errors['priority'] = esc_html__( 'Priority must be a non-negative integer.', 'custom-code-snippets' );
+			$errors['priority'] = esc_html__( 'Priority must be a non-negative integer.', 'snippet-master' );
 		}
 
 		$description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
 
 		if ( empty( $description ) ) {
-			$errors['description'] = esc_html__( 'Description is required.', 'custom-code-snippets' );
+			$errors['description'] = esc_html__( 'Description is required.', 'snippet-master' );
 		} elseif ( isset( $description ) && ! is_string( $description ) ) {
-			$errors['description'] = esc_html__( 'Description must be a string.', 'custom-code-snippets' );
+			$errors['description'] = esc_html__( 'Description must be a string.', 'snippet-master' );
 		}
 
 		$tags = isset( $params['tags'] ) ? sanitize_text_field( $params['tags'] ) : '';
 
 		if ( isset( $ptags ) && ! is_string( $tags ) ) {
-			$errors['tags'] = esc_html__( 'Tags must be a string.', 'custom-code-snippets' );
+			$errors['tags'] = esc_html__( 'Tags must be a string.', 'snippet-master' );
 		}
 		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;
 
@@ -104,7 +104,7 @@ class SnippetsController {
 		if ( ! empty( $validated_data['errors'] ) ) {
 			return new \WP_REST_Response(
 				array(
-					'message' => esc_html__( 'Validation failed. Please check the errors.', 'custom-code-snippets' ),
+					'message' => esc_html__( 'Validation failed. Please check the errors.', 'snippet-master' ),
 					'errors'  => $validated_data['errors'],
 				),
 				400
@@ -114,7 +114,7 @@ class SnippetsController {
 		$res = $this->snippets->save_snippets( $validated_data['data'] );
 
 		return new \WP_REST_Response(
-			array( 'message' => $res ? esc_html__( 'Saved successfully!!', 'custom-code-snippets' ) : esc_html__( 'Save Failed!!', 'custom-code-snippets' ) ),
+			array( 'message' => $res ? esc_html__( 'Saved successfully!!', 'snippet-master' ) : esc_html__( 'Save Failed!!', 'snippet-master' ) ),
 			200
 		);
 	}
@@ -146,7 +146,7 @@ class SnippetsController {
 		$params = $request->get_json_params();
 		if ( ! isset( $params['id'] ) || empty( $params['id'] ) || ! isset( $params['active'] ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Failed to udpate!!', 'custom-code-snippets' ) ),
+				array( 'message' => esc_html__( 'Failed to udpate!!', 'snippet-master' ) ),
 				400
 			);
 		}
@@ -171,7 +171,7 @@ class SnippetsController {
 
 		if ( empty( $params ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Deletion failed!!', 'custom-code-snippets' ) ),
+				array( 'message' => esc_html__( 'Deletion failed!!', 'snippet-master' ) ),
 				400
 			);
 		}

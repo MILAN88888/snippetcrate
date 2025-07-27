@@ -1,13 +1,13 @@
 <?php
 /**
- * Custom Code Snippets Helper class.
+ * Snippet Master Helper class.
  *
- * @package  namespace CCSNPT\Helper
+ * @package  namespace SnippetMaster\Helper
  *
  * @since 1.0.0
  */
 
-namespace CCSNPT;
+namespace SnippetMaster;
 
 /**
  * Helper methods.
@@ -23,7 +23,7 @@ class Helper {
 	 * @param  string $path Path.
 	 */
 	public static function plugin_url( $path = '/' ) {
-		return untrailingslashit( plugins_url( $path, CCSNPT_PLUGIN_FILE ) );
+		return untrailingslashit( plugins_url( $path, SNIPPET_MASTER_PLUGIN_FILE ) );
 	}
 	/**
 	 * Execute the code snippets.
@@ -61,7 +61,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_development() {
-		return defined( 'CCSNPT_DEVELOPMENT' ) && CCSNPT_DEVELOPMENT;
+		return defined( 'SNIPPET_MASTER_DEVELOPMENT' ) && SNIPPET_MASTER_DEVELOPMENT;
 	}
 
 	/**
@@ -72,6 +72,6 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_production() {
-		return ! defined( 'CCSNPT_DEVELOPMENT' ) || ! CCSNPT_DEVELOPMENT;
+		return ! defined( 'SNIPPET_MASTER_DEVELOPMENT' ) || ! SNIPPET_MASTER_DEVELOPMENT;
 	}
 }

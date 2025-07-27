@@ -1,6 +1,6 @@
 import { ccsnptScriptData } from "./../utils/global";
 
-const BASE_URL = "custom-code-snippets/";
+const BASE_URL = "snippet-master/";
 
 export const ENDPOINTS = {
   AddNew: `${BASE_URL}snippets/save`,

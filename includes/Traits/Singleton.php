@@ -2,10 +2,10 @@
 /**
  * Singleton class trait.
  *
- * @package CCSNPT\Traits
+ * @package SnippetMaster\Traits
  */
 
-namespace CCSNPT\Traits;
+namespace SnippetMaster\Traits;
 
 /**
  * Singleton trait.

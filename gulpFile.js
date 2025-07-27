@@ -31,7 +31,7 @@ const fileList = {
     dest: `build/${pkg.name}/`
   },
   other: {
-    src: ["README.md", "changelog.txt", "custom-code-snippets.php"],
+    src: ["README.md", "changelog.txt", "snippet-master.php"],
     dest: `build/${pkg.name}/`
   },
   dist: {
@@ -80,7 +80,7 @@ function removeRelease() {
 }
 
 function removeLanguageFiles() {
-  return exec("rm -rf languages/custom-code-snippets*");
+  return exec("rm -rf languages/snippet-master*");
 }
 
 function removeComposerFiles() {
@@ -140,13 +140,13 @@ async function bumpMinorVersion() {
     )
     .pipe(dest("./"));
 
-  src("./custom-code-snippets.php")
+  src("./snippet-master.php")
     .pipe(
       bump({
-        key: "CCSNPT_VERSION",
+        key: "SNIPPET_MASTER_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "CCSNPT_VERSION" +
+            "SNIPPET_MASTER_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),
@@ -181,13 +181,13 @@ async function bumpPatchVersion() {
     )
     .pipe(dest("./"));
 
-  src("./custom-code-snippets.php")
+  src("./snippet-master.php")
     .pipe(
       bump({
-        key: "CCSNPT_VERSION",
+        key: "SNIPPET_MASTER_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "CCSNPT_VERSION" +
+            "SNIPPET_MASTER_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),

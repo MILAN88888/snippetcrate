@@ -23,7 +23,7 @@ class ErrorBoundary extends Component<PropsWithChildren<any>, any> {
             <Stack direction="column" align="center">
               <style>{"a {text-decoration: underline}"}</style>
               <Heading>
-                {__("Oops! Something went wrong.", "custom-code-snippets")}
+                {__("Oops! Something went wrong.", "snippet-master")}
               </Heading>
               {this.state.error instanceof Error ? (
                 <Code>{this.state.error.toString()}</Code>

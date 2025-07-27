@@ -1,0 +1,66 @@
+<?php
+/**
+ * Plugin Name: Snippet Master
+ * Plugin URI: https://wordpress.org/plugins/snippet-master
+ * Description: Easily manage and execute custom code snippets in WordPress with the Snippet Master plugin.
+ * Version: 1.0.0
+ * Author: @wpmilan
+ * Author URI: https://milanc.com.np/
+ * Text Domain: snippet-master
+ * Domain Path: /languages/
+ * License: GNU General Public License v3.0
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least: 5.2
+ * Requires PHP: 7.4
+ *
+ * @package SnippetMaster
+ */
+
+use SnippetMaster\Migration\Migration;
+
+defined( 'ABSPATH' ) || exit;
+
+// Include the autoload file for Composer dependencies.
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require __DIR__ . '/vendor/autoload.php';
+}
+
+// Define SNIPPET_MASTER_VERSION.
+if ( ! defined( 'SNIPPET_MASTER_VERSION' ) ) {
+	define( 'SNIPPET_MASTER_VERSION', '1.0.0' );
+}
+
+// Define SNIPPET_MASTER_PLUGIN_FILE.
+if ( ! defined( 'SNIPPET_MASTER_PLUGIN_FILE' ) ) {
+	define( 'SNIPPET_MASTER_PLUGIN_FILE', __FILE__ );
+}
+
+// Define SNIPPET_MASTER_DIR.
+if ( ! defined( 'SNIPPET_MASTER_DIR' ) ) {
+	define( 'SNIPPET_MASTER_DIR', plugin_dir_path( __FILE__ ) );
+}
+
+// Define SNIPPET_MASTER_DS.
+if ( ! defined( 'SNIPPET_MASTER_DS' ) ) {
+	define( 'SNIPPET_MASTER_DS', DIRECTORY_SEPARATOR );
+}
+
+// Define SNIPPET_MASTER_URL.
+if ( ! defined( 'SNIPPET_MASTER_URL' ) ) {
+	define( 'SNIPPET_MASTER_URL', plugin_dir_url( __FILE__ ) );
+}
+
+/**
+ * Initialization of SnippetMaster.
+ */
+add_action( 'plugin_loaded', array( 'SnippetMaster\SnippetMaster', 'init' ) );
+
+/**
+ * Register activation hook.
+ */
+register_activation_hook(
+	__FILE__,
+	function () {
+		Migration::init();
+	}
+);

@@ -39,8 +39,8 @@ const AddNew: React.FC = () => {
               color="dark.500"
             >
               {id
-                ? __("Edit Custom Code Snippets", "custom-code-snippets")
-                : __("Add New Custom Code Snippets", "custom-code-snippets")}
+                ? __("Edit Snippet Master", "snippet-master")
+                : __("Add New Snippet Master", "snippet-master")}
             </Heading>
             {id && (
               <Button onClick={() => navigate("/")}>
@@ -57,12 +57,12 @@ const AddNew: React.FC = () => {
           >
             {id
               ? __(
-                  "Easily edit Custom Code Snippets to your library to enhance your functionality.",
-                  "custom-code-snippets"
+                  "Easily edit Snippet Master to your library to enhance your functionality.",
+                  "snippet-master"
                 )
               : __(
-                  "Easily Add New Custom Code Snippets to your library to enhance your functionality.",
-                  "custom-code-snippets"
+                  "Easily Add New Snippet Master to your library to enhance your functionality.",
+                  "snippet-master"
                 )}
           </Text>
           <AddNewForm {...editProps} />

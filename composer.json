@@ -1,10 +1,10 @@
 {
-	"name": "custom-code-snippets/custom-code-snippets",
+	"name": "snippet-master/snippet-master",
 	"description": "Effortlessly user can add the block of code to code file.",
 	"version": "1.0.0",
 	"autoload": {
 		"psr-4": {
-			"CCSNPT\\": "includes/"
+			"SnippetMaster\\": "includes/"
 		}
 	},
 	"authors": [
@@ -31,7 +31,7 @@
 			"phpcbf -p"
 		],
 		"makepot-audit": [
-			"wp --allow-root i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=custom-code-snippets"
+			"\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=snippet-master"
 		],
 		"makepot": [
 			"@makepot-audit --skip-audit"
@@ -41,8 +41,8 @@
 		"scripts-description": {
 			"phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
 			"phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
-			"makepot-audit": "Generate langauges/custom-code-snippets.pot file and run audit",
-			"makepot": "Generate langauges/custom-code-snippets.pot file"
+			"makepot-audit": "Generate langauges/snippet-master.pot file and run audit",
+			"makepot": "Generate langauges/snippet-master.pot file"
 		}
 	},
 	"config": {

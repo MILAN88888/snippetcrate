@@ -1,15 +1,15 @@
 <?php
 /**
- * Custom Code Snippets InitController class.
+ * Snippet Master InitController class.
  *
  * @since 1.0.0
  *
- * @package  namespace CCSNPT\Controllers\InitController
+ * @package  namespace SnippetMaster\Controllers\InitController
  */
 
-namespace CCSNPT\Controllers;
+namespace SnippetMaster\Controllers;
 
-use CCSNPT\Traits\Singleton;
+use SnippetMaster\Traits\Singleton;
 
 /**
  * Initial Controller class.

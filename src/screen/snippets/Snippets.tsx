@@ -25,7 +25,7 @@ const Snippets: React.FC = () => {
             lineHeight="6px"
             color="dark.500"
           >
-            {__("All Code Snippets", "custom-code-snippets")}
+            {__("All Code Snippets", "snippet-master")}
           </Heading>
           <Text
             fontWeight="400"
@@ -33,10 +33,7 @@ const Snippets: React.FC = () => {
             lineHeight="8px"
             color="primary.400"
           >
-            {__(
-              "Here is list of the all the code snippets.",
-              "custom-code-snippets"
-            )}
+            {__("Here is list of the all the code snippets.", "snippet-master")}
           </Text>
           <SnippetTable />
         </Stack>

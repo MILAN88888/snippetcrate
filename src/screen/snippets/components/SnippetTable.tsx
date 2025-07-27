@@ -109,14 +109,14 @@ const SnippetTable: React.FC = () => {
     onSuccess: (res: any) => {
       if (res === false) {
         toast({
-          title: __("Update failed!!", "custom-code-snippets"),
+          title: __("Update failed!!", "snippet-master"),
           status: "error"
         });
       } else {
         toast({
           title: res.active
-            ? __("Activated successfully!!", "custom-code-snippets")
-            : __("Deactivated successfully!!", "custom-code-snippets"),
+            ? __("Activated successfully!!", "snippet-master")
+            : __("Deactivated successfully!!", "snippet-master"),
           status: "success",
           duration: 3000,
           isClosable: true
@@ -139,12 +139,12 @@ const SnippetTable: React.FC = () => {
     onSuccess: (res: any) => {
       if (res === false) {
         toast({
-          title: __("Deletion failed!!", "custom-code-snippets"),
+          title: __("Deletion failed!!", "snippet-master"),
           status: "error"
         });
       } else {
         toast({
-          title: __("Deleted successfully!!", "custom-code-snippets"),
+          title: __("Deleted successfully!!", "snippet-master"),
           status: "success",
           duration: 3000,
           isClosable: true
@@ -166,8 +166,7 @@ const SnippetTable: React.FC = () => {
     return (
       <Center>
         <Text color="red.500">
-          {__("Failed to load snippets: ", "custom-code-snippets")}{" "}
-          {error.message}
+          {__("Failed to load snippets: ", "snippet-master")} {error.message}
         </Text>
       </Center>
     );
@@ -227,27 +226,27 @@ const SnippetTable: React.FC = () => {
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Title", "custom-code-snippets")}
+                    {__("Title", "snippet-master")}
                   </Text>
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Description", "custom-code-snippets")}
+                    {__("Description", "snippet-master")}
                   </Text>
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Tags", "custom-code-snippets")}
+                    {__("Tags", "snippet-master")}
                   </Text>
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Updated At", "custom-code-snippets")}
+                    {__("Updated At", "snippet-master")}
                   </Text>
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Priority", "custom-code-snippets")}
+                    {__("Priority", "snippet-master")}
                   </Text>
                 </Th>
               </Tr>
@@ -345,9 +344,7 @@ const SnippetTable: React.FC = () => {
                 <Tr>
                   <Td colSpan={8}>
                     <Center>
-                      <Text>
-                        {__("No snippets found", "custom-code-snippets")}
-                      </Text>
+                      <Text>{__("No snippets found", "snippet-master")}</Text>
                     </Center>
                   </Td>
                 </Tr>

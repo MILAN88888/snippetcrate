@@ -7,11 +7,11 @@ const Menus: React.FC = () => {
   const menus = [
     {
       route: "/",
-      label: __("All Snippets", "custom-code-snippets")
+      label: __("All Snippets", "snippet-master")
     },
     {
       route: "/snippet/add",
-      label: __("Add New", "custom-code-snippets")
+      label: __("Add New", "snippet-master")
     }
   ];
 

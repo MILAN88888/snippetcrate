@@ -115,7 +115,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <FormLabel>
                 <Stack direction="row" gap="8px" alignItems="center">
                   <Text fontWeight="600" fontSize="15px">
-                    {__("Add Title", "custom-code-snippets")}
+                    {__("Add Title", "snippet-master")}
                   </Text>
                   <Tooltip
                     label={__(
@@ -132,9 +132,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             <Box minW="900px">
               <FormControl isInvalid={!!errors.title}>
                 <Input
-                  placeholder={__("Enter the title", "custom-code-snippets")}
+                  placeholder={__("Enter the title", "snippet-master")}
                   {...register("title", {
-                    required: __("Title is required", "custom-code-snippets")
+                    required: __("Title is required", "snippet-master")
                   })}
                   type="text"
                 />
@@ -149,7 +149,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <FormLabel>
                 <Stack direction="row" gap="8px" alignItems="center">
                   <Text fontWeight="600" fontSize="15px">
-                    {__("Add Code Snippets", "custom-code-snippets")}
+                    {__("Add Code Snippets", "snippet-master")}
                   </Text>
                   <Tooltip
                     label={__(
@@ -193,7 +193,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <FormLabel>
                 <Stack direction="row" gap="8px" alignItems="center">
                   <Text fontWeight="600" fontSize="15px">
-                    {__("Priority", "custom-code-snippets")}
+                    {__("Priority", "snippet-master")}
                   </Text>
                   <Tooltip
                     label={__(
@@ -210,17 +210,14 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             <Box minW="900px">
               <FormControl isInvalid={!!errors.priority}>
                 <Input
-                  placeholder={__("Set the priority", "custom-code-snippets")}
+                  placeholder={__("Set the priority", "snippet-master")}
                   {...register("priority", {
-                    required: __(
-                      "Priority is required",
-                      "custom-code-snippets"
-                    ),
+                    required: __("Priority is required", "snippet-master"),
                     validate: (value) =>
                       value >= 0 ||
                       __(
                         "Priority must be a non-negative number.",
-                        "custom-code-snippets"
+                        "snippet-master"
                       )
                   })}
                   type="number"
@@ -238,7 +235,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <FormLabel>
                 <Stack direction="row" gap="8px" alignItems="center">
                   <Text fontWeight="600" fontSize="15px">
-                    {__("Description", "custom-code-snippets")}
+                    {__("Description", "snippet-master")}
                   </Text>
                   <Tooltip
                     label={__(
@@ -255,15 +252,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             <Box minW="900px">
               <FormControl isInvalid={!!errors.description}>
                 <Textarea
-                  placeholder={__(
-                    "Enter the description",
-                    "custom-code-snippets"
-                  )}
+                  placeholder={__("Enter the description", "snippet-master")}
                   {...register("description", {
-                    required: __(
-                      "Description is required",
-                      "custom-code-snippets"
-                    )
+                    required: __("Description is required", "snippet-master")
                   })}
                   border="1px solid #8c8f94"
                 ></Textarea>
@@ -280,7 +271,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <FormLabel>
                 <Stack direction="row" gap="8px" alignItems="center">
                   <Text fontWeight="600" fontSize="15px">
-                    {__("Tags", "custom-code-snippets")}
+                    {__("Tags", "snippet-master")}
                   </Text>
                   <Tooltip
                     label={__(
@@ -299,7 +290,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 <Input
                   placeholder={__(
                     "Enter the tags separated by comma",
-                    "custom-code-snippets"
+                    "snippet-master"
                   )}
                   {...register("tags")}
                   type="text"
@@ -326,9 +317,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 {isSubmitting ? (
                   <Spinner />
                 ) : id ? (
-                  __("Update and Active", "custom-code-snippets")
+                  __("Update and Active", "snippet-master")
                 ) : (
-                  __("Save and Active", "custom-code-snippets")
+                  __("Save and Active", "snippet-master")
                 )}
               </Button>
               <Button
@@ -347,9 +338,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 {isSubmitting ? (
                   <Spinner />
                 ) : id ? (
-                  __("Update", "custom-code-snippets")
+                  __("Update", "snippet-master")
                 ) : (
-                  __("Save", "custom-code-snippets")
+                  __("Save", "snippet-master")
                 )}
               </Button>
             </Stack>

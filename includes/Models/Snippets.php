@@ -1,11 +1,11 @@
 <?php
 /**
- * Custom Code Snippets Snippets class.
+ * Snippet Master Snippets class.
  *
- * @package  namespace CCSNPT\Controllers\Snippets
+ * @package  namespace SnippetMaster\Controllers\Snippets
  */
 
-namespace CCSNPT\Models;
+namespace SnippetMaster\Models;
 
 /**
  * Snippets Model class.

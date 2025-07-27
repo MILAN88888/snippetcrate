@@ -14,7 +14,7 @@ jobs:
         run: echo ::set-output name=tag::${GITHUB_REF:10}
       - name: Build
         id: build
-        uses: MILAN88888/build-action@ccsnpt
+        uses: MILAN88888/build-action@snippet-master
         with:
           generate-zip: true
       - name: Upload release asset

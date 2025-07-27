@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards">
-	<description>CustomCodeSnippets dev PHP_CodeSniffer ruleset.</description>
+	<description>SnippetMaster dev PHP_CodeSniffer ruleset.</description>
 
 	<!-- Configs -->
 	<config name="minimum_supported_wp_version" value="5.0.0"/>
@@ -19,7 +19,7 @@
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="CustomCodeSnippets" />
+			<property name="text_domain" type="array" value="SnippetMaster" />
 		</properties>
 	</rule>
 

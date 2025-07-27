@@ -4,10 +4,10 @@
  *
  * @since 1.0.0
  *
- * @package  namespace CCSNPT\Middleware\SnippetsAuthMiddleware
+ * @package  namespace SnippetMaster\Middleware\SnippetsAuthMiddleware
  */
 
-namespace CCSNPT\Middleware;
+namespace SnippetMaster\Middleware;
 
 /**
  * SnippetAuthMiddleware class.
@@ -26,7 +26,7 @@ class SnippetsAuthMiddleware {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new \WP_Error(
 				'rest_forbidden',
-				__( 'You do not have permissions to delete snippets.', 'custom-code-snippets' ),
+				__( 'You do not have permissions to delete snippets.', 'snippet-master' ),
 				array( 'status' => 403 )
 			);
 		}

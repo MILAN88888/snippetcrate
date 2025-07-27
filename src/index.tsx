@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 (() => {
   const root = createRoot(
-    document.getElementById("custom-code-snippets") as HTMLElement
+    document.getElementById("snippet-master") as HTMLElement
   );
 
   if (!root) return;

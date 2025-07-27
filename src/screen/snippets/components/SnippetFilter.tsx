@@ -89,18 +89,18 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       <Select
         options={[
           {
-            label: __("Active", "custom-code-snippets"),
+            label: __("Active", "snippet-master"),
             value: "1"
           },
           {
-            label: __("Inactive", "custom-code-snippets"),
+            label: __("Inactive", "snippet-master"),
             value: "0"
           }
         ]}
         onChange={(option) => {
           option && setParams({ ...params, status: option?.value });
         }}
-        placeholder={__("Search by status", "custom-code-snippets")}
+        placeholder={__("Search by status", "snippet-master")}
         isClearable
         isSearchable={false}
         styles={{

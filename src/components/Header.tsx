@@ -14,13 +14,11 @@ const Header = () => {
       bg="white"
       height="80px"
       boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-	  direction="row"
+      direction="row"
     >
       <Stack direction="row" justify="space-between" alignItems="center">
         <Stack gap="16px" direction="row" alignItems="center">
-          <Image
-            src={icon}
-          />
+          <Image src={icon} />
           <Heading
             as="h6"
             fontWeight="600"
@@ -29,7 +27,7 @@ const Header = () => {
             color="dark.500"
             letterSpacing="0.5px"
           >
-            {__("Custom Code Snippets", "custom-code-snippets")}
+            {__("Snippet Master", "snippet-master")}
           </Heading>
           <Menus />
         </Stack>

@@ -4,10 +4,10 @@
  *
  * @since 1.0.0
  *
- * @package CCSNPT\Routes\BaseRoutes
+ * @package SnippetMaster\Routes\BaseRoutes
  */
 
-namespace CCSNPT\Routes;
+namespace SnippetMaster\Routes;
 
 /**
  * Routes abstract class.

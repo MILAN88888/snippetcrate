@@ -1,14 +1,14 @@
 <?php
 /**
- * Custom Code Snippets SnippetsRoutes class.
+ * Snippet Master SnippetsRoutes class.
  *
- * @package CCSNPT\Routes\SnippetsRoutes
+ * @package SnippetMaster\Routes\SnippetsRoutes
  */
 
-namespace CCSNPT\Routes;
+namespace SnippetMaster\Routes;
 
-use CCSNPT\Controllers\SnippetsController;
-use CCSNPT\Middleware\SnippetsAuthMiddleware;
+use SnippetMaster\Controllers\SnippetsController;
+use SnippetMaster\Middleware\SnippetsAuthMiddleware;
 
 /**
  * Add Snippets Routes class.
@@ -20,7 +20,7 @@ class SnippetsRoutes extends BaseRoutes {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'custom-code-snippets';
+	protected $namespace = 'snippet-master';
 
 	/**
 	 * Route base.

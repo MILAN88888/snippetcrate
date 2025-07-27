@@ -20,7 +20,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
   const isLoading = false;
   const actions = [
     {
-      label: __("Delete", "custom-code-snippets"),
+      label: __("Delete", "snippet-master"),
       value: "delete",
       handler: () => {
         setBulkAction?.("delete");
@@ -56,13 +56,13 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
                     "%s item selected",
                     "%s items selected",
                     bulkIdsCount,
-                    "custom-code-snippets"
+                    "snippet-master"
                   ),
                   bulkIdsCount
                 )}
               </Text>
               <ButtonGroup pointerEvents="auto">
-                <Tooltip label={__("Unselect items", "custom-code-snippets")}>
+                <Tooltip label={__("Unselect items", "snippet-master")}>
                   <IconButton
                     size="xs"
                     fontSize="lg"
@@ -70,7 +70,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
                     minW="auto"
                     icon={<BiX />}
                     colorScheme="red"
-                    aria-label={__("Deselect all", "custom-code-snippets")}
+                    aria-label={__("Deselect all", "snippet-master")}
                     onClick={() => {
                       setIsCheckAll(false);
                       setBulkIds([]);

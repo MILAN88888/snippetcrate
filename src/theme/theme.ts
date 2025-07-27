@@ -20,7 +20,7 @@ export const theme = extendTheme({
   },
   styles: {
     global: {
-      ".wp-admin #custom-code-snippets": {
+      ".wp-admin #snippet-master": {
         ml: "-20px"
       },
       ".ba-modal-open": {

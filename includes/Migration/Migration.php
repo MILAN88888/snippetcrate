@@ -1,14 +1,14 @@
 <?php
 /**
- * CCSNPT Migration.
+ * SnippetMaster Migration.
  *
  * @class Migration
- * @package CCSNPT\Migration
+ * @package SnippetMaster\Migration
  */
 
-namespace CCSNPT\Migration;
+namespace SnippetMaster\Migration;
 
-use CCSNPT\Traits\Singleton;
+use SnippetMaster\Traits\Singleton;
 
 /**
  * Migration class.

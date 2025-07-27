@@ -1,14 +1,14 @@
 <?php
 /**
- * Custom Code Snippets RestApi class.
+ * Snippet Master RestApi class.
  *
- * @package  namespace CCSNPT\RestApi
+ * @package  namespace SnippetMaster\RestApi
  */
 
-namespace CCSNPT;
+namespace SnippetMaster;
 
-use CCSNPT\Routes\SnippetsRoutes;
-use CCSNPT\Traits\Singleton;
+use SnippetMaster\Routes\SnippetsRoutes;
+use SnippetMaster\Traits\Singleton;
 
 /**
  * RestApi class.

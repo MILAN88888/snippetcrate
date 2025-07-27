@@ -3,13 +3,13 @@
  *  Menus class.
  *
  * @since 1.0.0
- * @package CCSNPT\Menus
+ * @package SnippetMaster\Menus
  */
 
-namespace CCSNPT\Controllers\Admin;
+namespace SnippetMaster\Controllers\Admin;
 
-use CCSNPT\Helper;
-use CCSNPT\Traits\Singleton;
+use SnippetMaster\Helper;
+use SnippetMaster\Traits\Singleton;
 
 /**
  * Menus class.
@@ -40,7 +40,7 @@ class MenusController {
   </g>
 </svg>';
 		$base64_svg = 'data:image/svg+xml;base64,' . base64_encode($svg); // phpcs:ignore
-		$page       = add_menu_page( esc_html__( 'Custom Code Snippets', 'custom-code-snippets' ), esc_html__( 'Code Snippets', 'custom-code-snippets' ), 'manage_options', 'custom-code-snippets', array( $this, 'main_page' ), $base64_svg );
+		$page       = add_menu_page( esc_html__( 'Snippet Master', 'snippet-master' ), esc_html__( 'Snippet Master', 'snippet-master' ), 'manage_options', 'snippet-master', array( $this, 'main_page' ), $base64_svg );
 
 		add_action( "admin_print_scripts-$page", array( $this, 'enqueue' ) );
 	}
@@ -49,8 +49,8 @@ class MenusController {
 	 * Handles output of the reports page in admin.
 	 */
 	public function main_page() {
-		wp_enqueue_style( 'ccsnpt-main' );
-		echo '<div id="custom-code-snippets"></div>';
+		wp_enqueue_style( 'snippet-master-main' );
+		echo '<div id="snippet-master"></div>';
 	}
 
 	/**
@@ -59,6 +59,6 @@ class MenusController {
 	 * @since 1.0.0
 	 */
 	public function enqueue() {
-		wp_enqueue_script( 'ccsnpt-main' );
+		wp_enqueue_script( 'snippet-master-main' );
 	}
 }

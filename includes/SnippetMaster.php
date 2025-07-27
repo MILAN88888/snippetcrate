@@ -4,24 +4,24 @@
  *
  * @since 1.0.0
  *
- * @package CCSNPT
+ * @package SnippetMaster
  */
 
-namespace CCSNPT;
+namespace SnippetMaster;
 
-use CCSNPT\Controllers\Admin\ScriptStyleController;
-use CCSNPT\Controllers\Admin\MenusController;
-use CCSNPT\Controllers\InitController;
-use CCSNPT\Migration\Migration;
-use CCSNPT\RestApi;
-use CCSNPT\Traits\Singleton;
+use SnippetMaster\Controllers\Admin\ScriptStyleController;
+use SnippetMaster\Controllers\Admin\MenusController;
+use SnippetMaster\Controllers\InitController;
+use SnippetMaster\Migration\Migration;
+use SnippetMaster\RestApi;
+use SnippetMaster\Traits\Singleton;
 
 /**
- * CSSNTP setup.
+ * Snippet Master setup.
  *
  * @since 1.0.0
  */
-final class CCSNPT {
+final class SnippetMaster {
 
 	use Singleton;
 
@@ -45,11 +45,11 @@ final class CCSNPT {
 	 */
 	public function load_plugin_textdomain() {
 		$locale = is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
-		$locale = apply_filters( 'plugin_locale', $locale, 'custom-code-snippets' );
+		$locale = apply_filters( 'plugin_locale', $locale, 'snippet-master' );
 
-		unload_textdomain( 'custom-code-snippets' );
-		load_textdomain( 'custom-code-snippets', WP_LANG_DIR . '/custom-code-snippets/custom-code-snippets-' . $locale . '.mo' );
-		load_plugin_textdomain( 'custom-code-snippets', false, plugin_basename( __DIR__ ) . '/languages' );
+		unload_textdomain( 'snippet-master' );
+		load_textdomain( 'snippet-master', WP_LANG_DIR . '/snippet-master/snippet-master-' . $locale . '.mo' );
+		load_plugin_textdomain( 'snippet-master', false, plugin_basename( __DIR__ ) . '/languages' );
 	}
 
 	/**
@@ -62,9 +62,9 @@ final class CCSNPT {
 	 * @return array
 	 */
 	public function plugin_row_meta( $plugin_meta, $plugin_file ) {
-		if ( plugin_basename( CCSNPT_PLUGIN_FILE ) === $plugin_file ) {
+		if ( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) === $plugin_file ) {
 			$new_plugin_meta = array(
-				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/custom-code-snippets' ) . '" aria-label="' . esc_attr__( 'View Docs', 'custom-code-snippets' ) . '">' . esc_html__( 'Docs', 'custom-code-snippets' ) . '</a>',
+				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'snippet-master' ) . '">' . esc_html__( 'Docs', 'snippet-master' ) . '</a>',
 			);
 
 			return array_merge( $plugin_meta, $new_plugin_meta );

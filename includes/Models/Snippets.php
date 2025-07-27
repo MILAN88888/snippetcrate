@@ -65,91 +65,131 @@ class Snippets {
 	 * @return array
 	 */
 	public function get_snippets( $params ) {
+        $where_clause = array();
+        $query_args = array();
+        $sql = "SELECT * FROM {$this->con->prefix}ccsnpt_snippets";
+        $count_sql = "SELECT COUNT(*) FROM {$this->con->prefix}ccsnpt_snippets";
 
-		$sql       = "SELECT * FROM {$this->con->prefix}ccsnpt_snippets";
-		$count_sql = "SELECT COUNT(*) FROM {$this->con->prefix}ccsnpt_snippets";
-		if ( isset( $params['id'] ) && ! empty( $params['id'] ) ) {
-			$sql    .= $this->con->prepare( ' WHERE id = %d', $params['id'] );
-			$results = $this->con->get_results( $sql );
+        if ( isset( $params['id'] ) && ! empty( $params['id'] ) ) {
+            $sql = $this->con->prepare(
+                "SELECT * FROM {$this->con->prefix}ccsnpt_snippets WHERE id = %d",
+                absint( $params['id'] )
+            );
+            $results = $this->con->get_results( $sql );
 
-			return array(
-				'results'     => $results,
-				'total_count' => 1,
-			);
-		} else {
-			$where_clause = array();
-			if ( isset( $params['searchByItem'] ) && ! empty( $params['searchByItem'] ) ) {
-				$like_item = '%' . $params['searchByItem'] . '%';
+            return array(
+                'results'     => $results,
+                'total_count' => 1,
+            );
+        }
 
-				$where_clause[] = $this->con->prepare( ' `title`LIKE %s OR `description`LIKE %s OR `tags` LIKE %s', $like_item, $like_item, $like_item );
-			}
+        if ( isset( $params['searchByItem'] ) && ! empty( $params['searchByItem'] ) ) {
+            $like_item = '%' . $this->con->esc_like( $params['searchByItem'] ) . '%';
+            $where_clause[] = "(`title` LIKE %s OR `description` LIKE %s OR `tags` LIKE %s)";
+            array_push( $query_args, $like_item, $like_item, $like_item );
+        }
 
-			if ( isset( $params['startDate'] ) && isset( $params['endDate'] ) ) {
-				$start_date     = empty( $params['startDate'] ) ? gmdate( 'Y-m-d' ) : gmdate( 'Y-m-d', strtotime( $params['startDate'] ) );
-				$end_date       = empty( $params['endDate'] ) ? gmdate( 'Y-m-d' ) : gmdate( 'Y-m-d', strtotime( $params['endDate'] ) );
-				$where_clause[] = $this->con->prepare( ' `updated_at` BETWEEN %s AND %s', $start_date, $end_date );
-			}
-			if ( isset( $params['status'] ) ) {
-				$status         = $params['status'];
-				$where_clause[] = $this->con->prepare( ' `active` = %s', $status );
-			}
-			if ( isset( $params['scope'] ) ) {
-				if ( count( $params['scope'] ) > 0 ) {
-					foreach ( $params['scope'] as $scope ) {
-						$scope_where[] = $this->con->prepare( ' `scope` = %s', $scope );
-					}
-					$where_clause[] = implode( ' OR ', $scope_where );
+        if ( isset( $params['startDate'] ) && isset( $params['endDate'] ) ) {
+            $start_date = empty( $params['startDate'] ) ?
+                gmdate( 'Y-m-d' ) :
+                gmdate( 'Y-m-d', strtotime( $params['startDate'] ) );
+            $end_date = empty( $params['endDate'] ) ?
+                gmdate( 'Y-m-d' ) :
+                gmdate( 'Y-m-d', strtotime(  $params['endDate'] ) );
 
-				} else {
-					$where_clause[] = $this->con->prepare( ' `scope` = %s', $params['scope'] );
-				}
-			}
-			if ( ! empty( $where_clause ) ) {
-				$where_sql  = ' WHERE ' . implode( ' AND ', $where_clause );
-				$sql       .= $where_sql;
-				$count_sql .= $where_sql;
-			}
+            $where_clause[] = "`updated_at` BETWEEN %s AND %s";
+            array_push( $query_args, $start_date, $end_date );
+        }
 
-			$total_count = $this->con->get_var( $count_sql );
+        if ( isset( $params['status'] ) ) {
+            $where_clause[] = "`active` = %s";
+            $query_args[] = $params['status'];
+        }
 
-			if ( isset( $params['limit'] ) || isset( $params['offset'] ) ) {
-				$limit  = isset( $params['limit'] ) ? intval( $params['limit'] ) : 18446744073709551615;
-				$offset = isset( $params['offset'] ) ? intval( $params['offset'] ) : 0;
-				$sql   .= $this->con->prepare( ' LIMIT %d, %d', ( $offset - 1 ) * $limit, $limit );
-			}
-		}
+        if ( isset( $params['scope'] ) ) {
+            if ( is_array( $params['scope'] ) && count( $params['scope'] ) > 0 ) {
+                $scope_placeholders = implode( ',', array_fill( 0, count( $params['scope'] ), '%s' ) );
+                $where_clause[] = "`scope` IN ($scope_placeholders)";
+                $query_args = array_merge(
+                    $query_args,
+                    array_map( 'sanitize_text_field', $params['scope'] )
+                );
+            } else {
+                $where_clause[] = "`scope` = %s";
+                $query_args[] = $params['scope'];
+            }
+        }
 
-		$results = $this->con->get_results( $sql );
+        // Prepare the SQL
+        if ( ! empty( $where_clause ) ) {
+            $where_sql = ' WHERE ' . implode( ' AND ', $where_clause );
+            $sql .= $where_sql;
+            $count_sql .= $where_sql;
+        }
 
-		return array(
-			'results'     => $results,
-			'total_count' => $total_count,
-		);
-	}
+        // Get total count
+        if ( ! empty( $query_args ) ) {
+            $count_sql = $this->con->prepare( $count_sql, $query_args );
+        }
+        $total_count = $this->con->get_var( $count_sql );
+
+        // Handle pagination
+        if ( isset( $params['limit'] ) || isset( $params['offset'] ) ) {
+            $limit = isset( $params['limit'] ) ? absint( $params['limit'] ) : 18446744073709551615;
+            $offset = isset( $params['offset'] ) ? absint( $params['offset'] ) : 0;
+            $sql .= $this->con->prepare( " LIMIT %d, %d", ( $offset - 1 ) * $limit, $limit );
+        }
+
+        // Get results
+        if ( ! empty( $query_args ) ) {
+            $sql = $this->con->prepare( $sql, $query_args );
+        }
+        $results = $this->con->get_results( $sql );
+
+        return array(
+            'results'     => $results,
+            'total_count' => $total_count,
+        );
+    }
 	/**
 	 * Update the snippet status.
 	 *
 	 * @param [array] $params The params.
 	 * @return boolean
 	 */
-	public function update_status( $params ) {
+	  public function update_status( $params ) {
+        if ( ! isset( $params['id'] ) || ! isset( $params['active'] ) ) {
+            return false;
+        }
 
-		return $this->con->update( $this->con->prefix . 'ccsnpt_snippets', array( 'active' => $params['active'] ), array( 'id' => $params['id'] ), array( '%s' ), array( '%d' ) );
-	}
+        return false !== $this->con->update(
+            $this->con->prefix . 'ccsnpt_snippets',
+            array( 'active' => $params['active'] ),
+            array( 'id' => $params['id'] ),
+            array( '%s' ),
+            array( '%d' )
+        );
+    }
+
 	/**
 	 * Delete the snippets.
 	 *
 	 * @param [array] $ids The ids.
 	 * @return boolean
 	 */
-	public function delete_snippets( $ids ) {
+	  public function delete_snippets( $ids ) {
+        if ( empty( $ids ) ) {
+            return false;
+        }
 
-		$ids_placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+        $ids = array_map( 'absint', $ids );
+        $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-		$sql = $this->con->prepare(
-			"DELETE FROM {$this->con->prefix}ccsnpt_snippets WHERE id IN ($ids_placeholders)",
-			...$ids
-		);
-		return $this->con->query( $sql );
-	}
+        $sql = $this->con->prepare(
+            "DELETE FROM {$this->con->prefix}ccsnpt_snippets WHERE id IN ($placeholders)",
+            ...$ids
+        );
+
+        return false !== $this->con->query( $sql );
+    }
 }

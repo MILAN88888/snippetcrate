@@ -23,7 +23,7 @@ const fileList = {
     dest: `build/${pkg.name}/languages`
   },
   composer: {
-    src: ["composer.json", "composer.lock"],
+    src: ["composer.json"],
     dest: `build/${pkg.name}/`
   },
   npm: {
@@ -31,7 +31,7 @@ const fileList = {
     dest: `build/${pkg.name}/`
   },
   other: {
-    src: ["README.md", "changelog.txt", "snippet-master.php"],
+    src: ["readme.txt", "changelog.txt", "snippet-master.php"],
     dest: `build/${pkg.name}/`
   },
   dist: {
@@ -81,12 +81,6 @@ function removeRelease() {
 
 function removeLanguageFiles() {
   return exec("rm -rf languages/snippet-master*");
-}
-
-function removeComposerFiles() {
-  return exec(
-    `rm -f build/${pkg.name}/composer.json build/${pkg.name}/composer.lock`
-  );
 }
 
 const copyToBuild = [
@@ -211,7 +205,6 @@ const release = series(
   build,
   copyToBuild,
   runComposerInBuild,
-  removeComposerFiles,
   parallel(compressBuildWithVersion, compressBuildWithoutVersion)
 );
 

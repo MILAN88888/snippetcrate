@@ -31,25 +31,8 @@ final class SnippetMaster {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 20, 2 );
 		$this->includes();
-	}
-
-	/**
-	 * Load Localization files.
-	 *
-	 * Note: the first-loaded translation file overrides any following ones if the same translation is present.
-	 *
-	 * @since 1.0.0
-	 */
-	public function load_plugin_textdomain() {
-		$locale = is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
-		$locale = apply_filters( 'plugin_locale', $locale, 'snippet-master' );
-
-		unload_textdomain( 'snippet-master' );
-		load_textdomain( 'snippet-master', WP_LANG_DIR . '/snippet-master/snippet-master-' . $locale . '.mo' );
-		load_plugin_textdomain( 'snippet-master', false, plugin_basename( __DIR__ ) . '/languages' );
 	}
 
 	/**

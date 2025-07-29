@@ -1,14 +1,27 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress Coding Standards">
-	<description>SnippetMaster dev PHP_CodeSniffer ruleset.</description>
+<ruleset name="WordPress Coding Standards - SnippetMaster">
+	<description>Custom PHPCS ruleset for SnippetMaster plugin development (PHP 7.4+).</description>
 
-	<!-- Configs -->
-	<config name="minimum_supported_wp_version" value="5.0.0"/>
-	<config name="testVersion" value="7.0-"/>
+	<!-- Base WordPress Coding Standards -->
+	<rule ref="WordPress-Core" />
+	<rule ref="WordPress-Extra" />
+	<rule ref="WordPress-Docs" />
 
-	<!-- Rules -->
-	<rule ref="WPEverest-Core" />
+	<!-- PHP Compatibility -->
+	<rule ref="PHPCompatibilityWP" />
+	<config name="testVersion" value="7.4-" />
+	<config name="minimum_supported_wp_version" value="5.0.0" />
 
+	<!-- I18n text domain check -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="snippet-master"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- File name rules exclusions -->
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/*</exclude-pattern>
 	</rule>
@@ -17,14 +30,14 @@
 		<exclude-pattern>includes/*</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.WP.I18n">
-		<properties>
-			<property name="text_domain" type="array" value="snippet-master" />
-		</properties>
-	</rule>
-
-	<!-- Exclude paths -->
+	<!-- Ignore vendor and build folders -->
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/dist*/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+
+	<!-- Only scan PHP files -->
+	<fileExtensions>
+		<extension>php</extension>
+	</fileExtensions>
 </ruleset>

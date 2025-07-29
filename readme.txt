@@ -1,12 +1,12 @@
 === Snippet Master ===
 Contributors: MILAN88888
-Tags: custom code snippets, code management, wordpress snippets
-Requires at least: 5.0
+Tags: custom code snippets, code management, wordpress snippets, snippet master
+Requires at least: 5.2
 Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Easily manage and execute custom code snippets in WordPress with the Snippet Master plugin.
 

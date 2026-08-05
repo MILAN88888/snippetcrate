@@ -4,7 +4,6 @@ const BundleAnalyzerPlugin =
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
 
-const WebpackBar = require("webpackbar");
 const path = require("path");
 
 module.exports = (env, argv) => {
@@ -76,8 +75,7 @@ module.exports = (env, argv) => {
         new BundleAnalyzerPlugin({
           analyzerMode: isDevelopment ? "server" : "static",
           openAnalyzer: false
-        }),
-      new WebpackBar()
+        })
     ].filter(Boolean),
     resolve: {
       extensions: [".js", ".jsx", ".ts", ".tsx"]

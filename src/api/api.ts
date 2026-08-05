@@ -4,11 +4,21 @@ import { ccsnptScriptData } from "./../utils/global";
 import { buildQueryString } from "./../utils/queryUtils";
 import {
   AddNew,
+  BulkStatusParams,
+  ExportParams,
+  ExportResponse,
   GetSnippetsResponse,
+  ImportResponse,
+  SnippetExport,
   SnippetParams,
+  TagsResponse,
   UpdateStatusParams,
   ValidateResponse
 } from "./../types/index";
+
+const nonceHeader = () => ({
+  "X-WP-Nonce": ccsnptScriptData.ccsnptRestApiNonce
+});
 
 export const addNewSnippet = async (addNewData: AddNew) => {
   return apiFetch({
@@ -71,4 +81,52 @@ export const validateSnippet = async (data: {
     },
     data
   }).then((res) => res as ValidateResponse);
+};
+
+export const duplicateSnippet = async (id: string | number) => {
+  return apiFetch({
+    path: ENDPOINTS.DuplicateSnippet,
+    method: "POST",
+    headers: nonceHeader(),
+    data: { id }
+  }).then((res) => res);
+};
+
+export const bulkUpdateStatus = async (data: BulkStatusParams) => {
+  return apiFetch({
+    path: ENDPOINTS.BulkStatus,
+    method: "POST",
+    headers: nonceHeader(),
+    data
+  }).then((res) => res);
+};
+
+export const exportSnippets = async (
+  data: ExportParams
+): Promise<ExportResponse> => {
+  return apiFetch({
+    path: ENDPOINTS.ExportSnippets,
+    method: "POST",
+    headers: nonceHeader(),
+    data
+  }).then((res) => res as ExportResponse);
+};
+
+export const importSnippets = async (
+  snippets: SnippetExport[]
+): Promise<ImportResponse> => {
+  return apiFetch({
+    path: ENDPOINTS.ImportSnippets,
+    method: "POST",
+    headers: nonceHeader(),
+    data: { snippets }
+  }).then((res) => res as ImportResponse);
+};
+
+export const getTags = async (): Promise<TagsResponse> => {
+  return apiFetch({
+    path: ENDPOINTS.GetTags,
+    method: "GET",
+    headers: nonceHeader()
+  }).then((res) => res as TagsResponse);
 };

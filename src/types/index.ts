@@ -66,7 +66,40 @@ export type BackendErrors = {
     offset?: number;
     limit?: number;
     status?: string | number;
+    tag?: string;
   };
+
+export type SnippetExport = {
+  title: string;
+  lang: string;
+  description: string;
+  codesnippet: string;
+  tags: string;
+  scope: string;
+  priority: number;
+};
+
+export type ExportParams = {
+  ids?: (string | number)[];
+  format: "json" | "php";
+};
+
+export type ExportResponse =
+  | { format: "json"; filename: string; snippets: SnippetExport[] }
+  | { format: "php"; filename: string; content: string };
+
+export type ImportResponse = {
+  message: string;
+  imported: number;
+  skipped: number;
+};
+
+export type BulkStatusParams = {
+  ids: (string | number)[];
+  active: number;
+};
+
+export type TagsResponse = { tags: string[] };
 
 export type SnippetPagiProps = {
   params: SnippetParams;
@@ -83,6 +116,9 @@ export type BulkActionProps = {
   bulkIds: (string | number)[];
   setBulkIds: (value: (string | number)[]) => void;
   setIsCheckAll: (value: boolean) => void;
+  onActivate: () => void;
+  onDeactivate: () => void;
+  onExport: () => void;
   onDelete: () => void;
-  isDeleting?: boolean;
+  isBusy?: boolean;
 };

@@ -16,5 +16,5 @@ Snippet Master is a 100% free and open-source plugin designed to help you add, m
 
 == Changelog ==
 
-= 1.0.0 - xx-xx-2024 =
+= 1.0.0 =
 * Initial release

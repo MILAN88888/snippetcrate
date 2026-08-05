@@ -39,22 +39,28 @@ class Snippets {
 	 * @return boolean
 	 */
 	public function save_snippets( $data ) {
+		$user_id = get_current_user_id();
 
 		if ( isset( $data['id'] ) && ! empty( $data['id'] ) ) {
 			$id = $data['id'];
 			unset( $data['id'] );
+			$data['updated_by'] = $user_id;
 
 			return $this->con->update(
 				$this->con->prefix . 'ccsnpt_snippets',
 				$data,
 				array( 'id' => $id )
 			);
-		} else {
-			return $this->con->insert(
-				$this->con->prefix . 'ccsnpt_snippets',
-				$data
-			);
 		}
+
+		unset( $data['id'] );
+		$data['created_by'] = $user_id;
+		$data['updated_by'] = $user_id;
+
+		return $this->con->insert(
+			$this->con->prefix . 'ccsnpt_snippets',
+			$data
+		);
 	}
 
 	/**
@@ -127,20 +133,24 @@ class Snippets {
             $count_sql .= $where_sql;
         }
 
-        // Get total count
+        // Get total count (before appending pagination placeholders/args).
         if ( ! empty( $query_args ) ) {
             $count_sql = $this->con->prepare( $count_sql, $query_args );
         }
         $total_count = $this->con->get_var( $count_sql );
 
-        // Handle pagination
-        if ( isset( $params['limit'] ) || isset( $params['offset'] ) ) {
-            $limit = isset( $params['limit'] ) ? absint( $params['limit'] ) : 18446744073709551615;
-            $offset = isset( $params['offset'] ) ? absint( $params['offset'] ) : 0;
-            $sql .= $this->con->prepare( " LIMIT %d, %d", ( $offset - 1 ) * $limit, $limit );
+        // Handle pagination. `offset` is a 1-based page number.
+        if ( isset( $params['limit'] ) ) {
+            $limit = absint( $params['limit'] );
+            $limit = $limit > 0 ? $limit : 10;
+            $page  = isset( $params['offset'] ) ? max( 1, absint( $params['offset'] ) ) : 1;
+
+            $sql         .= ' LIMIT %d, %d';
+            $query_args[] = ( $page - 1 ) * $limit;
+            $query_args[] = $limit;
         }
 
-        // Get results
+        // Get results (single prepare with the full argument list).
         if ( ! empty( $query_args ) ) {
             $sql = $this->con->prepare( $sql, $query_args );
         }

@@ -14,6 +14,7 @@ phpcs.xml.dist
 README.md
 webpack
 /node_modules
+CLAUDE.md
 postcss.config.js
 output.log
 docker_tag

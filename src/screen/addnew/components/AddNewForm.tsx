@@ -120,7 +120,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   <Tooltip
                     label={__(
                       "Title for the code snippets which help to identify.",
-                      "easy-mail-smtp"
+                      "snippet-master"
                     )}
                     placement="top"
                   >
@@ -154,7 +154,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   <Tooltip
                     label={__(
                       "The code snippets which enhance the functionality.",
-                      "easy-mail-smtp"
+                      "snippet-master"
                     )}
                     placement="top"
                   >
@@ -198,7 +198,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   <Tooltip
                     label={__(
                       "Set the priority. Low number has high priority.",
-                      "easy-mail-smtp"
+                      "snippet-master"
                     )}
                     placement="top"
                   >
@@ -240,7 +240,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   <Tooltip
                     label={__(
                       "Add description to identify the purpose of the code snippets for better understanding.",
-                      "easy-mail-smtp"
+                      "snippet-master"
                     )}
                     placement="top"
                   >
@@ -276,7 +276,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   <Tooltip
                     label={__(
                       "Add tags for sorting and filtering.",
-                      "easy-mail-smtp"
+                      "snippet-master"
                     )}
                     placement="top"
                   >

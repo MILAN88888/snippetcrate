@@ -66,7 +66,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
         type="text"
         w="300px"
         value={searchByItem}
-        placeholder={__("Search by items", "easy-mail-smtp")}
+        placeholder={__("Search by items", "snippet-master")}
         onChange={(e) => setSearchByItem(e.target.value)}
       />
       <Input
@@ -74,7 +74,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
         type="text"
         w="300px"
         value={`${dateRange?.startDate?.toLocaleDateString()} - ${dateRange?.endDate?.toLocaleDateString()}`}
-        placeholder={__("Select date range", "easy-mail-smtp")}
+        placeholder={__("Select date range", "snippet-master")}
         readOnly
         onClick={() => setIsPickerVisible(true)}
       />

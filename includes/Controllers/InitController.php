@@ -31,6 +31,60 @@ class InitController {
 		add_action( 'wp', array( $this, 'run_global_snippets' ) );
 		add_action( 'wp_head', array( $this, 'load_snippets_at_header' ) );
 		add_action( 'wp_footer', array( $this, 'load_snippets_at_footer' ) );
+		add_shortcode( 'snippet_master', array( $this, 'render_shortcode' ) );
+	}
+
+	/**
+	 * Render a shortcode-scoped snippet: [snippet_master id="1"].
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered output.
+	 */
+	public function render_shortcode( $atts ) {
+		$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'snippet_master' );
+		$id   = absint( $atts['id'] );
+
+		if ( ! $id ) {
+			return '';
+		}
+
+		$snippet_inst = new SnippetsController();
+		$res          = $snippet_inst->get_active_snippets( array( 'id' => $id ) );
+
+		if ( empty( $res['results'][0] ) ) {
+			return '';
+		}
+
+		$snippet = $res['results'][0];
+
+		// Only active, shortcode-scoped snippets render via the shortcode.
+		if ( empty( $snippet->active ) || 'shortcode' !== $snippet->scope ) {
+			return '';
+		}
+
+		$lang = isset( $snippet->lang ) ? strtoupper( $snippet->lang ) : 'PHP';
+
+		if ( 'PHP' === $lang ) {
+			ob_start();
+			try {
+				eval( $snippet->codesnippet );
+			} catch ( \Throwable $error ) {
+				ob_end_clean();
+				$this->handle_snippet_error( $snippet, $error );
+				return '';
+			}
+			return ob_get_clean();
+		}
+
+		if ( 'CSS' === $lang ) {
+			return '<style>' . $snippet->codesnippet . '</style>';
+		}
+
+		if ( 'JS' === $lang ) {
+			return '<script>' . $snippet->codesnippet . '</script>';
+		}
+
+		return $snippet->codesnippet;
 	}
 
 	/**
@@ -97,26 +151,31 @@ class InitController {
 
 			$lang = isset( $snippet->lang ) ? strtoupper( $snippet->lang ) : 'PHP';
 
-			if ( 'JS' === $lang ) {
-				// JavaScript is printed as a <script> tag at the header/footer
-				// hooks only; never while buffering the early global pass.
-				if ( ! $discard_output ) {
-					$this->print_script( $snippet );
-				}
-			} else {
+			if ( 'PHP' === $lang ) {
 				$this->execute_snippet( $snippet, $discard_output );
+			} elseif ( ! $discard_output ) {
+				// JS/CSS/HTML are emitted as markup at the header/footer hooks
+				// only; never while buffering the early global pass.
+				$this->print_snippet_markup( $snippet, $lang );
 			}
 		}
 	}
 
 	/**
-	 * Print a JavaScript snippet as an inline script tag.
+	 * Print a non-PHP snippet as markup (script/style/raw HTML).
 	 *
 	 * @param object $snippet The snippet.
+	 * @param string $lang    The snippet language (JS, CSS or HTML).
 	 * @return void
 	 */
-	protected function print_script( $snippet ) {
-		echo "\n<script>\n" . $snippet->codesnippet . "\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	protected function print_snippet_markup( $snippet, $lang ) {
+		if ( 'CSS' === $lang ) {
+			echo "\n<style>\n" . $snippet->codesnippet . "\n</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} elseif ( 'HTML' === $lang ) {
+			echo "\n" . $snippet->codesnippet . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			echo "\n<script>\n" . $snippet->codesnippet . "\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 
 		do_action( 'custom_code_snippets_after_execute_snippet', $snippet );
 	}

@@ -87,5 +87,55 @@ class SnippetsRoutes extends BaseRoutes {
 				'permission_callback' => $permission,
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/duplicate',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $controller, 'duplicate_snippet' ),
+				'permission_callback' => $permission,
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/bulk/status',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $controller, 'bulk_update_status' ),
+				'permission_callback' => $permission,
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/export',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $controller, 'export_snippets' ),
+				'permission_callback' => $permission,
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/import',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $controller, 'import_snippets' ),
+				'permission_callback' => $permission,
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/tags',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $controller, 'get_tags' ),
+				'permission_callback' => $permission,
+			)
+		);
 	}
 }

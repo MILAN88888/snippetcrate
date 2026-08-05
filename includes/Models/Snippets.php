@@ -112,6 +112,11 @@ class Snippets {
             $query_args[] = $params['status'];
         }
 
+        if ( isset( $params['tag'] ) && '' !== $params['tag'] ) {
+            $where_clause[] = "`tags` LIKE %s";
+            $query_args[]   = '%' . $this->con->esc_like( $params['tag'] ) . '%';
+        }
+
         if ( isset( $params['scope'] ) ) {
             if ( is_array( $params['scope'] ) && count( $params['scope'] ) > 0 ) {
                 $scope_placeholders = implode( ',', array_fill( 0, count( $params['scope'] ), '%s' ) );
@@ -202,4 +207,112 @@ class Snippets {
 
         return false !== $this->con->query( $sql );
     }
+
+	/**
+	 * Duplicate a snippet.
+	 *
+	 * @param int $id The snippet id to duplicate.
+	 * @return int|false The new snippet id, or false on failure.
+	 */
+	public function duplicate_snippet( $id ) {
+		$id = absint( $id );
+		if ( ! $id ) {
+			return false;
+		}
+
+		$row = $this->con->get_row(
+			$this->con->prepare(
+				"SELECT * FROM {$this->con->prefix}ccsnpt_snippets WHERE id = %d",
+				$id
+			),
+			ARRAY_A
+		);
+
+		if ( ! $row ) {
+			return false;
+		}
+
+		unset( $row['id'], $row['created_at'], $row['updated_at'] );
+		$row['title']  = $row['title'] . ' (copy)';
+		$row['active'] = 0;
+
+		$inserted = $this->con->insert( $this->con->prefix . 'ccsnpt_snippets', $row );
+
+		return $inserted ? $this->con->insert_id : false;
+	}
+
+	/**
+	 * Bulk update the active status of the given snippets.
+	 *
+	 * @param array $ids    The snippet ids.
+	 * @param int   $active The active flag (1 or 0).
+	 * @return boolean
+	 */
+	public function bulk_update_status( $ids, $active ) {
+		if ( empty( $ids ) || ! is_array( $ids ) ) {
+			return false;
+		}
+
+		$ids          = array_map( 'absint', $ids );
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		$sql = $this->con->prepare(
+			"UPDATE {$this->con->prefix}ccsnpt_snippets SET active = %d WHERE id IN ($placeholders)",
+			array_merge( array( absint( $active ) ), $ids )
+		);
+
+		return false !== $this->con->query( $sql );
+	}
+
+	/**
+	 * Get snippet rows by ids (or all rows when no ids given).
+	 *
+	 * @param array $ids The snippet ids.
+	 * @return array
+	 */
+	public function get_by_ids( $ids ) {
+		if ( empty( $ids ) ) {
+			return $this->con->get_results(
+				"SELECT * FROM {$this->con->prefix}ccsnpt_snippets",
+				ARRAY_A
+			);
+		}
+
+		$ids          = array_map( 'absint', $ids );
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		return $this->con->get_results(
+			$this->con->prepare(
+				"SELECT * FROM {$this->con->prefix}ccsnpt_snippets WHERE id IN ($placeholders)",
+				$ids
+			),
+			ARRAY_A
+		);
+	}
+
+	/**
+	 * Get the distinct list of tags used across all snippets.
+	 *
+	 * @return array
+	 */
+	public function get_all_tags() {
+		$rows = $this->con->get_col(
+			"SELECT tags FROM {$this->con->prefix}ccsnpt_snippets WHERE tags <> ''"
+		);
+
+		$tags = array();
+		foreach ( $rows as $row ) {
+			foreach ( explode( ',', $row ) as $tag ) {
+				$tag = trim( $tag );
+				if ( '' !== $tag ) {
+					$tags[ $tag ] = true;
+				}
+			}
+		}
+
+		$tags = array_keys( $tags );
+		sort( $tags );
+
+		return $tags;
+	}
 }

@@ -52,7 +52,7 @@ class SnippetsController {
 		$codesnippet = preg_replace( '|^\s*<\?(php)?|', '', $codesnippet );
 		$codesnippet = preg_replace( '|\?>\s*$|', '', $codesnippet );
 
-		$allowed_langs = array( 'PHP', 'JS' );
+		$allowed_langs = array( 'PHP', 'JS', 'CSS', 'HTML' );
 		$lang          = isset( $params['lang'] ) ? strtoupper( sanitize_text_field( $params['lang'] ) ) : 'PHP';
 		if ( ! in_array( $lang, $allowed_langs, true ) ) {
 			$lang = 'PHP';
@@ -88,12 +88,12 @@ class SnippetsController {
 
 		$tags = isset( $params['tags'] ) ? sanitize_text_field( $params['tags'] ) : '';
 
-		$allowed_scopes = array( 'global', 'header', 'footer' );
+		$allowed_scopes = array( 'global', 'header', 'footer', 'shortcode' );
 		$scope          = isset( $params['scope'] ) ? sanitize_text_field( $params['scope'] ) : 'global';
 		if ( ! in_array( $scope, $allowed_scopes, true ) ) {
-			$errors['scope'] = esc_html__( 'Scope must be one of global, header or footer.', 'snippet-master' );
-		} elseif ( 'JS' === $lang && 'global' === $scope ) {
-			$errors['scope'] = esc_html__( 'JavaScript snippets must use header or footer scope.', 'snippet-master' );
+			$errors['scope'] = esc_html__( 'Scope must be one of global, header, footer or shortcode.', 'snippet-master' );
+		} elseif ( 'PHP' !== $lang && 'global' === $scope ) {
+			$errors['scope'] = esc_html__( 'Only PHP snippets can use the global scope. Choose header, footer or shortcode.', 'snippet-master' );
 		}
 
 		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;
@@ -231,6 +231,203 @@ class SnippetsController {
 				'message' => $error ? $error['message'] : null,
 				'line'    => $error ? $error['line'] : null,
 			),
+			200
+		);
+	}
+
+	/**
+	 * Duplicate a snippet.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function duplicate_snippet( $request ) {
+		$params = $request->get_json_params();
+		$id     = isset( $params['id'] ) ? absint( $params['id'] ) : 0;
+
+		if ( ! $id ) {
+			return new \WP_REST_Response(
+				array( 'message' => esc_html__( 'Duplication failed!!', 'snippet-master' ) ),
+				400
+			);
+		}
+
+		$new_id = $this->snippets->duplicate_snippet( $id );
+
+		return new \WP_REST_Response(
+			array(
+				'message' => $new_id
+					? esc_html__( 'Snippet duplicated!!', 'snippet-master' )
+					: esc_html__( 'Duplication failed!!', 'snippet-master' ),
+				'id'      => $new_id ? $new_id : null,
+			),
+			$new_id ? 200 : 400
+		);
+	}
+
+	/**
+	 * Bulk update snippet active status.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function bulk_update_status( $request ) {
+		$params = $request->get_json_params();
+		$ids    = isset( $params['ids'] ) && is_array( $params['ids'] ) ? $params['ids'] : array();
+		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;
+
+		if ( empty( $ids ) ) {
+			return new \WP_REST_Response(
+				array( 'message' => esc_html__( 'No snippets selected.', 'snippet-master' ) ),
+				400
+			);
+		}
+
+		$updated = $this->snippets->bulk_update_status( $ids, $active );
+
+		return new \WP_REST_Response(
+			array(
+				'message' => $updated
+					? esc_html__( 'Snippets updated!!', 'snippet-master' )
+					: esc_html__( 'Update failed!!', 'snippet-master' ),
+			),
+			$updated ? 200 : 400
+		);
+	}
+
+	/**
+	 * Export snippets as a JSON payload or a PHP file body.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function export_snippets( $request ) {
+		$params = $request->get_json_params();
+		$ids    = isset( $params['ids'] ) && is_array( $params['ids'] )
+			? array_map( 'absint', $params['ids'] )
+			: array();
+		$format = isset( $params['format'] ) && 'php' === $params['format'] ? 'php' : 'json';
+
+		$rows   = $this->snippets->get_by_ids( $ids );
+		$export = array();
+		foreach ( $rows as $row ) {
+			$export[] = array(
+				'title'       => $row['title'],
+				'lang'        => $row['lang'],
+				'description' => $row['description'],
+				'codesnippet' => $row['codesnippet'],
+				'tags'        => $row['tags'],
+				'scope'       => $row['scope'],
+				'priority'    => (int) $row['priority'],
+			);
+		}
+
+		if ( 'php' === $format ) {
+			$content = "<?php\n";
+			foreach ( $export as $snippet ) {
+				if ( 'PHP' !== strtoupper( $snippet['lang'] ) ) {
+					continue;
+				}
+				$content .= "\n/**\n * " . str_replace( "\n", "\n * ", $snippet['title'] ) . "\n";
+				if ( ! empty( $snippet['description'] ) ) {
+					$content .= ' * ' . str_replace( "\n", "\n * ", $snippet['description'] ) . "\n";
+				}
+				$content .= " */\n" . $snippet['codesnippet'] . "\n";
+			}
+
+			return new \WP_REST_Response(
+				array(
+					'format'   => 'php',
+					'filename' => 'snippet-master-export.php',
+					'content'  => $content,
+				),
+				200
+			);
+		}
+
+		return new \WP_REST_Response(
+			array(
+				'format'   => 'json',
+				'filename' => 'snippet-master-export.json',
+				'snippets' => $export,
+			),
+			200
+		);
+	}
+
+	/**
+	 * Import snippets from a JSON payload. Imported snippets are inactive.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function import_snippets( $request ) {
+		$params   = $request->get_json_params();
+		$snippets = isset( $params['snippets'] ) && is_array( $params['snippets'] )
+			? $params['snippets']
+			: array();
+
+		if ( empty( $snippets ) ) {
+			return new \WP_REST_Response(
+				array( 'message' => esc_html__( 'No snippets to import.', 'snippet-master' ) ),
+				400
+			);
+		}
+
+		$imported = 0;
+		$skipped  = 0;
+		foreach ( $snippets as $snippet ) {
+			if ( ! is_array( $snippet ) ) {
+				++$skipped;
+				continue;
+			}
+
+			$validated = $this->validate_snippet_data( $snippet );
+			if ( ! empty( $validated['errors'] ) ) {
+				++$skipped;
+				continue;
+			}
+
+			$data           = $validated['data'];
+			$data['active'] = 0;
+			unset( $data['id'] );
+
+			if ( $this->snippets->save_snippets( $data ) ) {
+				++$imported;
+			} else {
+				++$skipped;
+			}
+		}
+
+		return new \WP_REST_Response(
+			array(
+				'message'  => sprintf(
+					/* translators: 1: imported count, 2: skipped count. */
+					esc_html__( 'Imported %1$d snippet(s), skipped %2$d.', 'snippet-master' ),
+					$imported,
+					$skipped
+				),
+				'imported' => $imported,
+				'skipped'  => $skipped,
+			),
+			200
+		);
+	}
+
+	/**
+	 * Get the distinct list of tags across all snippets.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function get_tags( $request ) {
+		return new \WP_REST_Response(
+			array( 'tags' => $this->snippets->get_all_tags() ),
 			200
 		);
 	}

@@ -77,5 +77,15 @@ class SnippetsRoutes extends BaseRoutes {
 				'permission_callback' => $permission,
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/validate',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $controller, 'validate_syntax' ),
+				'permission_callback' => $permission,
+			)
+		);
 	}
 }

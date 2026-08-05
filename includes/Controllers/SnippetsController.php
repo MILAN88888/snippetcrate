@@ -199,4 +199,39 @@ class SnippetsController {
 	public function get_active_snippets( $params ) {
 		return $this->snippets->get_snippets( $params );
 	}
+
+	/**
+	 * Live syntax check for the editor (does not save anything).
+	 *
+	 * Only PHP is checked here; JavaScript is validated in the browser.
+	 *
+	 * @param [type] $request The request data.
+	 *
+	 * @return \WP_REST_Response The response object.
+	 */
+	public function validate_syntax( $request ) {
+		$params = $request->get_json_params();
+
+		$code = isset( $params['codesnippet'] ) && is_string( $params['codesnippet'] )
+			? $params['codesnippet']
+			: '';
+		$code = preg_replace( '|^\s*<\?(php)?|', '', $code );
+		$code = preg_replace( '|\?>\s*$|', '', $code );
+
+		$lang = isset( $params['lang'] ) ? strtoupper( sanitize_text_field( $params['lang'] ) ) : 'PHP';
+
+		$error = false;
+		if ( 'PHP' === $lang ) {
+			$error = Helper::check_php_syntax( $code );
+		}
+
+		return new \WP_REST_Response(
+			array(
+				'valid'   => false === $error,
+				'message' => $error ? $error['message'] : null,
+				'line'    => $error ? $error['line'] : null,
+			),
+			200
+		);
+	}
 }

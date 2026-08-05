@@ -6,7 +6,8 @@ import {
   AddNew,
   GetSnippetsResponse,
   SnippetParams,
-  UpdateStatusParams
+  UpdateStatusParams,
+  ValidateResponse
 } from "./../types/index";
 
 export const addNewSnippet = async (addNewData: AddNew) => {
@@ -56,4 +57,18 @@ export const deleteSnippets = async (ids: (string | number)[]) => {
     },
     data: ids
   }).then((res) => res);
+};
+
+export const validateSnippet = async (data: {
+  codesnippet: string;
+  lang: string;
+}): Promise<ValidateResponse> => {
+  return apiFetch({
+    path: ENDPOINTS.ValidateSnippet,
+    method: "POST",
+    headers: {
+      "X-WP-Nonce": ccsnptScriptData.ccsnptRestApiNonce
+    },
+    data
+  }).then((res) => res as ValidateResponse);
 };

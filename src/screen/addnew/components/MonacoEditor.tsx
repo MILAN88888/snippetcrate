@@ -1,9 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import Editor, { EditorProps } from "@monaco-editor/react";
+import Editor, { EditorProps, Monaco } from "@monaco-editor/react";
 import { editor as MonacoEditorNS } from "monaco-editor";
 
 interface MonacoEditorProps extends EditorProps {
-  onMount?: (editor: MonacoEditorNS.IStandaloneCodeEditor) => void;
+  onMount?: (editor: MonacoEditorNS.IStandaloneCodeEditor, monaco: Monaco) => void;
 }
 
 export interface MonacoEditorHandle {
@@ -22,10 +22,10 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
       <Editor
         {...props}
         defaultValue={props.language === "php" ? "<?php\n" : ""}
-        onMount={(editor) => {
+        onMount={(editor, monaco) => {
           editorRef.current = editor;
           if (props.onMount) {
-            props.onMount(editor);
+            props.onMount(editor, monaco);
           }
         }}
       />

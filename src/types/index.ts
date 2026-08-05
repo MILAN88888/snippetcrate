@@ -26,6 +26,18 @@ export type UpdateStatusParams = {
   active: boolean | number;
 };
 
+export type ValidateResponse = {
+  valid: boolean;
+  message: string | null;
+  line: number | null;
+};
+
+export type SyntaxError = {
+  message: string;
+  line: number;
+  column: number;
+};
+
 export type Snippet = {
   id: number | string;
   title: string;

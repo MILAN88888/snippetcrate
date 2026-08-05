@@ -16,13 +16,18 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Parser } from "acorn";
 import MonacoEditor from "./MonacoEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addNewSnippet, getSnippets } from "./../../../api/api";
+import {
+  addNewSnippet,
+  getSnippets,
+  validateSnippet
+} from "./../../../api/api";
+import { useDebounce } from "./../../../hooks/index";
 
 interface AddNewFormProps {
   id?: string | number;
@@ -77,6 +82,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     control,
     formState: { errors, isSubmitting },
     setError,
+    clearErrors,
     reset,
     register,
     setValue,
@@ -97,6 +103,12 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
   const lang = watch("lang");
   const scope = watch("scope");
+  const code = watch("codesnippet");
+  const debouncedCode = useDebounce(code ?? "", 500);
+
+  const editorRef = useRef<any>(null);
+  const monacoRef = useRef<any>(null);
+  const [liveError, setLiveError] = useState<string | null>(null);
 
   const {
     data,
@@ -139,6 +151,96 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     }
   }, [lang, scope, setValue]);
 
+  // Live syntax validation while typing: acorn for JS, a debounced
+  // server round-trip for PHP. Errors are shown as Monaco markers and a message.
+  useEffect(() => {
+    let cancelled = false;
+
+    const applyMarker = (
+      err: { line: number; column: number; message: string } | null
+    ) => {
+      const editor = editorRef.current;
+      const monaco = monacoRef.current;
+      if (!editor || !monaco) {
+        return;
+      }
+      const model = editor.getModel();
+      if (!model) {
+        return;
+      }
+      if (!err) {
+        monaco.editor.setModelMarkers(model, "snippet-master", []);
+        return;
+      }
+      monaco.editor.setModelMarkers(model, "snippet-master", [
+        {
+          startLineNumber: err.line,
+          startColumn: err.column,
+          endLineNumber: err.line,
+          endColumn: model.getLineMaxColumn(err.line),
+          message: err.message,
+          severity: monaco.MarkerSeverity.Error
+        }
+      ]);
+    };
+
+    const value = debouncedCode ?? "";
+    if (value.trim() === "") {
+      setLiveError(null);
+      applyMarker(null);
+      return;
+    }
+
+    if (lang === "JS") {
+      try {
+        Parser.parse(value, {
+          ecmaVersion: "latest",
+          sourceType: "script",
+          allowReturnOutsideFunction: true
+        });
+        setLiveError(null);
+        applyMarker(null);
+        clearErrors("codesnippet");
+      } catch (e: any) {
+        const loc = e?.loc ?? { line: 1, column: 0 };
+        const message =
+          __("JavaScript syntax error: ", "snippet-master") + e.message;
+        setLiveError(message);
+        applyMarker({
+          line: loc.line ?? 1,
+          column: (loc.column ?? 0) + 1,
+          message
+        });
+      }
+      return;
+    }
+
+    // PHP: validate on the server (parses without executing).
+    validateSnippet({ codesnippet: value, lang: "PHP" })
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        if (res.valid) {
+          setLiveError(null);
+          applyMarker(null);
+          clearErrors("codesnippet");
+        } else {
+          const message =
+            __("PHP syntax error: ", "snippet-master") + (res.message ?? "");
+          setLiveError(message);
+          applyMarker({ line: res.line ?? 1, column: 1, message });
+        }
+      })
+      .catch(() => {
+        /* Ignore transient errors during live validation. */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedCode, lang, clearErrors]);
+
   const onSubmit: SubmitHandler<AddNew> = (formData: AddNew) => {
     if (formData.lang === "JS") {
       const jsCode = (formData.codesnippet ?? "").replace(/^\s*<\?php/i, "");
@@ -172,6 +274,8 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           { value: "header", label: __("Header", "snippet-master") },
           { value: "footer", label: __("Footer", "snippet-master") }
         ];
+
+  const codeError = (errors.codesnippet?.message as string) ?? liveError ?? null;
 
   if (id && isFetching) {
     return (
@@ -216,7 +320,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             )}
           </FormControl>
 
-          <FormControl isInvalid={!!errors.codesnippet}>
+          <FormControl isInvalid={!!codeError}>
             <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
               {__("Code", "snippet-master")}
             </FormLabel>
@@ -224,7 +328,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               borderRadius="lg"
               overflow="hidden"
               border="1px solid"
-              borderColor={errors.codesnippet ? "red.400" : "secondary.300"}
+              borderColor={codeError ? "red.400" : "secondary.300"}
             >
               <Controller
                 name="codesnippet"
@@ -241,6 +345,10 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                       scrollBeyondLastLine: false,
                       padding: { top: 12, bottom: 12 }
                     }}
+                    onMount={(editor, monaco) => {
+                      editorRef.current = editor;
+                      monacoRef.current = monaco;
+                    }}
                     onChange={(value: string | undefined) =>
                       field.onChange(value ?? "")
                     }
@@ -248,17 +356,19 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 )}
               />
             </Box>
-            {errors.codesnippet ? (
-              <FormErrorMessage>{errors.codesnippet.message}</FormErrorMessage>
+            {codeError ? (
+              <Text mt="6px" fontSize="12px" color="red.500">
+                {codeError}
+              </Text>
             ) : (
               <Text mt="6px" fontSize="12px" color="secondary.500">
                 {lang === "JS"
                   ? __(
-                      "JavaScript is validated in your browser before saving.",
+                      "JavaScript is validated as you type (in your browser).",
                       "snippet-master"
                     )
                   : __(
-                      "PHP is syntax-checked on the server before saving.",
+                      "PHP is syntax-checked as you type (on the server).",
                       "snippet-master"
                     )}
               </Text>
@@ -322,10 +432,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               {__("Description", "snippet-master")}
             </FormLabel>
             <Textarea
-              placeholder={__(
-                "What does this snippet do?",
-                "snippet-master"
-              )}
+              placeholder={__("What does this snippet do?", "snippet-master")}
               {...register("description", {
                 required: __("Description is required", "snippet-master")
               })}

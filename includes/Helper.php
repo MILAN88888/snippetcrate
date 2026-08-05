@@ -64,14 +64,33 @@ class Helper {
 	 * @return string|false Error message when the code is invalid, false otherwise.
 	 */
 	public static function php_syntax_error( $code ) {
+		$result = self::check_php_syntax( $code );
+
+		return $result ? $result['message'] : false;
+	}
+
+	/**
+	 * Check PHP code syntax and return the error message and line.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $code The PHP code (without opening/closing tags).
+	 * @return array|false Array with `message` and `line` when invalid, false otherwise.
+	 */
+	public static function check_php_syntax( $code ) {
 		if ( ! is_string( $code ) || '' === trim( $code ) ) {
 			return false;
 		}
 
 		try {
+			// The '<?php ' prefix has no newline, so reported line numbers
+			// stay aligned with the user's code.
 			token_get_all( '<?php ' . $code, TOKEN_PARSE );
 		} catch ( \Throwable $e ) {
-			return $e->getMessage();
+			return array(
+				'message' => $e->getMessage(),
+				'line'    => method_exists( $e, 'getLine' ) ? max( 1, (int) $e->getLine() ) : 1,
+			);
 		}
 
 		return false;

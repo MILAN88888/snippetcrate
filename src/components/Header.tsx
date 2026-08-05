@@ -1,38 +1,55 @@
 import React from "react";
-import { Box, Heading, HStack, Image, Stack } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import Menus from "./Menus";
-import icon from "./../images/icon.svg";
 
-const Header = () => {
+const Logo: React.FC = () => (
+  <Flex
+    align="center"
+    justify="center"
+    boxSize="38px"
+    borderRadius="10px"
+    bgGradient="linear(135deg, primary.400, primary.600)"
+    color="white"
+    fontWeight="800"
+    fontSize="15px"
+    boxShadow="0 4px 12px rgba(37, 99, 235, 0.35)"
+  >
+    {"</>"}
+  </Flex>
+);
+
+const Header: React.FC = () => {
   return (
-    <Stack
+    <Flex
+      as="header"
       width="100%"
-      position="fixed"
-      zIndex={1}
-      padding="18px 25px 18px 25px"
+      px={{ base: "16px", md: "28px" }}
+      height="68px"
       bg="white"
-      height="80px"
-      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-      direction="row"
+      align="center"
+      justify="space-between"
+      borderBottom="1px solid"
+      borderColor="secondary.200"
     >
-      <Stack direction="row" justify="space-between" alignItems="center">
-        <Stack gap="16px" direction="row" alignItems="center">
-          <Image src={icon} />
+      <HStack gap={{ base: "16px", md: "32px" }} align="center">
+        <HStack gap="12px" align="center">
+          <Logo />
           <Heading
-            as="h6"
-            fontWeight="600"
-            fontSize="20px"
-            lineHeight="8px"
-            color="dark.500"
-            letterSpacing="0.5px"
+            as="h1"
+            fontSize="18px"
+            fontWeight="700"
+            color="secondary.900"
+            letterSpacing="-0.2px"
           >
             {__("Snippet Master", "snippet-master")}
           </Heading>
+        </HStack>
+        <Box display={{ base: "none", md: "block" }}>
           <Menus />
-        </Stack>
-      </Stack>
-    </Stack>
+        </Box>
+      </HStack>
+    </Flex>
   );
 };
 

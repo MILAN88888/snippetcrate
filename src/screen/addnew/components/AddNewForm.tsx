@@ -18,7 +18,7 @@ import { __ } from "@wordpress/i18n";
 import React, { useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { InfoIcon } from "@chakra-ui/icons";
-import CodeSnippetEditor from "./CodeMirrorEditor";
+import MonacoEditor from "./MonacoEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addNewSnippet, getSnippets } from "./../../../api/api";
@@ -211,7 +211,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   name="codesnippet"
                   control={control}
                   render={({ field }) => (
-                    <CodeSnippetEditor
+                    <MonacoEditor
                       {...field}
                       height="500px"
                       theme="vs-dark"

@@ -14,13 +14,45 @@ The plugin ships a PSR-4 autoloader fallback, so it runs **without** `composer i
 
 ## How execution works (what you're verifying)
 
-- `scope=global` snippets `eval` once per **front-end** request (hooked to `wp`; never
-  in wp-admin/REST/cron). Their output is buffered and discarded.
-- `scope=header` / `scope=footer` snippets `eval` at `wp_head` / `wp_footer` and their
-  echoed output appears in the page — **no raw `<?php` should ever reach the HTML**.
-- A snippet that throws is caught (`\Throwable`), logged under `WP_DEBUG`, and
+- **PHP** snippets: `scope=global` `eval`s once per **front-end** request (hooked to
+  `wp`; never in wp-admin/REST/cron, output discarded); `scope=header`/`footer` `eval`
+  at `wp_head`/`wp_footer` with their echoed output appearing in the page — **no raw
+  `<?php` should ever reach the HTML**.
+- **JavaScript** snippets (`lang=JS`): never `eval`'d — printed as an inline
+  `<script>` at `wp_head` (header) or `wp_footer` (footer). JS may only use header or
+  footer scope (enforced in validation), never global.
+- A PHP snippet that throws is caught (`\Throwable`), logged under `WP_DEBUG`, and
   **auto-deactivated** so it can't white-screen the site.
-- Snippet code is stored with `<?php`/`?>` stripped; only PHP is executed.
+- Snippet code is stored with `<?php`/`?>` stripped.
+
+## Syntax validation (must block invalid saves)
+
+- **PHP** is checked server-side in `SnippetsController` via
+  `Helper::php_syntax_error()` (`token_get_all($code, TOKEN_PARSE)` — parses without
+  executing); a bad snippet returns a `codesnippet` error and is not saved.
+- **JavaScript** is checked in the browser with `acorn` on submit before the request
+  is sent.
+- Verify quickly server-side:
+  `php -r 'require "includes/Helper.php"; var_dump(SnippetMaster\Helper::php_syntax_error("$x = ;"));'`
+  → should return the parse-error message (not `false`).
+
+## Driving the admin UI in a browser (Playwright)
+
+The React app and REST routes are gated by `manage_options`. Mint both auth cookies
+with wp-cli (the logged-in cookie alone is rejected by `/wp-admin` over http):
+
+```bash
+wp eval '$u=get_user_by("login","admin");$e=time()+7200;$h=COOKIEHASH;
+  echo "wordpress_".$h."=".wp_generate_auth_cookie($u->ID,$e,"auth")."\n";
+  echo "wordpress_logged_in_".$h."=".wp_generate_auth_cookie($u->ID,$e,"logged_in")."\n";'
+```
+
+Add both cookies (domain `urm.local`, path `/`, httpOnly) to the Playwright context,
+then open `http://urm.local/wp-admin/admin.php?page=snippet-master`. The Monaco editor
+exposes `window.monaco`; set code with
+`window.monaco.editor.getModels()[0].setValue(...)` (fires the form's onChange). Note
+the app is hash-routed — `page.goto` to a different `#/...` on the same document does
+**not** reload; call `page.reload()` to get a fresh form.
 
 ## Smoke test
 

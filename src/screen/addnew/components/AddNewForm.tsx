@@ -1,10 +1,12 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
+  Select,
   Spinner,
   Stack,
   Text,
@@ -79,27 +81,67 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       priority: 10,
       description: "",
       tags: "",
-      active: 0
+      active: 0,
+      scope: "global",
+      lang: "PHP"
     }
   });
 
-  const { data } = useQuery({
+  const {
+    data,
+    isLoading: isFetching,
+    isError: isFetchError,
+    error: fetchError
+  } = useQuery({
     queryKey: [{ id }],
     queryFn: () => getSnippets({ id }),
     enabled: !!id
   });
 
   useEffect(() => {
-    if (data) {
-      const snippet = data.results[0];
-      Object.keys(snippet).forEach((key: any) => {
-        setValue(key as keyof AddNew, snippet[key as keyof AddNew]);
-      });
+    const snippet = data?.results?.[0];
+    if (!snippet) {
+      return;
     }
-  }, [data, setValue]);
+    reset({
+      id: snippet.id,
+      title: snippet.title,
+      codesnippet: snippet.codesnippet,
+      priority: snippet.priority,
+      description: snippet.description,
+      tags: snippet.tags,
+      active:
+        snippet.active === "1" ||
+        snippet.active === 1 ||
+        snippet.active === true
+          ? 1
+          : 0,
+      scope: snippet.scope ?? "global",
+      lang: snippet.lang ?? "PHP"
+    });
+  }, [data, reset]);
   const onSubmit: SubmitHandler<AddNew> = (data: AddNew) => {
     addNewSnippetMutation.mutate(data);
   };
+
+  if (id && isFetching) {
+    return (
+      <Center minH="300px">
+        <Spinner size="lg" />
+      </Center>
+    );
+  }
+
+  if (id && isFetchError) {
+    return (
+      <Center minH="300px">
+        <Text color="red.500">
+          {__("Failed to load snippet: ", "snippet-master")}
+          {(fetchError as Error)?.message}
+        </Text>
+      </Center>
+    );
+  }
 
   return (
     <Stack
@@ -295,6 +337,44 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   {...register("tags")}
                   type="text"
                 />
+              </FormControl>
+            </Box>
+          </Stack>
+          <Stack direction="row" gap="32px" justifyContent="flex-start">
+            <Stack alignItems="left" justifyContent="flex-start" w="250px">
+              <FormLabel>
+                <Stack direction="row" gap="8px" alignItems="center">
+                  <Text fontWeight="600" fontSize="15px">
+                    {__("Scope", "snippet-master")}
+                  </Text>
+                  <Tooltip
+                    label={__(
+                      "Where the snippet runs: globally, or output in the site header or footer.",
+                      "snippet-master"
+                    )}
+                    placement="top"
+                  >
+                    <InfoIcon color="gray.600" />
+                  </Tooltip>
+                </Stack>
+              </FormLabel>
+            </Stack>
+            <Box minW="900px">
+              <FormControl isInvalid={!!errors.scope}>
+                <Select {...register("scope")} border="1px solid #8c8f94">
+                  <option value="global">
+                    {__("Global", "snippet-master")}
+                  </option>
+                  <option value="header">
+                    {__("Header", "snippet-master")}
+                  </option>
+                  <option value="footer">
+                    {__("Footer", "snippet-master")}
+                  </option>
+                </Select>
+                {errors.scope && (
+                  <FormErrorMessage>{errors.scope.message}</FormErrorMessage>
+                )}
               </FormControl>
             </Box>
           </Stack>

@@ -20,9 +20,29 @@ use SnippetMaster\Migration\Migration;
 
 defined( 'ABSPATH' ) || exit;
 
-// Include the autoload file for Composer dependencies.
+// Load the Composer autoloader when present, otherwise fall back to a
+// lightweight PSR-4 autoloader so the plugin works without `composer install`.
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require __DIR__ . '/vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		function ( $class ) {
+			$prefix   = 'SnippetMaster\\';
+			$base_dir = __DIR__ . '/includes/';
+			$len      = strlen( $prefix );
+
+			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+				return;
+			}
+
+			$relative = substr( $class, $len );
+			$file     = $base_dir . str_replace( '\\', '/', $relative ) . '.php';
+
+			if ( file_exists( $file ) ) {
+				require $file;
+			}
+		}
+	);
 }
 
 // Define SNIPPET_MASTER_VERSION.

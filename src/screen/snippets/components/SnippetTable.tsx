@@ -1,17 +1,20 @@
 import {
+  Box,
+  Center,
+  Checkbox,
+  HStack,
+  IconButton,
+  Spinner,
   Stack,
+  Switch,
   Table,
+  TableContainer,
   Tbody,
+  Td,
+  Text,
   Th,
   Thead,
   Tr,
-  Td,
-  Spinner,
-  Center,
-  Text,
-  Checkbox,
-  Switch,
-  IconButton,
   useToast
 } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
@@ -33,6 +36,10 @@ import {
   SnippetParams
 } from "./../../../types/index";
 import FloatingBulkAction from "./../../../components/common/FloatingBulkAction";
+import {
+  LanguageBadge,
+  ScopeBadge
+} from "./../../../components/common/Badges";
 
 const isActive = (value: string | number | boolean | undefined): boolean =>
   value === "1" || value === 1 || value === true;
@@ -69,6 +76,7 @@ const SnippetTable: React.FC = () => {
     offset: 1,
     limit: 10
   });
+
   const { data, isLoading, isError, error } = useQuery<GetSnippetsResponse>({
     queryKey: ["snippets", params],
     queryFn: () => getSnippets(params)
@@ -147,15 +155,6 @@ const SnippetTable: React.FC = () => {
       });
     }
   });
-  if (isError) {
-    return (
-      <Center>
-        <Text color="red.500">
-          {__("Failed to load snippets: ", "snippet-master")} {error.message}
-        </Text>
-      </Center>
-    );
-  }
 
   const statusToggler = ({
     id,
@@ -189,93 +188,101 @@ const SnippetTable: React.FC = () => {
       : 10
   };
 
+  const cardStyle = {
+    bg: "white",
+    borderRadius: "xl",
+    border: "1px solid",
+    borderColor: "secondary.200"
+  };
+
+  if (isError) {
+    return (
+      <Box {...cardStyle} p="24px">
+        <Center>
+          <Text color="red.500">
+            {__("Failed to load snippets: ", "snippet-master")} {error.message}
+          </Text>
+        </Center>
+      </Box>
+    );
+  }
+
   return (
-    <Stack direction="column" gap="2px">
-      <Stack
-        p={4}
-        bg="white"
-        borderRadius="md"
-        boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-      >
-        <SnippetFilter params={params} setParams={setParams} />
-      </Stack>
-      {isLoading ? (
-        <Stack
-          direction="row"
-          height="300px"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Spinner size="sm" />
-        </Stack>
-      ) : (
-        <Stack
-          p={4}
-          bg="white"
-          borderRadius="md"
-          boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-        >
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>
-                  <Checkbox
-                    onChange={onClickCheckAll}
-                    isChecked={isCheckAll}
-                    aria-label={__("Select all snippets", "snippet-master")}
-                  />
-                </Th>
-                <Th>
-                  <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Title", "snippet-master")}
-                  </Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Description", "snippet-master")}
-                  </Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Tags", "snippet-master")}
-                  </Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Updated At", "snippet-master")}
-                  </Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="600" fontSize="13px" lineHeight="24px">
-                    {__("Priority", "snippet-master")}
-                  </Text>
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data && data.results && data.results.length > 0 ? (
-                data.results.map((snippet: Snippet) => (
-                  <Tr key={snippet.id}>
-                    <Td width="50px">
-                      <Checkbox
-                        type="checkbox"
-                        id={String(snippet.id)}
-                        onChange={(e) => handleClick(e)}
-                        isChecked={isCheck.includes(snippet.id)}
-                        aria-label={__("Select snippet", "snippet-master")}
-                      />
-                    </Td>
-                    <Td>
-                      <Stack direction="column">
+    <Stack gap="16px">
+      <Box {...cardStyle} overflow="hidden">
+        <Box p="16px" borderBottom="1px solid" borderColor="secondary.100">
+          <SnippetFilter params={params} setParams={setParams} />
+        </Box>
+
+        {isLoading ? (
+          <Center height="300px">
+            <Spinner size="lg" color="primary.500" />
+          </Center>
+        ) : (
+          <TableContainer>
+            <Table>
+              <Thead bg="secondary.50">
+                <Tr>
+                  <Th width="48px">
+                    <Checkbox
+                      onChange={onClickCheckAll}
+                      isChecked={isCheckAll}
+                      aria-label={__("Select all snippets", "snippet-master")}
+                    />
+                  </Th>
+                  <Th>{__("Snippet", "snippet-master")}</Th>
+                  <Th>{__("Language", "snippet-master")}</Th>
+                  <Th>{__("Scope", "snippet-master")}</Th>
+                  <Th>{__("Priority", "snippet-master")}</Th>
+                  <Th>{__("Status", "snippet-master")}</Th>
+                  <Th>{__("Updated", "snippet-master")}</Th>
+                  <Th textAlign="right">{__("Actions", "snippet-master")}</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data && data.results && data.results.length > 0 ? (
+                  data.results.map((snippet: Snippet) => (
+                    <Tr key={snippet.id} _hover={{ bg: "secondary.50" }}>
+                      <Td>
+                        <Checkbox
+                          id={String(snippet.id)}
+                          onChange={(e) => handleClick(e)}
+                          isChecked={isCheck.includes(snippet.id)}
+                          aria-label={__("Select snippet", "snippet-master")}
+                        />
+                      </Td>
+                      <Td maxW="360px">
                         <Text
-                          fontWeight="400"
+                          fontWeight="600"
                           fontSize="14px"
-                          lineHeight="24px"
                           color="secondary.900"
+                          isTruncated
                         >
                           {snippet.title}
                         </Text>
-                        <Stack direction="row" gap="24px" alignItems="center">
+                        {snippet.description && (
+                          <Text
+                            fontSize="12px"
+                            color="secondary.500"
+                            noOfLines={1}
+                          >
+                            {snippet.description}
+                          </Text>
+                        )}
+                      </Td>
+                      <Td>
+                        <LanguageBadge lang={snippet.lang} />
+                      </Td>
+                      <Td>
+                        <ScopeBadge scope={snippet.scope} />
+                      </Td>
+                      <Td>
+                        <Text fontSize="14px" color="secondary.700">
+                          {snippet.priority}
+                        </Text>
+                      </Td>
+                      <Td>
+                        <HStack gap="8px">
                           <Switch
                             size="sm"
                             isChecked={isActive(snippet.active)}
@@ -290,6 +297,22 @@ const SnippetTable: React.FC = () => {
                               })
                             }
                           />
+                          <Text fontSize="12px" color="secondary.500">
+                            {isActive(snippet.active)
+                              ? __("Active", "snippet-master")
+                              : __("Inactive", "snippet-master")}
+                          </Text>
+                        </HStack>
+                      </Td>
+                      <Td>
+                        <Text fontSize="13px" color="secondary.500">
+                          {snippet.updated_at
+                            ? snippet.updated_at.split(" ")[0]
+                            : "—"}
+                        </Text>
+                      </Td>
+                      <Td>
+                        <HStack gap="4px" justify="flex-end">
                           <IconButton
                             aria-label={__("Edit snippet", "snippet-master")}
                             icon={<BiEdit />}
@@ -307,74 +330,33 @@ const SnippetTable: React.FC = () => {
                             fontSize="16px"
                             onClick={() => deleteSnippet(Number(snippet.id))}
                           />
-                        </Stack>
-                      </Stack>
-                    </Td>
-                    <Td>
-                      <Text
-                        fontWeight="400"
-                        fontSize="14px"
-                        lineHeight="24px"
-                        color="secondary.900"
-                      >
-                        {snippet.description}{" "}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Text
-                        fontWeight="400"
-                        fontSize="14px"
-                        lineHeight="24px"
-                        color="secondary.900"
-                      >
-                        {snippet.tags}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Text
-                        fontWeight="400"
-                        fontSize="14px"
-                        lineHeight="24px"
-                        color="secondary.900"
-                      >
-                        {snippet.updated_at}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Text
-                        fontWeight="400"
-                        fontSize="14px"
-                        lineHeight="24px"
-                        color="secondary.900"
-                      >
-                        {snippet.priority}
-                      </Text>
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td colSpan={8}>
+                      <Center py="40px">
+                        <Text color="secondary.500">
+                          {__("No snippets found", "snippet-master")}
+                        </Text>
+                      </Center>
                     </Td>
                   </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td colSpan={6}>
-                    <Center>
-                      <Text>{__("No snippets found", "snippet-master")}</Text>
-                    </Center>
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
-        </Stack>
-      )}
-      <Stack
-        p={4}
-        bg="white"
-        borderRadius="md"
-        boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-        direction="column"
-        justifyItems="flex-end"
-      >
-        {data && <SnippetPagination {...paginationProps} />}
-      </Stack>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {data && (
+          <Box p="16px" borderTop="1px solid" borderColor="secondary.100">
+            <SnippetPagination {...paginationProps} />
+          </Box>
+        )}
+      </Box>
+
       {isCheck.length > 0 && (
         <FloatingBulkAction
           bulkIds={isCheck}

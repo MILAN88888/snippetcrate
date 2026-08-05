@@ -7,8 +7,9 @@ import { theme } from "./theme/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./style/main.scss";
 
+const queryClient = new QueryClient();
+
 const App: React.FC = () => {
-  const queryClient = new QueryClient();
   return (
     <ErrorBoundary>
       <HashRouter>

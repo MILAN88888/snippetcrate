@@ -8,7 +8,7 @@ interface ccsnptScriptData {
 }
 
 declare global {
-  interface window {
+  interface Window {
     ccsnpt_script_data: ccsnptScriptData;
   }
 }

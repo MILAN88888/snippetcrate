@@ -2,9 +2,14 @@ import { ENDPOINTS } from "./endpoints";
 import apiFetch from "@wordpress/api-fetch";
 import { ccsnptScriptData } from "./../utils/global";
 import { buildQueryString } from "./../utils/queryUtils";
-import { GetSnippetsResponse, SnippetParams } from "./../types/index";
+import {
+  AddNew,
+  GetSnippetsResponse,
+  SnippetParams,
+  UpdateStatusParams
+} from "./../types/index";
 
-export const addNewSnippet = async (addNewData: any) => {
+export const addNewSnippet = async (addNewData: AddNew) => {
   return apiFetch({
     path: ENDPOINTS.AddNew,
     method: "POST",
@@ -31,7 +36,7 @@ export const getSnippets = async (
   });
 };
 
-export const updateStatusSnippets = async (data: any) => {
+export const updateStatusSnippets = async (data: UpdateStatusParams) => {
   return apiFetch({
     path: ENDPOINTS.UpdateStatusSnippets,
     method: "POST",
@@ -42,7 +47,7 @@ export const updateStatusSnippets = async (data: any) => {
   }).then((res) => res);
 };
 
-export const deleteSnippets = async (ids: any) => {
+export const deleteSnippets = async (ids: (string | number)[]) => {
   return apiFetch({
     path: ENDPOINTS.DeleteSnippets,
     method: "POST",

@@ -1,3 +1,5 @@
+import type React from "react";
+
 export type ccsnptScriptDataType = {
   adminURL: string;
   siteURL: string;
@@ -15,6 +17,29 @@ export type AddNew = {
   description: string;
   tags: string;
   active: boolean | number;
+  scope?: string;
+  lang?: string;
+};
+
+export type UpdateStatusParams = {
+  id: number | string;
+  active: boolean | number;
+};
+
+export type Snippet = {
+  id: number | string;
+  title: string;
+  description: string;
+  codesnippet: string;
+  tags: string;
+  scope?: string;
+  lang?: string;
+  priority: number;
+  active: boolean | number;
+  created_at?: string;
+  created_by?: string;
+  updated_at?: string;
+  updated_by?: string;
 };
 
 export type BackendErrors = {
@@ -33,27 +58,12 @@ export type BackendErrors = {
 
 export type SnippetPagiProps = {
   params: SnippetParams;
-  setParams: (params: SnippetParams) => void;
+  setParams: React.Dispatch<React.SetStateAction<SnippetParams>>;
   totalPages: number;
 };
 
 export type GetSnippetsResponse = {
-  results: [
-    {
-      id: number | string;
-      title: string;
-      description: string;
-      codesnippet: string;
-      tags: string;
-      scope?: string;
-      priority: number;
-      active: boolean | number;
-      created_at?: string;
-      created_by?: string;
-      updated_at?: string;
-      updated_by?: string;
-    }
-  ];
+  results: Snippet[];
   total_count: number;
 };
 

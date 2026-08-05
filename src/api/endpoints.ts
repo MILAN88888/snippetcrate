@@ -1,5 +1,3 @@
-import { ccsnptScriptData } from "./../utils/global";
-
 const BASE_URL = "snippet-master/";
 
 export const ENDPOINTS = {

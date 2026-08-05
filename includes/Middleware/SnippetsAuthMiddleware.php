@@ -26,7 +26,7 @@ class SnippetsAuthMiddleware {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new \WP_Error(
 				'rest_forbidden',
-				__( 'You do not have permissions to delete snippets.', 'snippet-master' ),
+				__( 'You do not have permission to manage snippets.', 'snippet-master' ),
 				array( 'status' => 403 )
 			);
 		}

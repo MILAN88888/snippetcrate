@@ -35,13 +35,16 @@ class SnippetsRoutes extends BaseRoutes {
 	 * @return void
 	 */
 	public function register_routes() {
+		$controller = new SnippetsController();
+		$permission = array( new SnippetsAuthMiddleware(), 'check_access_permissions' );
+
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/save',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( new SnippetsController(), 'save_snippets' ),
-				'permission_callback' => array( new SnippetsAuthMiddleware(), 'check_access_permissions' ),
+				'callback'            => array( $controller, 'save_snippets' ),
+				'permission_callback' => $permission,
 			)
 		);
 
@@ -50,8 +53,8 @@ class SnippetsRoutes extends BaseRoutes {
 			'/' . $this->rest_base . '/get',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( new SnippetsController(), 'get_snippets' ),
-				'permission_callback' => array( new SnippetsAuthMiddleware(), 'check_access_permissions' ),
+				'callback'            => array( $controller, 'get_snippets' ),
+				'permission_callback' => $permission,
 			)
 		);
 
@@ -60,8 +63,8 @@ class SnippetsRoutes extends BaseRoutes {
 			'/' . $this->rest_base . '/update/status',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( new SnippetsController(), 'update_status' ),
-				'permission_callback' => array( new SnippetsAuthMiddleware(), 'check_access_permissions' ),
+				'callback'            => array( $controller, 'update_status' ),
+				'permission_callback' => $permission,
 			)
 		);
 
@@ -70,8 +73,8 @@ class SnippetsRoutes extends BaseRoutes {
 			'/' . $this->rest_base . '/delete',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( new SnippetsController(), 'delete_snippets' ),
-				'permission_callback' => array( new SnippetsAuthMiddleware(), 'check_access_permissions' ),
+				'callback'            => array( $controller, 'delete_snippets' ),
+				'permission_callback' => $permission,
 			)
 		);
 	}

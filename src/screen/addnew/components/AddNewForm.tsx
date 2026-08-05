@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Code,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -144,9 +145,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     });
   }, [data, reset]);
 
-  // JavaScript can only target the header or footer.
+  // Only PHP can target the global scope.
   useEffect(() => {
-    if (lang === "JS" && scope === "global") {
+    if (lang !== "PHP" && scope === "global") {
       setValue("scope", "header");
     }
   }, [lang, scope, setValue]);
@@ -215,6 +216,14 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       return;
     }
 
+    if (lang !== "PHP") {
+      // CSS and HTML are not syntax-checked.
+      setLiveError(null);
+      applyMarker(null);
+      clearErrors("codesnippet");
+      return;
+    }
+
     // PHP: validate on the server (parses without executing).
     validateSnippet({ codesnippet: value, lang: "PHP" })
       .then((res) => {
@@ -263,17 +272,24 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     addNewSnippetMutation.mutate(formData);
   };
 
+  const baseScopes = [
+    { value: "header", label: __("Header", "snippet-master") },
+    { value: "footer", label: __("Footer", "snippet-master") },
+    { value: "shortcode", label: __("Shortcode", "snippet-master") }
+  ];
   const scopeOptions =
+    lang === "PHP"
+      ? [{ value: "global", label: __("Global", "snippet-master") }, ...baseScopes]
+      : baseScopes;
+
+  const monacoLanguage =
     lang === "JS"
-      ? [
-          { value: "header", label: __("Header", "snippet-master") },
-          { value: "footer", label: __("Footer", "snippet-master") }
-        ]
-      : [
-          { value: "global", label: __("Global", "snippet-master") },
-          { value: "header", label: __("Header", "snippet-master") },
-          { value: "footer", label: __("Footer", "snippet-master") }
-        ];
+      ? "javascript"
+      : lang === "CSS"
+        ? "css"
+        : lang === "HTML"
+          ? "html"
+          : "php";
 
   const codeError = (errors.codesnippet?.message as string) ?? liveError ?? null;
 
@@ -338,7 +354,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                     {...field}
                     height="440px"
                     theme="vs-dark"
-                    language={lang === "JS" ? "javascript" : "php"}
+                    language={monacoLanguage}
                     options={{
                       minimap: { enabled: false },
                       fontSize: 14,
@@ -367,10 +383,15 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                       "JavaScript is validated as you type (in your browser).",
                       "snippet-master"
                     )
-                  : __(
-                      "PHP is syntax-checked as you type (on the server).",
-                      "snippet-master"
-                    )}
+                  : lang === "PHP"
+                    ? __(
+                        "PHP is syntax-checked as you type (on the server).",
+                        "snippet-master"
+                      )
+                    : __(
+                        "CSS and HTML are not syntax-checked.",
+                        "snippet-master"
+                      )}
               </Text>
             )}
           </FormControl>
@@ -383,6 +404,8 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <Select {...register("lang")}>
                 <option value="PHP">{__("PHP", "snippet-master")}</option>
                 <option value="JS">{__("JavaScript", "snippet-master")}</option>
+                <option value="CSS">{__("CSS", "snippet-master")}</option>
+                <option value="HTML">{__("HTML", "snippet-master")}</option>
               </Select>
             </FormControl>
 
@@ -426,6 +449,29 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               )}
             </FormControl>
           </SimpleGrid>
+
+          {scope === "shortcode" && (
+            <Box
+              bg="secondary.50"
+              border="1px solid"
+              borderColor="secondary.200"
+              borderRadius="md"
+              p="12px"
+            >
+              <Text fontSize="13px" color="secondary.700" mb="6px">
+                {id
+                  ? __(
+                      "Insert this shortcode where you want the snippet to render:",
+                      "snippet-master"
+                    )
+                  : __(
+                      "Save the snippet first to get its shortcode.",
+                      "snippet-master"
+                    )}
+              </Text>
+              {id && <Code>{`[snippet_master id="${id}"]`}</Code>}
+            </Box>
+          )}
 
           <FormControl isInvalid={!!errors.description}>
             <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">

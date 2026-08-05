@@ -1,11 +1,13 @@
 import { Input, Stack } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "./../../../hooks/index";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRangePicker, RangeKeyDict } from "react-date-range";
-import Select from "react-select";
+import Select, { StylesConfig } from "react-select";
+import { getTags } from "./../../../api/api";
 import { SnippetParams } from "./../../../types/index";
 
 interface DateRange {
@@ -17,6 +19,25 @@ interface SnippetFilterProps {
   params: SnippetParams;
   setParams: React.Dispatch<React.SetStateAction<SnippetParams>>;
 }
+
+const selectStyles: StylesConfig<{ label: string; value: string }, false> = {
+  control: (provided) => ({
+    ...provided,
+    width: "220px",
+    minHeight: "40px",
+    borderColor: "#8c8f94",
+    borderRadius: "6px",
+    fontSize: "14px",
+    padding: "0 4px",
+    boxShadow: "none",
+    "&:hover": { borderColor: "#CBD5E0" }
+  }),
+  valueContainer: (provided) => ({ ...provided, padding: "0 8px" }),
+  input: (provided) => ({ ...provided, margin: "0px", padding: "0px" }),
+  indicatorsContainer: (provided) => ({ ...provided, height: "38px" }),
+  singleValue: (provided) => ({ ...provided, color: "#2D3748" }),
+  menu: (provided) => ({ ...provided, zIndex: 20 })
+};
 
 const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
   const [searchByItem, setSearchByItem] = useState<string>(
@@ -30,6 +51,15 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
   const searchByItemValue = useDebounce<string>(searchByItem, 500);
+
+  const { data: tagsData } = useQuery({
+    queryKey: ["snippet-tags"],
+    queryFn: getTags
+  });
+  const tagOptions = (tagsData?.tags ?? []).map((tag) => ({
+    label: tag,
+    value: tag
+  }));
 
   const handleSelect = (ranges: RangeKeyDict) => {
     const { selection } = ranges;
@@ -63,20 +93,20 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
   }, [searchByItemValue, setParams]);
 
   return (
-    <Stack direction="row" gap="16px">
+    <Stack direction="row" gap="12px" wrap="wrap">
       <Input
-        border="1px solid gray.100"
         type="text"
-        w="300px"
+        w="260px"
         value={searchByItem}
-        placeholder={__("Search by items", "snippet-master")}
+        placeholder={__("Search snippets", "snippet-master")}
         onChange={(e) => setSearchByItem(e.target.value)}
       />
       <Input
-        border="1px solid gray.100"
         type="text"
-        w="300px"
-        value={`${dateRange?.startDate?.toLocaleDateString()} - ${dateRange?.endDate?.toLocaleDateString()}`}
+        w="240px"
+        value={`${dateRange?.startDate?.toLocaleDateString() ?? ""} - ${
+          dateRange?.endDate?.toLocaleDateString() ?? ""
+        }`}
         placeholder={__("Select date range", "snippet-master")}
         readOnly
         onClick={() => setIsPickerVisible(true)}
@@ -91,14 +121,8 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       )}
       <Select
         options={[
-          {
-            label: __("Active", "snippet-master"),
-            value: "1"
-          },
-          {
-            label: __("Inactive", "snippet-master"),
-            value: "0"
-          }
+          { label: __("Active", "snippet-master"), value: "1" },
+          { label: __("Inactive", "snippet-master"), value: "0" }
         ]}
         onChange={(option) => {
           setParams((prev) => ({
@@ -107,46 +131,23 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
             offset: 1
           }));
         }}
-        placeholder={__("Search by status", "snippet-master")}
+        placeholder={__("Any status", "snippet-master")}
         isClearable
         isSearchable={false}
-        styles={{
-          control: (provided) => ({
-            ...provided,
-            width: "300px",
-            height: "40px",
-            borderColor: "#8c8f94",
-            borderWidth: "1px",
-            borderRadius: "4px",
-            fontSize: "16px",
-            padding: "0 8px",
-            boxShadow: "none",
-            "&:hover": {
-              borderColor: "#CBD5E0"
-            }
-          }),
-          valueContainer: (provided) => ({
-            ...provided,
-            height: "40px",
-            padding: "0 8px"
-          }),
-          input: (provided) => ({
-            ...provided,
-            margin: "0px",
-            padding: "0px"
-          }),
-          placeholder: (provided) => ({
-            ...provided
-          }),
-          indicatorsContainer: (provided) => ({
-            ...provided,
-            height: "40px"
-          }),
-          singleValue: (provided) => ({
-            ...provided,
-            color: "#2D3748"
-          })
+        styles={selectStyles}
+      />
+      <Select
+        options={tagOptions}
+        onChange={(option) => {
+          setParams((prev) => ({
+            ...prev,
+            tag: option?.value,
+            offset: 1
+          }));
         }}
+        placeholder={__("Any tag", "snippet-master")}
+        isClearable
+        styles={selectStyles}
       />
     </Stack>
   );

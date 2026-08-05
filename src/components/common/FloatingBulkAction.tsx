@@ -10,13 +10,49 @@ import {
   Tooltip
 } from "@chakra-ui/react";
 import { __, _n, sprintf } from "@wordpress/i18n";
-import { BiTrash, BiX } from "react-icons/bi";
+import {
+  BiTrash,
+  BiX,
+  BiCheckCircle,
+  BiXCircle,
+  BiExport
+} from "react-icons/bi";
 import { BulkActionProps } from "./../../types/index";
 
 const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
-  const { bulkIds, setIsCheckAll, setBulkIds, onDelete, isDeleting } = props;
+  const {
+    bulkIds,
+    setIsCheckAll,
+    setBulkIds,
+    onActivate,
+    onDeactivate,
+    onExport,
+    onDelete,
+    isBusy
+  } = props;
   const bulkIdsCount = bulkIds.length;
   const actions = [
+    {
+      label: __("Activate", "snippet-master"),
+      value: "activate",
+      handler: onActivate,
+      icon: <BiCheckCircle />,
+      colorScheme: "green"
+    },
+    {
+      label: __("Deactivate", "snippet-master"),
+      value: "deactivate",
+      handler: onDeactivate,
+      icon: <BiXCircle />,
+      colorScheme: "gray"
+    },
+    {
+      label: __("Export", "snippet-master"),
+      value: "export",
+      handler: onExport,
+      icon: <BiExport />,
+      colorScheme: "blue"
+    },
     {
       label: __("Delete", "snippet-master"),
       value: "delete",
@@ -80,7 +116,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
                     borderRadius="md"
                     size="xs"
                     leftIcon={icon}
-                    isLoading={isDeleting}
+                    isLoading={isBusy}
                   >
                     {label}
                   </Button>

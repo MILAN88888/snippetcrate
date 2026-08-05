@@ -1,9 +1,14 @@
 import {
   Box,
+  Button,
   Center,
   Checkbox,
   HStack,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Spinner,
   Stack,
   Switch,
@@ -18,15 +23,25 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  bulkUpdateStatus,
   deleteSnippets,
+  duplicateSnippet,
+  exportSnippets,
   getSnippets,
+  importSnippets,
   updateStatusSnippets
 } from "./../../../api/api";
 import { RiDeleteBinFill } from "react-icons/ri";
-import { BiEdit } from "react-icons/bi";
+import {
+  BiEdit,
+  BiCopy,
+  BiImport,
+  BiExport,
+  BiChevronDown
+} from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import SnippetFilter from "./SnippetFilter";
 import SnippetPagination from "./SnippetPagination";
@@ -36,10 +51,8 @@ import {
   SnippetParams
 } from "./../../../types/index";
 import FloatingBulkAction from "./../../../components/common/FloatingBulkAction";
-import {
-  LanguageBadge,
-  ScopeBadge
-} from "./../../../components/common/Badges";
+import { LanguageBadge, ScopeBadge } from "./../../../components/common/Badges";
+import { downloadExport } from "./../../../utils/download";
 
 const isActive = (value: string | number | boolean | undefined): boolean =>
   value === "1" || value === 1 || value === true;
@@ -48,6 +61,7 @@ const SnippetTable: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState<(string | number)[]>([]);
@@ -82,6 +96,11 @@ const SnippetTable: React.FC = () => {
     queryFn: () => getSnippets(params)
   });
 
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["snippets"] });
+    queryClient.invalidateQueries({ queryKey: ["snippet-tags"] });
+  };
+
   const onClickCheckAll = () => {
     const next = !isCheckAll;
     setIsCheckAll(next);
@@ -96,64 +115,68 @@ const SnippetTable: React.FC = () => {
     );
   };
 
+  const notify = (title: string, status: "success" | "error" = "success") =>
+    toast({ title, status, duration: 3000, isClosable: true });
+
   const statusMutation = useMutation({
     mutationFn: updateStatusSnippets,
     onSuccess: (res: any) => {
       if (res === false) {
-        toast({
-          title: __("Update failed!!", "snippet-master"),
-          status: "error"
-        });
+        notify(__("Update failed!!", "snippet-master"), "error");
       } else {
-        toast({
-          title: res.active
+        notify(
+          res.active
             ? __("Activated successfully!!", "snippet-master")
-            : __("Deactivated successfully!!", "snippet-master"),
-          status: "success",
-          duration: 3000,
-          isClosable: true
-        });
+            : __("Deactivated successfully!!", "snippet-master")
+        );
       }
-      queryClient.invalidateQueries({ queryKey: ["snippets", params] });
+      queryClient.invalidateQueries({ queryKey: ["snippets"] });
     },
-    onError: (error) => {
-      toast({
-        title: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true
-      });
-    }
+    onError: (err) => notify(err.message, "error")
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteSnippets,
     onSuccess: (res: any) => {
       if (res === false) {
-        toast({
-          title: __("Deletion failed!!", "snippet-master"),
-          status: "error"
-        });
+        notify(__("Deletion failed!!", "snippet-master"), "error");
       } else {
-        toast({
-          title: __("Deleted successfully!!", "snippet-master"),
-          status: "success",
-          duration: 3000,
-          isClosable: true
-        });
+        notify(__("Deleted successfully!!", "snippet-master"));
         setIsCheck([]);
         setIsCheckAll(false);
       }
-      queryClient.invalidateQueries({ queryKey: ["snippets", params] });
+      refresh();
     },
-    onError: (error) => {
-      toast({
-        title: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true
-      });
-    }
+    onError: (err) => notify(err.message, "error")
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: duplicateSnippet,
+    onSuccess: () => {
+      notify(__("Snippet duplicated!!", "snippet-master"));
+      refresh();
+    },
+    onError: (err) => notify(err.message, "error")
+  });
+
+  const bulkStatusMutation = useMutation({
+    mutationFn: bulkUpdateStatus,
+    onSuccess: () => {
+      notify(__("Snippets updated!!", "snippet-master"));
+      setIsCheck([]);
+      setIsCheckAll(false);
+      queryClient.invalidateQueries({ queryKey: ["snippets"] });
+    },
+    onError: (err) => notify(err.message, "error")
+  });
+
+  const importMutation = useMutation({
+    mutationFn: importSnippets,
+    onSuccess: (res: any) => {
+      notify(res?.message ?? __("Snippets imported!!", "snippet-master"));
+      refresh();
+    },
+    onError: (err) => notify(err.message, "error")
   });
 
   const statusToggler = ({
@@ -166,19 +189,54 @@ const SnippetTable: React.FC = () => {
     statusMutation.mutate({ id, active: !isActive(active) });
   };
 
-  const deleteSnippet = (id: number) => {
-    deleteMutation.mutate([id]);
-  };
-
+  const deleteSnippet = (id: number) => deleteMutation.mutate([id]);
   const handleBulkDelete = () => {
     if (isCheck.length > 0) {
       deleteMutation.mutate(isCheck);
     }
   };
+  const handleBulkActivate = () =>
+    isCheck.length > 0 &&
+    bulkStatusMutation.mutate({ ids: isCheck, active: 1 });
+  const handleBulkDeactivate = () =>
+    isCheck.length > 0 &&
+    bulkStatusMutation.mutate({ ids: isCheck, active: 0 });
 
-  const editSnippet = (id: number) => {
-    navigate(`/snippet/edit/${id}`);
+  const handleExport = async (
+    ids: (string | number)[],
+    format: "json" | "php"
+  ) => {
+    try {
+      const res = await exportSnippets({ ids, format });
+      downloadExport(res);
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
   };
+
+  const handleImportFile = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) {
+      return;
+    }
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const snippets = Array.isArray(parsed) ? parsed : parsed?.snippets;
+      if (!Array.isArray(snippets)) {
+        notify(__("Invalid import file.", "snippet-master"), "error");
+        return;
+      }
+      importMutation.mutate(snippets);
+    } catch (err) {
+      notify(__("Could not read the import file.", "snippet-master"), "error");
+    }
+  };
+
+  const editSnippet = (id: number) => navigate(`/snippet/edit/${id}`);
 
   const paginationProps = {
     params,
@@ -211,6 +269,43 @@ const SnippetTable: React.FC = () => {
     <Stack gap="16px">
       <Box {...cardStyle} overflow="hidden">
         <Box p="16px" borderBottom="1px solid" borderColor="secondary.100">
+          <HStack justify="flex-end" gap="8px" mb="12px">
+            <input
+              type="file"
+              accept=".json,application/json"
+              ref={fileInputRef}
+              onChange={handleImportFile}
+              style={{ display: "none" }}
+            />
+            <Button
+              leftIcon={<BiImport />}
+              variant="outline"
+              size="sm"
+              isLoading={importMutation.isPending}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {__("Import", "snippet-master")}
+            </Button>
+            <Menu>
+              <MenuButton
+                as={Button}
+                leftIcon={<BiExport />}
+                rightIcon={<BiChevronDown />}
+                variant="outline"
+                size="sm"
+              >
+                {__("Export", "snippet-master")}
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => handleExport([], "json")}>
+                  {__("Export all (JSON)", "snippet-master")}
+                </MenuItem>
+                <MenuItem onClick={() => handleExport([], "php")}>
+                  {__("Export all PHP (.php)", "snippet-master")}
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </HStack>
           <SnippetFilter params={params} setParams={setParams} />
         </Box>
 
@@ -314,6 +409,14 @@ const SnippetTable: React.FC = () => {
                       <Td>
                         <HStack gap="4px" justify="flex-end">
                           <IconButton
+                            aria-label={__("Duplicate snippet", "snippet-master")}
+                            icon={<BiCopy />}
+                            size="sm"
+                            variant="ghost"
+                            fontSize="16px"
+                            onClick={() => duplicateMutation.mutate(snippet.id)}
+                          />
+                          <IconButton
                             aria-label={__("Edit snippet", "snippet-master")}
                             icon={<BiEdit />}
                             size="sm"
@@ -362,8 +465,11 @@ const SnippetTable: React.FC = () => {
           bulkIds={isCheck}
           setIsCheckAll={setIsCheckAll}
           setBulkIds={setIsCheck}
+          onActivate={handleBulkActivate}
+          onDeactivate={handleBulkDeactivate}
+          onExport={() => handleExport(isCheck, "json")}
           onDelete={handleBulkDelete}
-          isDeleting={deleteMutation.isPending}
+          isBusy={deleteMutation.isPending || bulkStatusMutation.isPending}
         />
       )}
     </Stack>

@@ -63,6 +63,7 @@ final class SnippetMaster {
 	 * @return void
 	 */
 	private function includes() {
+		Migration::maybe_upgrade();
 		MenusController::init();
 		ScriptStyleController::init();
 		InitController::init();

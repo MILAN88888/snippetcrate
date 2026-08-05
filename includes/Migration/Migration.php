@@ -86,7 +86,7 @@ class Migration {
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		}
 
-		$collation = $this->get_collation();
+		$collation = $this->charset_collate;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$this->prefix}ccsnpt_snippets (
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -98,8 +98,8 @@ class Migration {
             scope VARCHAR(20) NOT NULL DEFAULT 'global',
             priority SMALLINT NOT NULL DEFAULT 10,
             active TINYINT(1) NOT NULL DEFAULT 0,
-            created_by VARCHAR(255) NOT NULL,
-            updated_by VARCHAR(255) NOT NULL,
+            created_by VARCHAR(255) NOT NULL DEFAULT '',
+            updated_by VARCHAR(255) NOT NULL DEFAULT '',
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
@@ -107,6 +107,24 @@ class Migration {
 
 		dbDelta( $sql );
 
+		update_option( 'ccsnpt_db_version', SNIPPET_MASTER_VERSION );
+
 		return true;
+	}
+
+	/**
+	 * Run migrations when the stored DB version is behind the plugin version.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public static function maybe_upgrade() {
+		if ( ! defined( 'SNIPPET_MASTER_VERSION' ) ) {
+			return;
+		}
+
+		if ( get_option( 'ccsnpt_db_version' ) !== SNIPPET_MASTER_VERSION ) {
+			self::init();
+		}
 	}
 }

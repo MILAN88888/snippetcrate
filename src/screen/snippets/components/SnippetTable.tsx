@@ -220,7 +220,7 @@ const SnippetTable: React.FC = () => {
           </Center>
         ) : (
           <TableContainer>
-            <Table>
+            <Table size="sm">
               <Thead bg="secondary.50">
                 <Tr>
                   <Th width="48px">
@@ -251,7 +251,7 @@ const SnippetTable: React.FC = () => {
                           aria-label={__("Select snippet", "snippet-master")}
                         />
                       </Td>
-                      <Td maxW="360px">
+                      <Td maxW="260px">
                         <Text
                           fontWeight="600"
                           fontSize="14px"

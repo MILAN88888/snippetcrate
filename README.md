@@ -1,16 +1,18 @@
 # Snippet Master
 
-A free WordPress plugin to add, manage, and run custom **PHP** and **JavaScript** code
-snippets — with a Monaco editor and live syntax validation — without touching theme or
-plugin files.
+A free WordPress plugin to add, manage, and run custom **PHP, JavaScript, CSS and HTML**
+code snippets — with a Monaco editor and live syntax validation — without touching theme
+or plugin files.
 
 ## Features
 
-- PHP and JavaScript snippets with header / footer / global scope.
+- PHP, JavaScript, CSS and HTML snippets with header / footer / global / shortcode scope
+  (`[snippet_master id="X"]`).
 - Monaco code editor with **live syntax checking** while you type (PHP on the server via
   `token_get_all(TOKEN_PARSE)`, JavaScript in the browser via `acorn`); invalid snippets
   cannot be saved.
-- Activate / deactivate, search, filter, and bulk delete.
+- Duplicate snippets, filter by tag, and bulk activate / deactivate / export / delete.
+- Import & export snippets as JSON, or export PHP snippets to a `.php` file.
 - Safe execution — a PHP snippet that errors is caught and auto-deactivated.
 
 ## Development

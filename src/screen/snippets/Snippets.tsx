@@ -22,7 +22,7 @@ const Snippets: React.FC = () => {
           </Heading>
           <Text mt="6px" fontSize="14px" color="secondary.500">
             {__(
-              "Manage the PHP and JavaScript snippets running on your site.",
+              "Manage the PHP, JavaScript, CSS and HTML snippets running on your site.",
               "snippet-master"
             )}
           </Text>

@@ -5,10 +5,10 @@ Guidance for Claude Code when working in the **Snippet Master** plugin.
 ## What this is
 
 A standalone WordPress plugin (own git repo, author `@wpmilan`) that lets a
-`manage_options` admin store custom **PHP** and **JavaScript** snippets in a DB table
-and run them on the front end, managed through a React admin SPA and a small custom
-REST API. It is **not** part of the User Registration suite it happens to sit beside in
-this WordPress install.
+`manage_options` admin store custom **PHP, JavaScript, CSS and HTML** snippets in a DB
+table and run them on the front end, managed through a React admin SPA and a small
+custom REST API. It is **not** part of the User Registration suite it happens to sit
+beside in this WordPress install.
 
 ## Architecture
 
@@ -30,13 +30,21 @@ this WordPress install.
 
 ### Execution model (`InitController`)
 
-- **PHP** snippets: `scope=global` `eval`s once per **front-end** request (hooked to
-  `wp`; never wp-admin/REST/cron, output discarded); `scope=header`/`footer` `eval` at
+- **Languages**: `PHP`, `JS`, `CSS`, `HTML`. **Scopes**: `global`, `header`, `footer`,
+  `shortcode`. Only PHP may use `global`; every other language must use header, footer
+  or shortcode.
+- **PHP** `scope=global` `eval`s once per **front-end** request (hooked to `wp`; never
+  wp-admin/REST/cron, output discarded); `scope=header`/`footer` `eval` at
   `wp_head`/`wp_footer` with echoed output appearing in the page.
-- **JavaScript** snippets (`lang=JS`): never `eval`'d — printed as an inline `<script>`
-  at `wp_head` (header) or `wp_footer` (footer). JS may only use header/footer scope.
+- **JS / CSS / HTML** are never `eval`'d — emitted as markup at `wp_head`/`wp_footer`
+  via `print_snippet_markup()`: JS → `<script>`, CSS → `<style>`, HTML → raw echo.
+- **Shortcode** scope: rendered on demand via `[snippet_master id="X"]`
+  (`InitController::render_shortcode`) — PHP output is captured and returned; CSS/JS/HTML
+  are returned as markup. Shortcode snippets never auto-run.
 - A PHP snippet that throws is caught (`\Throwable`), logged under `WP_DEBUG`, and
   **auto-deactivated** so a broken snippet can't white-screen the site.
+- REST routes (all `manage_options`): `save, get, update/status, delete, validate,
+  duplicate, bulk/status, export, import, tags`.
 
 ### Syntax validation
 

@@ -44,44 +44,50 @@ class SnippetsController {
 
 		if ( empty( $title ) ) {
 			$errors['title'] = esc_html__( 'Title is required.', 'snippet-master' );
-		} elseif ( ! is_string( $title ) || strlen( $title ) > 255 ) {
-			$errors['title'] = esc_hmtl__( 'Title must be a string and less than 255 characters.', 'snippet-master' );
+		} elseif ( strlen( $title ) > 255 ) {
+			$errors['title'] = esc_html__( 'Title must be less than 255 characters.', 'snippet-master' );
 		}
 
-		$codesnippet = isset( $params['codesnippet'] ) ? $params['codesnippet'] : '';
+		$codesnippet = isset( $params['codesnippet'] ) && is_string( $params['codesnippet'] ) ? $params['codesnippet'] : '';
 		$codesnippet = preg_replace( '|^\s*<\?(php)?|', '', $codesnippet );
 		$codesnippet = preg_replace( '|\?>\s*$|', '', $codesnippet );
 
 		if ( empty( $codesnippet ) ) {
 			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'snippet-master' );
-		} elseif ( ! is_string( $codesnippet ) ) {
-			$errors['codesnippet'] = esc_html__( 'Code snippet must be a string.', 'snippet-master' );
 		}
 
-		$priority = isset( $params['priority'] ) ? absint( $params['priority'] ) : '';
+		$priority = isset( $params['priority'] ) ? $params['priority'] : null;
 
-		if ( ! is_int( $priority ) ) {
+		if ( null === $priority || '' === $priority || ! is_numeric( $priority ) ) {
 			$errors['priority'] = esc_html__( 'Priority is required and must be an integer.', 'snippet-master' );
-		} elseif ( $priority < 0 ) {
+		} elseif ( (int) $priority < 0 ) {
 			$errors['priority'] = esc_html__( 'Priority must be a non-negative integer.', 'snippet-master' );
 		}
+		$priority = absint( $priority );
 
 		$description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
 
 		if ( empty( $description ) ) {
 			$errors['description'] = esc_html__( 'Description is required.', 'snippet-master' );
-		} elseif ( isset( $description ) && ! is_string( $description ) ) {
-			$errors['description'] = esc_html__( 'Description must be a string.', 'snippet-master' );
 		}
 
 		$tags = isset( $params['tags'] ) ? sanitize_text_field( $params['tags'] ) : '';
 
-		if ( isset( $ptags ) && ! is_string( $tags ) ) {
-			$errors['tags'] = esc_html__( 'Tags must be a string.', 'snippet-master' );
+		$allowed_scopes = array( 'global', 'header', 'footer' );
+		$scope          = isset( $params['scope'] ) ? sanitize_text_field( $params['scope'] ) : 'global';
+		if ( ! in_array( $scope, $allowed_scopes, true ) ) {
+			$errors['scope'] = esc_html__( 'Scope must be one of global, header or footer.', 'snippet-master' );
 		}
+
+		$allowed_langs = array( 'PHP', 'HTML', 'CSS', 'JS' );
+		$lang          = isset( $params['lang'] ) ? sanitize_text_field( $params['lang'] ) : 'PHP';
+		if ( ! in_array( $lang, $allowed_langs, true ) ) {
+			$lang = 'PHP';
+		}
+
 		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;
 
-		$data = compact( 'id', 'title', 'codesnippet', 'priority', 'description', 'tags', 'active' );
+		$data = compact( 'id', 'title', 'codesnippet', 'priority', 'description', 'tags', 'active', 'scope', 'lang' );
 
 		return array(
 			'errors' => $errors,
@@ -146,17 +152,11 @@ class SnippetsController {
 		$params = $request->get_json_params();
 		if ( ! isset( $params['id'] ) || empty( $params['id'] ) || ! isset( $params['active'] ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Failed to udpate!!', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'Failed to update!!', 'snippet-master' ) ),
 				400
 			);
 		}
-		// before update evaluting it's working.
-		if ( $params['active'] && '1' == $params['active'] ) {
 
-			$res = $this->snippets->get_snippets( array( 'id' => $params['id'] ) );
-
-			// $output = Helper::php_syntax_error( $res['results'][0]->codesnippet );
-		}
 		return $this->snippets->update_status( $params ) ? $params : false;
 	}
 	/**
@@ -169,7 +169,7 @@ class SnippetsController {
 	public function delete_snippets( $request ) {
 		$params = $request->get_json_params();
 
-		if ( empty( $params ) ) {
+		if ( empty( $params ) || ! is_array( $params ) ) {
 			return new \WP_REST_Response(
 				array( 'message' => esc_html__( 'Deletion failed!!', 'snippet-master' ) ),
 				400

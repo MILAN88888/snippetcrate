@@ -35,7 +35,7 @@ export type Snippet = {
   scope?: string;
   lang?: string;
   priority: number;
-  active: boolean | number;
+  active: boolean | number | string;
   created_at?: string;
   created_by?: string;
   updated_at?: string;
@@ -68,9 +68,9 @@ export type GetSnippetsResponse = {
 };
 
 export type BulkActionProps = {
-  openToast: () => void;
-  setBulkAction?: (value: any) => void;
   bulkIds: (string | number)[];
-  setBulkIds: (value: string[]) => void;
+  setBulkIds: (value: (string | number)[]) => void;
   setIsCheckAll: (value: boolean) => void;
+  onDelete: () => void;
+  isDeleting?: boolean;
 };

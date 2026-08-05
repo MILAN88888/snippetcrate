@@ -14,18 +14,13 @@ import { BiTrash, BiX } from "react-icons/bi";
 import { BulkActionProps } from "./../../types/index";
 
 const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
-  const { openToast, bulkIds, setIsCheckAll, setBulkIds, setBulkAction } =
-    props;
+  const { bulkIds, setIsCheckAll, setBulkIds, onDelete, isDeleting } = props;
   const bulkIdsCount = bulkIds.length;
-  const isLoading = false;
   const actions = [
     {
       label: __("Delete", "snippet-master"),
       value: "delete",
-      handler: () => {
-        setBulkAction?.("delete");
-        openToast();
-      },
+      handler: onDelete,
       icon: <BiTrash />,
       colorScheme: "red"
     }
@@ -85,7 +80,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
                     borderRadius="md"
                     size="xs"
                     leftIcon={icon}
-                    isLoading={isLoading}
+                    isLoading={isDeleting}
                   >
                     {label}
                   </Button>

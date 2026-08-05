@@ -11,11 +11,11 @@ import {
   Text,
   Checkbox,
   Switch,
-  useToast,
-  useDisclosure
+  IconButton,
+  useToast
 } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteSnippets,
@@ -27,19 +27,23 @@ import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import SnippetFilter from "./SnippetFilter";
 import SnippetPagination from "./SnippetPagination";
-import { GetSnippetsResponse, SnippetParams } from "./../../../types/index";
+import {
+  GetSnippetsResponse,
+  Snippet,
+  SnippetParams
+} from "./../../../types/index";
 import FloatingBulkAction from "./../../../components/common/FloatingBulkAction";
+
+const isActive = (value: string | number | boolean | undefined): boolean =>
+  value === "1" || value === 1 || value === true;
 
 const SnippetTable: React.FC = () => {
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const [list, setList] = useState<(string | number)[]>([]);
   const [isCheck, setIsCheck] = useState<(string | number)[]>([]);
-  const [bulkAction, setBulkAction] = useState("");
 
   const currentDate = new Date();
 
@@ -65,44 +69,24 @@ const SnippetTable: React.FC = () => {
     offset: 1,
     limit: 10
   });
-  const onClickCheckAll = () => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(!isCheckAll ? list : []);
-    onOpen();
-  };
-
-  const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
-    setIsCheckAll(false);
-
-    setIsCheck((prev) =>
-      checked ? [...prev, id] : prev.filter((item) => item !== id)
-    );
-    onOpen();
-  };
-
   const { data, isLoading, isError, error } = useQuery<GetSnippetsResponse>({
     queryKey: ["snippets", params],
     queryFn: () => getSnippets(params)
   });
 
-  useEffect(() => {
-    if (isCheck.length === 0) {
-      onClose();
-    }
-  }, [isCheck]);
+  const onClickCheckAll = () => {
+    const next = !isCheckAll;
+    setIsCheckAll(next);
+    setIsCheck(next && data ? data.results.map((snippet) => snippet.id) : []);
+  };
 
-  useEffect(() => {
-    if ("delete" === bulkAction) {
-      deleteMutation.mutate(isCheck);
-    }
-  }, [bulkAction]);
-
-  useEffect(() => {
-    if (data) {
-      setList(data.results.map((result) => result.id));
-    }
-  }, [data]);
+  const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = e.target;
+    setIsCheckAll(false);
+    setIsCheck((prev) =>
+      checked ? [...prev, id] : prev.filter((item) => item !== id)
+    );
+  };
 
   const statusMutation = useMutation({
     mutationFn: updateStatusSnippets,
@@ -149,7 +133,8 @@ const SnippetTable: React.FC = () => {
           duration: 3000,
           isClosable: true
         });
-        onClose();
+        setIsCheck([]);
+        setIsCheckAll(false);
       }
       queryClient.invalidateQueries({ queryKey: ["snippets", params] });
     },
@@ -172,12 +157,24 @@ const SnippetTable: React.FC = () => {
     );
   }
 
-  const statusToggler = ({ id, active }: { id: number; active: string }) => {
-    statusMutation.mutate({ id, active: active === "1" ? false : true });
+  const statusToggler = ({
+    id,
+    active
+  }: {
+    id: number | string;
+    active: string | number | boolean;
+  }) => {
+    statusMutation.mutate({ id, active: !isActive(active) });
   };
 
   const deleteSnippet = (id: number) => {
     deleteMutation.mutate([id]);
+  };
+
+  const handleBulkDelete = () => {
+    if (isCheck.length > 0) {
+      deleteMutation.mutate(isCheck);
+    }
   };
 
   const editSnippet = (id: number) => {
@@ -222,7 +219,11 @@ const SnippetTable: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>
-                  <Checkbox onChange={onClickCheckAll} isChecked={isCheckAll} />
+                  <Checkbox
+                    onChange={onClickCheckAll}
+                    isChecked={isCheckAll}
+                    aria-label={__("Select all snippets", "snippet-master")}
+                  />
                 </Th>
                 <Th>
                   <Text fontWeight="600" fontSize="13px" lineHeight="24px">
@@ -253,15 +254,15 @@ const SnippetTable: React.FC = () => {
             </Thead>
             <Tbody>
               {data && data.results && data.results.length > 0 ? (
-                data.results.map((snippet: any, index: number) => (
-                  <Tr key={index}>
+                data.results.map((snippet: Snippet) => (
+                  <Tr key={snippet.id}>
                     <Td width="50px">
                       <Checkbox
-                        key={snippet.id}
                         type="checkbox"
-                        id={snippet.id}
+                        id={String(snippet.id)}
                         onChange={(e) => handleClick(e)}
                         isChecked={isCheck.includes(snippet.id)}
+                        aria-label={__("Select snippet", "snippet-master")}
                       />
                     </Td>
                     <Td>
@@ -274,10 +275,14 @@ const SnippetTable: React.FC = () => {
                         >
                           {snippet.title}
                         </Text>
-                        <Stack direction="row" gap="24px">
+                        <Stack direction="row" gap="24px" alignItems="center">
                           <Switch
                             size="sm"
-                            isChecked={snippet.active === "1"}
+                            isChecked={isActive(snippet.active)}
+                            aria-label={__(
+                              "Toggle snippet status",
+                              "snippet-master"
+                            )}
                             onChange={() =>
                               statusToggler({
                                 id: snippet.id,
@@ -285,15 +290,22 @@ const SnippetTable: React.FC = () => {
                               })
                             }
                           />
-                          <BiEdit
-                            onClick={() => editSnippet(snippet.id)}
-                            cursor="pointer"
-                            style={{ fontSize: "16px" }}
+                          <IconButton
+                            aria-label={__("Edit snippet", "snippet-master")}
+                            icon={<BiEdit />}
+                            size="sm"
+                            variant="ghost"
+                            fontSize="16px"
+                            onClick={() => editSnippet(Number(snippet.id))}
                           />
-                          <RiDeleteBinFill
-                            onClick={() => deleteSnippet(snippet.id)}
-                            cursor="pointer"
-                            style={{ fontSize: "16px" }}
+                          <IconButton
+                            aria-label={__("Delete snippet", "snippet-master")}
+                            icon={<RiDeleteBinFill />}
+                            size="sm"
+                            variant="ghost"
+                            colorScheme="red"
+                            fontSize="16px"
+                            onClick={() => deleteSnippet(Number(snippet.id))}
                           />
                         </Stack>
                       </Stack>
@@ -342,7 +354,7 @@ const SnippetTable: React.FC = () => {
                 ))
               ) : (
                 <Tr>
-                  <Td colSpan={8}>
+                  <Td colSpan={6}>
                     <Center>
                       <Text>{__("No snippets found", "snippet-master")}</Text>
                     </Center>
@@ -363,13 +375,13 @@ const SnippetTable: React.FC = () => {
       >
         {data && <SnippetPagination {...paginationProps} />}
       </Stack>
-      {isOpen && (
+      {isCheck.length > 0 && (
         <FloatingBulkAction
-          openToast={onOpen}
           bulkIds={isCheck}
           setIsCheckAll={setIsCheckAll}
           setBulkIds={setIsCheck}
-          setBulkAction={setBulkAction}
+          onDelete={handleBulkDelete}
+          isDeleting={deleteMutation.isPending}
         />
       )}
     </Stack>

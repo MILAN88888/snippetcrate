@@ -53,6 +53,31 @@ class Helper {
 	}
 
 	/**
+	 * Check PHP code for syntax errors without executing it.
+	 *
+	 * Uses token_get_all() with the TOKEN_PARSE flag, which performs a full
+	 * parse and throws a ParseError on invalid syntax but never runs the code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $code The PHP code (without opening/closing tags).
+	 * @return string|false Error message when the code is invalid, false otherwise.
+	 */
+	public static function php_syntax_error( $code ) {
+		if ( ! is_string( $code ) || '' === trim( $code ) ) {
+			return false;
+		}
+
+		try {
+			token_get_all( '<?php ' . $code, TOKEN_PARSE );
+		} catch ( \Throwable $e ) {
+			return $e->getMessage();
+		}
+
+		return false;
+	}
+
+	/**
 	 * Return development.
 	 *
 	 * @since 1.0.0

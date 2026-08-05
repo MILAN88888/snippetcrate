@@ -91,10 +91,34 @@ class InitController {
 		}
 
 		foreach ( $res['results'] as $snippet ) {
-			if ( ! empty( $snippet->codesnippet ) ) {
+			if ( empty( $snippet->codesnippet ) ) {
+				continue;
+			}
+
+			$lang = isset( $snippet->lang ) ? strtoupper( $snippet->lang ) : 'PHP';
+
+			if ( 'JS' === $lang ) {
+				// JavaScript is printed as a <script> tag at the header/footer
+				// hooks only; never while buffering the early global pass.
+				if ( ! $discard_output ) {
+					$this->print_script( $snippet );
+				}
+			} else {
 				$this->execute_snippet( $snippet, $discard_output );
 			}
 		}
+	}
+
+	/**
+	 * Print a JavaScript snippet as an inline script tag.
+	 *
+	 * @param object $snippet The snippet.
+	 * @return void
+	 */
+	protected function print_script( $snippet ) {
+		echo "\n<script>\n" . $snippet->codesnippet . "\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		do_action( 'custom_code_snippets_after_execute_snippet', $snippet );
 	}
 
 	/**

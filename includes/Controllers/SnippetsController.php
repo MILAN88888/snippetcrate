@@ -52,8 +52,23 @@ class SnippetsController {
 		$codesnippet = preg_replace( '|^\s*<\?(php)?|', '', $codesnippet );
 		$codesnippet = preg_replace( '|\?>\s*$|', '', $codesnippet );
 
+		$allowed_langs = array( 'PHP', 'JS' );
+		$lang          = isset( $params['lang'] ) ? strtoupper( sanitize_text_field( $params['lang'] ) ) : 'PHP';
+		if ( ! in_array( $lang, $allowed_langs, true ) ) {
+			$lang = 'PHP';
+		}
+
 		if ( empty( $codesnippet ) ) {
 			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'snippet-master' );
+		} elseif ( 'PHP' === $lang ) {
+			$syntax_error = Helper::php_syntax_error( $codesnippet );
+			if ( false !== $syntax_error ) {
+				$errors['codesnippet'] = sprintf(
+					/* translators: %s: PHP parse error message. */
+					esc_html__( 'PHP syntax error: %s', 'snippet-master' ),
+					$syntax_error
+				);
+			}
 		}
 
 		$priority = isset( $params['priority'] ) ? $params['priority'] : null;
@@ -77,12 +92,8 @@ class SnippetsController {
 		$scope          = isset( $params['scope'] ) ? sanitize_text_field( $params['scope'] ) : 'global';
 		if ( ! in_array( $scope, $allowed_scopes, true ) ) {
 			$errors['scope'] = esc_html__( 'Scope must be one of global, header or footer.', 'snippet-master' );
-		}
-
-		$allowed_langs = array( 'PHP', 'HTML', 'CSS', 'JS' );
-		$lang          = isset( $params['lang'] ) ? sanitize_text_field( $params['lang'] ) : 'PHP';
-		if ( ! in_array( $lang, $allowed_langs, true ) ) {
-			$lang = 'PHP';
+		} elseif ( 'JS' === $lang && 'global' === $scope ) {
+			$errors['scope'] = esc_html__( 'JavaScript snippets must use header or footer scope.', 'snippet-master' );
 		}
 
 		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;

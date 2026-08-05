@@ -6,6 +6,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRangePicker, RangeKeyDict } from "react-date-range";
 import Select from "react-select";
+import { SnippetParams } from "./../../../types/index";
 
 interface DateRange {
   startDate?: Date;
@@ -13,17 +14,17 @@ interface DateRange {
   key?: string;
 }
 interface SnippetFilterProps {
-  params: Record<string, any>;
-  setParams: (params: Record<string, any>) => void;
+  params: SnippetParams;
+  setParams: React.Dispatch<React.SetStateAction<SnippetParams>>;
 }
 
 const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
   const [searchByItem, setSearchByItem] = useState<string>(
-    params?.searchByItem
+    params?.searchByItem ?? ""
   );
   const [dateRange, setDateRange] = useState<DateRange>({
-    startDate: new Date(params?.startDate),
-    endDate: new Date(params?.endDate),
+    startDate: params?.startDate ? new Date(params.startDate) : undefined,
+    endDate: params?.endDate ? new Date(params.endDate) : undefined,
     key: "selection"
   });
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
@@ -44,18 +45,20 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       endDate: selection.endDate,
       key: selection.key
     });
-    setParams({
-      ...params,
+    setParams((prev) => ({
+      ...prev,
       startDate: formattedStartDate,
-      endDate: formattedEndDate
-    });
+      endDate: formattedEndDate,
+      offset: 1
+    }));
     setIsPickerVisible(false);
   };
 
   useEffect(() => {
-    setParams(() => ({
-      ...params,
-      searchByItem: searchByItemValue
+    setParams((prev) => ({
+      ...prev,
+      searchByItem: searchByItemValue,
+      offset: 1
     }));
   }, [searchByItemValue, setParams]);
 
@@ -98,7 +101,11 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
           }
         ]}
         onChange={(option) => {
-          option && setParams({ ...params, status: option?.value });
+          setParams((prev) => ({
+            ...prev,
+            status: option?.value,
+            offset: 1
+          }));
         }}
         placeholder={__("Search by status", "snippet-master")}
         isClearable

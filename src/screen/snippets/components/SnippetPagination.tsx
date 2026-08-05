@@ -39,7 +39,11 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
           <Select
             onChange={(option) => {
               setPerPage({ value: option?.value, label: option?.label });
-              setParams({ ...params, limit: option?.value });
+              setParams((prev) => ({
+                ...prev,
+                limit: option?.value,
+                offset: 1
+              }));
             }}
             options={perPageOptions}
             defaultValue={perPage}
@@ -51,7 +55,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
       <ResponsivePaginationComponent
         current={params.offset ?? 1}
         total={totalPages}
-        onPageChange={(page) => setParams({ ...params, offset: page })}
+        onPageChange={(page) => setParams((prev) => ({ ...prev, offset: page }))}
       />
     </Stack>
   );

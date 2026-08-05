@@ -72,10 +72,11 @@ module.exports = (env, argv) => {
         new MiniCSSExtractPlugin({
           filename: "[name].css"
         }),
-      new BundleAnalyzerPlugin({
-        analyzerMode: isDevelopment ? "server" : "static",
-        openAnalyzer: false
-      }),
+      process.env.ANALYZE === "true" &&
+        new BundleAnalyzerPlugin({
+          analyzerMode: isDevelopment ? "server" : "static",
+          openAnalyzer: false
+        }),
       new WebpackBar()
     ].filter(Boolean),
     resolve: {

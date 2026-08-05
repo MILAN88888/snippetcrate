@@ -12,3 +12,5 @@ declare global {
     ccsnpt_script_data: ccsnptScriptData;
   }
 }
+
+export {};

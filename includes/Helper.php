@@ -40,14 +40,13 @@ class Helper {
 		ob_start();
 
 		try {
-			$result = @eval( $code );
-
-		} catch ( Throwable $e ) {
+			$result = eval( $code );
+		} catch ( \Throwable $e ) {
 			$result = $e->getMessage();
-
+		} finally {
 			ob_end_clean();
-
 		}
+
 		do_action( 'ccsnpt_after_execute_snippet', $code, $id, $result );
 
 		return $result;

@@ -53,7 +53,7 @@ if ( ! defined( 'SNIPPET_MASTER_URL' ) ) {
 /**
  * Initialization of SnippetMaster.
  */
-add_action( 'plugin_loaded', array( 'SnippetMaster\SnippetMaster', 'init' ) );
+add_action( 'plugins_loaded', array( 'SnippetMaster\SnippetMaster', 'init' ) );
 
 /**
  * Register activation hook.

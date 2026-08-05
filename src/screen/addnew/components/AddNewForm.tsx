@@ -5,31 +5,39 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Select,
+  SimpleGrid,
   Spinner,
   Stack,
   Text,
   Textarea,
-  Tooltip,
   useToast
 } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import React, { useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { InfoIcon } from "@chakra-ui/icons";
+import { Parser } from "acorn";
 import MonacoEditor from "./MonacoEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addNewSnippet, getSnippets } from "./../../../api/api";
-import { useNavigate } from "react-router-dom";
 
 interface AddNewFormProps {
   id?: string | number;
 }
+
+const cardStyle = {
+  bg: "white",
+  borderRadius: "xl",
+  border: "1px solid",
+  borderColor: "secondary.200",
+  p: { base: "16px", md: "28px" }
+};
+
 const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
   const toast = useToast();
-  const navigate = useNavigate();
 
   const addNewSnippetMutation = useMutation({
     mutationFn: addNewSnippet,
@@ -41,9 +49,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
         isClosable: true
       });
 
-      if (id) {
-        navigate(`/snippet/edit/${id}`);
-      } else {
+      if (!id) {
         reset();
       }
     },
@@ -65,6 +71,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       });
     }
   });
+
   const {
     handleSubmit,
     control,
@@ -72,7 +79,8 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     setError,
     reset,
     register,
-    setValue
+    setValue,
+    watch
   } = useForm<AddNew>({
     defaultValues: {
       id: "",
@@ -86,6 +94,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       lang: "PHP"
     }
   });
+
+  const lang = watch("lang");
+  const scope = watch("scope");
 
   const {
     data,
@@ -117,317 +128,263 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           ? 1
           : 0,
       scope: snippet.scope ?? "global",
-      lang: snippet.lang ?? "PHP"
+      lang: (snippet.lang ?? "PHP").toUpperCase() === "JS" ? "JS" : "PHP"
     });
   }, [data, reset]);
-  const onSubmit: SubmitHandler<AddNew> = (data: AddNew) => {
-    addNewSnippetMutation.mutate(data);
+
+  // JavaScript can only target the header or footer.
+  useEffect(() => {
+    if (lang === "JS" && scope === "global") {
+      setValue("scope", "header");
+    }
+  }, [lang, scope, setValue]);
+
+  const onSubmit: SubmitHandler<AddNew> = (formData: AddNew) => {
+    if (formData.lang === "JS") {
+      const jsCode = (formData.codesnippet ?? "").replace(/^\s*<\?php/i, "");
+      try {
+        Parser.parse(jsCode, {
+          ecmaVersion: "latest",
+          sourceType: "script",
+          allowReturnOutsideFunction: true
+        });
+      } catch (e) {
+        setError("codesnippet", {
+          type: "syntax",
+          message:
+            __("JavaScript syntax error: ", "snippet-master") +
+            (e as Error).message
+        });
+        return;
+      }
+    }
+    addNewSnippetMutation.mutate(formData);
   };
+
+  const scopeOptions =
+    lang === "JS"
+      ? [
+          { value: "header", label: __("Header", "snippet-master") },
+          { value: "footer", label: __("Footer", "snippet-master") }
+        ]
+      : [
+          { value: "global", label: __("Global", "snippet-master") },
+          { value: "header", label: __("Header", "snippet-master") },
+          { value: "footer", label: __("Footer", "snippet-master") }
+        ];
 
   if (id && isFetching) {
     return (
-      <Center minH="300px">
-        <Spinner size="lg" />
-      </Center>
+      <Box {...cardStyle}>
+        <Center minH="300px">
+          <Spinner size="lg" color="primary.500" />
+        </Center>
+      </Box>
     );
   }
 
   if (id && isFetchError) {
     return (
-      <Center minH="300px">
-        <Text color="red.500">
-          {__("Failed to load snippet: ", "snippet-master")}
-          {(fetchError as Error)?.message}
-        </Text>
-      </Center>
+      <Box {...cardStyle}>
+        <Center minH="300px">
+          <Text color="red.500">
+            {__("Failed to load snippet: ", "snippet-master")}
+            {(fetchError as Error)?.message}
+          </Text>
+        </Center>
+      </Box>
     );
   }
 
   return (
-    <Stack
-      padding="20px 20px 40px 20px"
-      height="100vh"
-      borderRadius="8px"
-      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-    >
+    <Box {...cardStyle}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction="column" gap="32px" mb="50px">
-          <Stack direction="row" gap="32px" justifyContent="flex-start">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Add Title", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "Title for the code snippets which help to identify.",
-                      "snippet-master"
-                    )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
-              </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.title}>
-                <Input
-                  placeholder={__("Enter the title", "snippet-master")}
-                  {...register("title", {
-                    required: __("Title is required", "snippet-master")
-                  })}
-                  type="text"
-                />
-                {errors.title && (
-                  <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+        <Stack gap="24px">
+          <FormControl isInvalid={!!errors.title}>
+            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+              {__("Title", "snippet-master")}
+            </FormLabel>
+            <Input
+              placeholder={__("Enter a descriptive title", "snippet-master")}
+              {...register("title", {
+                required: __("Title is required", "snippet-master")
+              })}
+              type="text"
+            />
+            {errors.title && (
+              <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+            )}
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.codesnippet}>
+            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+              {__("Code", "snippet-master")}
+            </FormLabel>
+            <Box
+              borderRadius="lg"
+              overflow="hidden"
+              border="1px solid"
+              borderColor={errors.codesnippet ? "red.400" : "secondary.300"}
+            >
+              <Controller
+                name="codesnippet"
+                control={control}
+                render={({ field }) => (
+                  <MonacoEditor
+                    {...field}
+                    height="440px"
+                    theme="vs-dark"
+                    language={lang === "JS" ? "javascript" : "php"}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      scrollBeyondLastLine: false,
+                      padding: { top: 12, bottom: 12 }
+                    }}
+                    onChange={(value: string | undefined) =>
+                      field.onChange(value ?? "")
+                    }
+                  />
                 )}
-              </FormControl>
+              />
             </Box>
-          </Stack>
-          <Stack direction="row" gap="32px">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Add Code Snippets", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "The code snippets which enhance the functionality.",
+            {errors.codesnippet ? (
+              <FormErrorMessage>{errors.codesnippet.message}</FormErrorMessage>
+            ) : (
+              <Text mt="6px" fontSize="12px" color="secondary.500">
+                {lang === "JS"
+                  ? __(
+                      "JavaScript is validated in your browser before saving.",
+                      "snippet-master"
+                    )
+                  : __(
+                      "PHP is syntax-checked on the server before saving.",
                       "snippet-master"
                     )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
+              </Text>
+            )}
+          </FormControl>
+
+          <SimpleGrid columns={{ base: 1, md: 3 }} gap="20px">
+            <FormControl>
+              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+                {__("Language", "snippet-master")}
               </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.codesnippet}>
-                <Controller
-                  name="codesnippet"
-                  control={control}
-                  render={({ field }) => (
-                    <MonacoEditor
-                      {...field}
-                      height="500px"
-                      theme="vs-dark"
-                      language="php"
-                      onChange={(value: string | undefined) =>
-                        field.onChange(value ?? "")
-                      }
-                    />
-                  )}
-                />
-                {errors.codesnippet && (
-                  <FormErrorMessage>
-                    {errors.codesnippet.message}
-                  </FormErrorMessage>
-                )}
-              </FormControl>
-            </Box>
-          </Stack>
-          <Stack direction="row" gap="32px" justifyContent="flex-start">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Priority", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "Set the priority. Low number has high priority.",
-                      "snippet-master"
-                    )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
+              <Select {...register("lang")}>
+                <option value="PHP">{__("PHP", "snippet-master")}</option>
+                <option value="JS">{__("JavaScript", "snippet-master")}</option>
+              </Select>
+            </FormControl>
+
+            <FormControl isInvalid={!!errors.scope}>
+              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+                {__("Scope", "snippet-master")}
               </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.priority}>
-                <Input
-                  placeholder={__("Set the priority", "snippet-master")}
-                  {...register("priority", {
-                    required: __("Priority is required", "snippet-master"),
-                    validate: (value) =>
-                      value >= 0 ||
-                      __(
-                        "Priority must be a non-negative number.",
-                        "snippet-master"
-                      )
-                  })}
-                  type="number"
-                  min="0"
-                  step="1"
-                />
-                {errors.priority && (
-                  <FormErrorMessage>{errors.priority.message}</FormErrorMessage>
-                )}
-              </FormControl>
-            </Box>
-          </Stack>
-          <Stack direction="row" gap="32px" justifyContent="flex-start">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Description", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "Add description to identify the purpose of the code snippets for better understanding.",
-                      "snippet-master"
-                    )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
-              </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.description}>
-                <Textarea
-                  placeholder={__("Enter the description", "snippet-master")}
-                  {...register("description", {
-                    required: __("Description is required", "snippet-master")
-                  })}
-                  border="1px solid #8c8f94"
-                ></Textarea>
-                {errors.description && (
-                  <FormErrorMessage>
-                    {errors.description.message}
-                  </FormErrorMessage>
-                )}
-              </FormControl>
-            </Box>
-          </Stack>
-          <Stack direction="row" gap="32px" justifyContent="flex-start">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Tags", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "Add tags for sorting and filtering.",
-                      "snippet-master"
-                    )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
-              </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.tags}>
-                <Input
-                  placeholder={__(
-                    "Enter the tags separated by comma",
-                    "snippet-master"
-                  )}
-                  {...register("tags")}
-                  type="text"
-                />
-              </FormControl>
-            </Box>
-          </Stack>
-          <Stack direction="row" gap="32px" justifyContent="flex-start">
-            <Stack alignItems="left" justifyContent="flex-start" w="250px">
-              <FormLabel>
-                <Stack direction="row" gap="8px" alignItems="center">
-                  <Text fontWeight="600" fontSize="15px">
-                    {__("Scope", "snippet-master")}
-                  </Text>
-                  <Tooltip
-                    label={__(
-                      "Where the snippet runs: globally, or output in the site header or footer.",
-                      "snippet-master"
-                    )}
-                    placement="top"
-                  >
-                    <InfoIcon color="gray.600" />
-                  </Tooltip>
-                </Stack>
-              </FormLabel>
-            </Stack>
-            <Box minW="900px">
-              <FormControl isInvalid={!!errors.scope}>
-                <Select {...register("scope")} border="1px solid #8c8f94">
-                  <option value="global">
-                    {__("Global", "snippet-master")}
+              <Select {...register("scope")}>
+                {scopeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
-                  <option value="header">
-                    {__("Header", "snippet-master")}
-                  </option>
-                  <option value="footer">
-                    {__("Footer", "snippet-master")}
-                  </option>
-                </Select>
-                {errors.scope && (
-                  <FormErrorMessage>{errors.scope.message}</FormErrorMessage>
-                )}
-              </FormControl>
-            </Box>
-          </Stack>
-          <Stack direction="row" gap="32px" mb="50px">
-            <Stack justifyContent="flex-start" w="250px"></Stack>
-            <Stack gap="32px" direction="row">
-              <Button
-                h={50}
-                bg="primary.500"
-                color="white"
-                type="submit"
-                disabled={isSubmitting}
-                onClick={() => {
-                  if (id) {
-                    setValue("id", id);
-                  }
-                  setValue("active", 1);
-                }}
-              >
-                {isSubmitting ? (
-                  <Spinner />
-                ) : id ? (
-                  __("Update and Active", "snippet-master")
-                ) : (
-                  __("Save and Active", "snippet-master")
-                )}
-              </Button>
-              <Button
-                h={50}
-                bg="primary.500"
-                color="white"
-                type="submit"
-                disabled={isSubmitting}
-                onClick={() => {
-                  if (id) {
-                    setValue("id", id);
-                  }
-                  setValue("active", 0);
-                }}
-              >
-                {isSubmitting ? (
-                  <Spinner />
-                ) : id ? (
-                  __("Update", "snippet-master")
-                ) : (
-                  __("Save", "snippet-master")
-                )}
-              </Button>
-            </Stack>
-          </Stack>
+                ))}
+              </Select>
+              {errors.scope && (
+                <FormErrorMessage>{errors.scope.message}</FormErrorMessage>
+              )}
+            </FormControl>
+
+            <FormControl isInvalid={!!errors.priority}>
+              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+                {__("Priority", "snippet-master")}
+              </FormLabel>
+              <Input
+                placeholder="10"
+                {...register("priority", {
+                  required: __("Priority is required", "snippet-master"),
+                  validate: (value) =>
+                    value >= 0 ||
+                    __(
+                      "Priority must be a non-negative number.",
+                      "snippet-master"
+                    )
+                })}
+                type="number"
+                min="0"
+                step="1"
+              />
+              {errors.priority && (
+                <FormErrorMessage>{errors.priority.message}</FormErrorMessage>
+              )}
+            </FormControl>
+          </SimpleGrid>
+
+          <FormControl isInvalid={!!errors.description}>
+            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+              {__("Description", "snippet-master")}
+            </FormLabel>
+            <Textarea
+              placeholder={__(
+                "What does this snippet do?",
+                "snippet-master"
+              )}
+              {...register("description", {
+                required: __("Description is required", "snippet-master")
+              })}
+            />
+            {errors.description && (
+              <FormErrorMessage>{errors.description.message}</FormErrorMessage>
+            )}
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+              {__("Tags", "snippet-master")}
+            </FormLabel>
+            <Input
+              placeholder={__(
+                "Comma-separated, e.g. analytics, header",
+                "snippet-master"
+              )}
+              {...register("tags")}
+              type="text"
+            />
+          </FormControl>
+
+          <HStack justify="flex-end" gap="12px" pt="8px">
+            <Button
+              variant="outline"
+              isDisabled={isSubmitting}
+              onClick={() => {
+                if (id) {
+                  setValue("id", id);
+                }
+                setValue("active", 0);
+              }}
+              type="submit"
+            >
+              {id ? __("Update", "snippet-master") : __("Save", "snippet-master")}
+            </Button>
+            <Button
+              bg="primary.500"
+              color="white"
+              _hover={{ bg: "primary.600" }}
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+              onClick={() => {
+                if (id) {
+                  setValue("id", id);
+                }
+                setValue("active", 1);
+              }}
+              type="submit"
+            >
+              {id
+                ? __("Update & Activate", "snippet-master")
+                : __("Save & Activate", "snippet-master")}
+            </Button>
+          </HStack>
         </Stack>
       </form>
-    </Stack>
+    </Box>
   );
 };
 

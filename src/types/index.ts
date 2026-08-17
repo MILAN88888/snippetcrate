@@ -67,6 +67,7 @@ export type BackendErrors = {
     limit?: number;
     status?: string | number;
     tag?: string;
+    lang?: string;
   };
 
 export type SnippetExport = {

@@ -66,27 +66,10 @@ const SnippetTable: React.FC = () => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState<(string | number)[]>([]);
 
-  const currentDate = new Date();
-
-  const startDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
-  )
-    .toISOString()
-    .split("T")[0];
-
-  const endDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  )
-    .toISOString()
-    .split("T")[0];
+  // Start unfiltered — no date range — so snippets last updated before the
+  // current month are visible on first load.
   const [params, setParams] = useState<SnippetParams>({
     searchByItem: "",
-    startDate: startDate,
-    endDate: endDate,
     offset: 1,
     limit: 10
   });

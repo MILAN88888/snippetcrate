@@ -1,6 +1,6 @@
 import { Stack, Text } from "@chakra-ui/react";
 import ResponsivePaginationComponent from "react-responsive-pagination";
-import Select from "react-select";
+import { Select, ChakraStylesConfig } from "chakra-react-select";
 import { SnippetPagiProps } from "./../../../types/index";
 import "react-responsive-pagination/themes/classic.css";
 import { __ } from "@wordpress/i18n";
@@ -10,6 +10,14 @@ interface perPage {
   value?: number | undefined;
   label?: string;
 }
+
+type PerPageOption = { value: number; label: string };
+
+const chakraStyles: ChakraStylesConfig<PerPageOption, false> = {
+  container: (provided) => ({ ...provided, minWidth: "90px" }),
+  menu: (provided) => ({ ...provided, zIndex: 1500 }),
+  menuList: (provided) => ({ ...provided, zIndex: 1500 })
+};
 const SnippetPagination: React.FC<SnippetPagiProps> = ({
   params,
   setParams,
@@ -36,7 +44,10 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
           <Text fontSize="14px" fontWeight="500" lineHeight="normal">
             {__("Per Page", "snippet-master")}
           </Text>
-          <Select
+          <Select<PerPageOption>
+            useBasicStyles
+            size="sm"
+            chakraStyles={chakraStyles}
             onChange={(option) => {
               setPerPage({ value: option?.value, label: option?.label });
               setParams((prev) => ({
@@ -46,7 +57,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
               }));
             }}
             options={perPageOptions}
-            defaultValue={perPage}
+            value={perPage as PerPageOption}
             isClearable={false}
             isSearchable={false}
           />

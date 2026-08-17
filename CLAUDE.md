@@ -60,10 +60,16 @@ beside in this WordPress install.
 - Chakra UI, `@tanstack/react-query`, `react-router-dom` (HashRouter), **Monaco**
   editor (`src/screen/addnew/components/MonacoEditor.tsx`), `react-hook-form`, `acorn`.
 - `src/screen/snippets/` — list + table (language/scope/status badges, bulk delete).
+  The list filter (`Snippets::get_snippets()`) supports `searchByItem, startDate/endDate,
+  status, tag, lang, scope`; the date range is optional (no default range) and the filter
+  UI uses `chakra-react-select`.
 - `src/screen/addnew/` — add/edit form with the Monaco editor, language + scope
   selectors, and **live syntax validation** (`AddNewForm.tsx`): a debounced effect runs
   acorn (JS) or calls the `validate` endpoint (PHP), then sets Monaco markers
-  (`monaco.editor.setModelMarkers`) and an inline message.
+  (`monaco.editor.setModelMarkers`) and an inline message. The editor keeps a leading
+  `<?php` line only while the language is PHP — `AddNewForm` auto-strips it when switching
+  to JS/CSS/HTML and re-adds it when switching back (`stripPhpOpen`/`ensurePhpOpen`); the
+  server re-adds `<?php` only on a single-snippet (edit) fetch, not on the list query.
 - `src/api/` — thin `@wordpress/api-fetch` wrappers; nonce from `window.ccsnpt_script_data`.
 
 ## Working here

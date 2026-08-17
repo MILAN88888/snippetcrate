@@ -1,9 +1,10 @@
-import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BiPlus } from "react-icons/bi";
 import SnippetTable from "./components/SnippetTable";
+import Logo from "./../../components/common/Logo";
 
 const Snippets: React.FC = () => {
   const navigate = useNavigate();
@@ -16,17 +17,20 @@ const Snippets: React.FC = () => {
         wrap="wrap"
         gap="12px"
       >
-        <Box>
-          <Heading fontSize="24px" fontWeight="700" color="secondary.900">
-            {__("All Code Snippets", "snippet-master")}
-          </Heading>
-          <Text mt="6px" fontSize="14px" color="secondary.500">
-            {__(
-              "Manage the PHP, JavaScript, CSS and HTML snippets running on your site.",
-              "snippet-master"
-            )}
-          </Text>
-        </Box>
+        <HStack align="flex-start" gap="12px">
+          <Logo />
+          <Box>
+            <Heading fontSize="24px" fontWeight="700" color="secondary.900">
+              {__("Snippet Master", "snippet-master")}
+            </Heading>
+            <Text mt="6px" fontSize="14px" color="secondary.500">
+              {__(
+                "Manage the PHP, JavaScript, CSS and HTML snippets running on your site.",
+                "snippet-master"
+              )}
+            </Text>
+          </Box>
+        </HStack>
         <Button
           leftIcon={<BiPlus />}
           bg="primary.500"

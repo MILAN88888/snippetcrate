@@ -95,19 +95,15 @@ class Snippets {
             array_push( $query_args, $like_item, $like_item, $like_item );
         }
 
-        if ( isset( $params['startDate'] ) && isset( $params['endDate'] ) ) {
-            $start_date = empty( $params['startDate'] ) ?
-                gmdate( 'Y-m-d' ) :
-                gmdate( 'Y-m-d', strtotime( $params['startDate'] ) );
-            $end_date = empty( $params['endDate'] ) ?
-                gmdate( 'Y-m-d' ) :
-                gmdate( 'Y-m-d', strtotime(  $params['endDate'] ) );
+        if ( ! empty( $params['startDate'] ) && ! empty( $params['endDate'] ) ) {
+            $start_date = gmdate( 'Y-m-d', strtotime( $params['startDate'] ) ) . ' 00:00:00';
+            $end_date   = gmdate( 'Y-m-d', strtotime( $params['endDate'] ) ) . ' 23:59:59';
 
             $where_clause[] = "`updated_at` BETWEEN %s AND %s";
             array_push( $query_args, $start_date, $end_date );
         }
 
-        if ( isset( $params['status'] ) ) {
+        if ( isset( $params['status'] ) && '' !== $params['status'] ) {
             $where_clause[] = "`active` = %s";
             $query_args[] = $params['status'];
         }
@@ -115,6 +111,14 @@ class Snippets {
         if ( isset( $params['tag'] ) && '' !== $params['tag'] ) {
             $where_clause[] = "`tags` LIKE %s";
             $query_args[]   = '%' . $this->con->esc_like( $params['tag'] ) . '%';
+        }
+
+        if ( isset( $params['lang'] ) && '' !== $params['lang'] ) {
+            $lang = strtoupper( sanitize_text_field( $params['lang'] ) );
+            if ( in_array( $lang, array( 'PHP', 'JS', 'CSS', 'HTML' ), true ) ) {
+                $where_clause[] = '`lang` = %s';
+                $query_args[]   = $lang;
+            }
         }
 
         if ( isset( $params['scope'] ) ) {

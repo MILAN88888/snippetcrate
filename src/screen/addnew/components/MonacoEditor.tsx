@@ -21,7 +21,6 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
     return (
       <Editor
         {...props}
-        defaultValue={props.language === "php" ? "<?php\n" : ""}
         onMount={(editor, monaco) => {
           editorRef.current = editor;
           if (props.onMount) {

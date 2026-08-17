@@ -42,6 +42,16 @@ const cardStyle = {
   p: { base: "16px", md: "28px" }
 };
 
+// Drop a leading `<?php`/`<?` (and its trailing newline) and a trailing `?>`.
+const stripPhpOpen = (code: string): string =>
+  (code ?? "")
+    .replace(/^\s*<\?(php)?\r?\n?/i, "")
+    .replace(/\?>\s*$/, "");
+
+// Prepend `<?php\n` unless an opening tag is already present.
+const ensurePhpOpen = (code: string): string =>
+  /^\s*<\?(php)?/i.test(code ?? "") ? code : `<?php\n${code ?? ""}`;
+
 const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
   const toast = useToast();
 
@@ -92,7 +102,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     defaultValues: {
       id: "",
       title: "",
-      codesnippet: "",
+      codesnippet: "<?php\n",
       priority: 10,
       description: "",
       tags: "",
@@ -109,6 +119,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
   const editorRef = useRef<any>(null);
   const monacoRef = useRef<any>(null);
+  const prevLangRef = useRef<string | undefined>(undefined);
   const [liveError, setLiveError] = useState<string | null>(null);
 
   const {
@@ -127,6 +138,11 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     if (!snippet) {
       return;
     }
+    const l = (snippet.lang ?? "PHP").toUpperCase();
+    const hydratedLang = ["PHP", "JS", "CSS", "HTML"].includes(l) ? l : "PHP";
+    // Record the hydrated language so the lang-change effect below does not
+    // rewrite the loaded code on edit.
+    prevLangRef.current = hydratedLang;
     reset({
       id: snippet.id,
       title: snippet.title,
@@ -141,9 +157,27 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           ? 1
           : 0,
       scope: snippet.scope ?? "global",
-      lang: (snippet.lang ?? "PHP").toUpperCase() === "JS" ? "JS" : "PHP"
+      lang: hydratedLang
     });
   }, [data, reset]);
+
+  // When the language changes, keep the `<?php` opening tag only for PHP:
+  // strip it when leaving PHP, re-add it when returning. Skips mount and edit
+  // hydration via prevLangRef so an existing snippet is never rewritten.
+  useEffect(() => {
+    const prev = prevLangRef.current;
+    prevLangRef.current = lang;
+    if (prev === undefined || prev === lang) {
+      return;
+    }
+    const current = code ?? "";
+    if (prev === "PHP" && lang !== "PHP") {
+      setValue("codesnippet", stripPhpOpen(current));
+    } else if (prev !== "PHP" && lang === "PHP") {
+      setValue("codesnippet", ensurePhpOpen(current));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   // Only PHP can target the global scope.
   useEffect(() => {
@@ -238,7 +272,10 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           const message =
             __("PHP syntax error: ", "snippet-master") + (res.message ?? "");
           setLiveError(message);
-          applyMarker({ line: res.line ?? 1, column: 1, message });
+          // The server strips the leading `<?php` before parsing, so its line
+          // numbers are one short whenever the tag is present in the editor.
+          const offset = /^\s*<\?(php)?/i.test(value) ? 1 : 0;
+          applyMarker({ line: (res.line ?? 1) + offset, column: 1, message });
         }
       })
       .catch(() => {
@@ -320,7 +357,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     <Box {...cardStyle}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="24px">
-          <FormControl isInvalid={!!errors.title}>
+          <FormControl isRequired isInvalid={!!errors.title}>
             <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
               {__("Title", "snippet-master")}
             </FormLabel>
@@ -336,7 +373,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             )}
           </FormControl>
 
-          <FormControl isInvalid={!!codeError}>
+          <FormControl isRequired isInvalid={!!codeError}>
             <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
               {__("Code", "snippet-master")}
             </FormLabel>
@@ -349,6 +386,11 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               <Controller
                 name="codesnippet"
                 control={control}
+                rules={{
+                  validate: (v) =>
+                    stripPhpOpen(v ?? "").trim() !== "" ||
+                    __("Code snippet is required", "snippet-master")
+                }}
                 render={({ field }) => (
                   <MonacoEditor
                     {...field}
@@ -425,7 +467,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               )}
             </FormControl>
 
-            <FormControl isInvalid={!!errors.priority}>
+            <FormControl isRequired isInvalid={!!errors.priority}>
               <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
                 {__("Priority", "snippet-master")}
               </FormLabel>
@@ -473,7 +515,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             </Box>
           )}
 
-          <FormControl isInvalid={!!errors.description}>
+          <FormControl isRequired isInvalid={!!errors.description}>
             <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
               {__("Description", "snippet-master")}
             </FormLabel>

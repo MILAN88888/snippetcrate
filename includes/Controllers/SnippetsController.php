@@ -148,7 +148,11 @@ class SnippetsController {
 
 		$res = $this->snippets->get_snippets( $params );
 
-		if ( isset( $res['results'][0] ) && ! empty( $res['results'][0] ) && 'PHP' === $res['results'][0]->lang ) {
+		// Only re-add the opening tag for a single-snippet fetch (the editor); the
+		// list query must not mutate its first row.
+		if ( isset( $params['id'] ) && ! empty( $params['id'] )
+			&& isset( $res['results'][0] ) && ! empty( $res['results'][0] )
+			&& 'PHP' === $res['results'][0]->lang ) {
 			$res['results'][0]->codesnippet = '<?php' . $res['results'][0]->codesnippet;
 		}
 		return $res;

@@ -1,11 +1,12 @@
 import { __ } from "@wordpress/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Parser } from "acorn";
 import { Loader2 } from "lucide-react";
 import MonacoEditor from "./MonacoEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addNewSnippet,
   getSnippets,
@@ -48,13 +49,17 @@ const RequiredMark: React.FC = () => (
 const labelClass = "text-sm font-semibold text-foreground";
 
 const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const addNewSnippetMutation = useMutation({
     mutationFn: addNewSnippet,
     onSuccess: (res: any) => {
       toast.success(res.message);
-      if (!id) {
-        reset();
-      }
+      // Refresh the list/stat caches and return to the table.
+      queryClient.invalidateQueries({ queryKey: ["snippets"] });
+      queryClient.invalidateQueries({ queryKey: ["snippet-tags"] });
+      navigate("/");
     },
     onError: (error: any) => {
       if (error.errors) {

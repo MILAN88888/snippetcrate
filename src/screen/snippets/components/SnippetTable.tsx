@@ -30,7 +30,6 @@ import {
 import FloatingBulkAction from "./../../../components/common/FloatingBulkAction";
 import { LanguageBadge, ScopeBadge } from "./../../../components/common/Badges";
 import { downloadExport } from "./../../../utils/download";
-import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,6 +49,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 const isActive = (value: string | number | boolean | undefined): boolean =>
   value === "1" || value === 1 || value === true;
@@ -332,33 +336,19 @@ const SnippetTable: React.FC = () => {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={isActive(snippet.active)}
-                          aria-label={__(
-                            "Toggle snippet status",
-                            "snippet-master"
-                          )}
-                          onCheckedChange={() =>
-                            statusToggler({
-                              id: snippet.id,
-                              active: snippet.active
-                            })
-                          }
-                        />
-                        <span
-                          className={cn(
-                            "text-xs",
-                            isActive(snippet.active)
-                              ? "font-medium text-emerald-600"
-                              : "text-muted-foreground"
-                          )}
-                        >
-                          {isActive(snippet.active)
-                            ? __("Active", "snippet-master")
-                            : __("Inactive", "snippet-master")}
-                        </span>
-                      </div>
+                      <Switch
+                        checked={isActive(snippet.active)}
+                        aria-label={__(
+                          "Toggle snippet status",
+                          "snippet-master"
+                        )}
+                        onCheckedChange={() =>
+                          statusToggler({
+                            id: snippet.id,
+                            active: snippet.active
+                          })
+                        }
+                      />
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
@@ -369,31 +359,60 @@ const SnippetTable: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={__("Duplicate snippet", "snippet-master")}
-                          onClick={() => duplicateMutation.mutate(snippet.id)}
-                        >
-                          <Copy />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={__("Edit snippet", "snippet-master")}
-                          onClick={() => editSnippet(Number(snippet.id))}
-                        >
-                          <Pencil />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          aria-label={__("Delete snippet", "snippet-master")}
-                          onClick={() => deleteSnippet(Number(snippet.id))}
-                        >
-                          <Trash2 />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={__(
+                                "Duplicate snippet",
+                                "snippet-master"
+                              )}
+                              onClick={() =>
+                                duplicateMutation.mutate(snippet.id)
+                              }
+                            >
+                              <Copy />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {__("Duplicate", "snippet-master")}
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={__("Edit snippet", "snippet-master")}
+                              onClick={() => editSnippet(Number(snippet.id))}
+                            >
+                              <Pencil />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {__("Edit", "snippet-master")}
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              aria-label={__(
+                                "Delete snippet",
+                                "snippet-master"
+                              )}
+                              onClick={() => deleteSnippet(Number(snippet.id))}
+                            >
+                              <Trash2 />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {__("Delete", "snippet-master")}
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

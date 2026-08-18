@@ -7,6 +7,8 @@
 
 namespace SnippetMaster\Routes;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Controllers\SnippetsController;
 use SnippetMaster\Middleware\SnippetsAuthMiddleware;
 

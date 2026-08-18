@@ -8,6 +8,8 @@
 
 namespace SnippetMaster\Migration;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Traits\Singleton;
 
 /**

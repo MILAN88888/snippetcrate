@@ -9,6 +9,8 @@
 
 namespace SnippetMaster\Routes;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 /**
  * Routes abstract class.
  *

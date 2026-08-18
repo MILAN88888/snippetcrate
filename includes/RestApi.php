@@ -7,6 +7,8 @@
 
 namespace SnippetMaster;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Routes\SnippetsRoutes;
 use SnippetMaster\Traits\Singleton;
 

@@ -8,6 +8,8 @@
 
 namespace SnippetMaster\Controllers\Admin;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Helper;
 use SnippetMaster\Traits\Singleton;
 

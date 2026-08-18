@@ -1,0 +1,495 @@
+# Copyright (C) 2026 @wpmilan
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Snippet Master 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/snippet-master\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-18T22:04:05+05:45\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: snippet-master\n"
+
+#. Plugin Name of the plugin
+#: snippet-master.php
+#: includes/Controllers/Admin/MenusController.php:45
+#: dist/main.js:2
+msgid "Snippet Master"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: snippet-master.php
+msgid "https://wordpress.org/plugins/snippet-master"
+msgstr ""
+
+#. Description of the plugin
+#: snippet-master.php
+msgid "Easily manage and execute custom code snippets in WordPress with the Snippet Master plugin."
+msgstr ""
+
+#. Author of the plugin
+#: snippet-master.php
+msgid "@wpmilan"
+msgstr ""
+
+#. Author URI of the plugin
+#: snippet-master.php
+msgid "https://milanc.com.np/"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:48
+msgid "Title is required."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:50
+msgid "Title must be less than 255 characters."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:64
+msgid "Code snippet is required."
+msgstr ""
+
+#. translators: %s: PHP parse error message.
+#: includes/Controllers/SnippetsController.php:70
+#, php-format
+msgid "PHP syntax error: %s"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:79
+msgid "Priority is required and must be an integer."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:81
+msgid "Priority must be a non-negative integer."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:88
+msgid "Description is required."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:96
+msgid "Scope must be one of global, header, footer or shortcode."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:98
+msgid "Only PHP snippets can use the global scope. Choose header, footer or shortcode."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:126
+msgid "Validation failed. Please check the errors."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:136
+msgid "Saved successfully!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:136
+msgid "Save Failed!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:172
+msgid "Failed to update!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:191
+#: dist/main.js:2
+msgid "Deletion failed!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:257
+#: includes/Controllers/SnippetsController.php:268
+msgid "Duplication failed!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:267
+#: dist/main.js:2
+msgid "Snippet duplicated!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:289
+msgid "No snippets selected."
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:299
+#: dist/main.js:2
+msgid "Snippets updated!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:300
+#: dist/main.js:2
+msgid "Update failed!!"
+msgstr ""
+
+#: includes/Controllers/SnippetsController.php:382
+msgid "No snippets to import."
+msgstr ""
+
+#. translators: 1: imported count, 2: skipped count.
+#: includes/Controllers/SnippetsController.php:416
+#, php-format
+msgid "Imported %1$d snippet(s), skipped %2$d."
+msgstr ""
+
+#: includes/Middleware/SnippetsAuthMiddleware.php:31
+msgid "You do not have permission to manage snippets."
+msgstr ""
+
+#: includes/SnippetMaster.php:67
+msgid "View Docs"
+msgstr ""
+
+#: includes/SnippetMaster.php:67
+msgid "Docs"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Oops! Something went wrong."
+msgstr ""
+
+#: dist/main.js:2
+msgid "PHP syntax error: "
+msgstr ""
+
+#: dist/main.js:2
+msgid "JavaScript syntax error: "
+msgstr ""
+
+#: dist/main.js:2
+msgid "Header"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Footer"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Shortcode"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Global"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Failed to load snippet: "
+msgstr ""
+
+#: dist/main.js:2
+msgid "Title"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Enter a descriptive title"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Title is required"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Code"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Code snippet is required"
+msgstr ""
+
+#: dist/main.js:2
+msgid "JavaScript is validated as you type (in your browser)."
+msgstr ""
+
+#: dist/main.js:2
+msgid "PHP is syntax-checked as you type (on the server)."
+msgstr ""
+
+#: dist/main.js:2
+msgid "CSS and HTML are not syntax-checked."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Language"
+msgstr ""
+
+#: dist/main.js:2
+msgid "PHP"
+msgstr ""
+
+#: dist/main.js:2
+msgid "JavaScript"
+msgstr ""
+
+#: dist/main.js:2
+msgid "CSS"
+msgstr ""
+
+#: dist/main.js:2
+msgid "HTML"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Scope"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Priority"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Priority is required"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Priority must be a non-negative number."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Insert this shortcode where you want the snippet to render:"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Save the snippet first to get its shortcode."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Description"
+msgstr ""
+
+#: dist/main.js:2
+msgid "What does this snippet do?"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Description is required"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Tags"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Comma-separated, e.g. analytics, header"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Update"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Save"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Update & Activate"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Save & Activate"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Edit Snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Add New Snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Update this snippet and its settings."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Create a new PHP, JavaScript, CSS or HTML snippet for your site."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Back to snippets"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Active"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Inactive"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Select date range"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Search snippets"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Any status"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Any language"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Clear"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Any tag"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Clear filters"
+msgstr ""
+
+#: dist/main.js:2
+#, js-format
+msgid "Showing %1$s–%2$s of %3$s snippets"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Per page"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Previous page"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Next page"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Activate"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Deactivate"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Export"
+msgstr ""
+
+#: dist/main.js:2
+#, js-format
+msgid "%s item selected"
+msgid_plural "%s items selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: dist/main.js:2
+msgid "Deselect all"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Unselect items"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Delete"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Activated successfully!!"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Deactivated successfully!!"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Deleted successfully!!"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Snippets imported!!"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Invalid import file."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Could not read the import file."
+msgstr ""
+
+#: dist/main.js:2
+msgid "Failed to load snippets: "
+msgstr ""
+
+#: dist/main.js:2
+msgid "Import"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Export all (JSON)"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Export all PHP (.php)"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Select all snippets"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Status"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Updated"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Actions"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Select snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Toggle snippet status"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Duplicate snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Duplicate"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Edit snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Edit"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Delete snippet"
+msgstr ""
+
+#: dist/main.js:2
+msgid "No snippets found"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Total Snippets"
+msgstr ""
+
+#: dist/main.js:2
+msgid "Manage the PHP, JavaScript, CSS and HTML snippets running on your site."
+msgstr ""

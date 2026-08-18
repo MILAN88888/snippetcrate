@@ -7,6 +7,8 @@
 
 namespace SnippetMaster\Traits;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 /**
  * Singleton trait.
  */

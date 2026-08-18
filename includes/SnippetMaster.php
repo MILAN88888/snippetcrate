@@ -9,6 +9,8 @@
 
 namespace SnippetMaster;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Controllers\Admin\ScriptStyleController;
 use SnippetMaster\Controllers\Admin\MenusController;
 use SnippetMaster\Controllers\InitController;
@@ -31,8 +33,23 @@ final class SnippetMaster {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 20, 2 );
 		$this->includes();
+	}
+
+	/**
+	 * Load the plugin translations.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'snippet-master',
+			false,
+			dirname( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) ) . '/languages/'
+		);
 	}
 
 	/**

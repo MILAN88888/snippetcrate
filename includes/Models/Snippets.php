@@ -7,6 +7,8 @@
 
 namespace SnippetMaster\Models;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 /**
  * Snippets Model class.
  *

@@ -8,6 +8,8 @@
 
 namespace SnippetMaster\Controllers\Admin;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Helper;
 use SnippetMaster\Traits\Singleton;
 
@@ -185,6 +187,13 @@ class ScriptStyleController {
 				'restURL'            => rest_url(),
 				'version'            => defined( 'SNIPPET_MASTER_VERSION' ) ? SNIPPET_MASTER_VERSION : '',
 			)
+		);
+
+		// Make the React UI strings translatable (loads languages/*.json when present).
+		wp_set_script_translations(
+			'snippet-master-main',
+			'snippet-master',
+			plugin_dir_path( SNIPPET_MASTER_PLUGIN_FILE ) . 'languages'
 		);
 	}
 }

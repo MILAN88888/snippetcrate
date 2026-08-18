@@ -7,6 +7,8 @@
 
 namespace SnippetMaster\Controllers;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use SnippetMaster\Models\Snippets;
 use SnippetMaster\Helper;
 

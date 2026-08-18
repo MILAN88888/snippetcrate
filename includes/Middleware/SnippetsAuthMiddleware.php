@@ -9,6 +9,8 @@
 
 namespace SnippetMaster\Middleware;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 /**
  * SnippetAuthMiddleware class.
  *

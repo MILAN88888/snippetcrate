@@ -295,6 +295,9 @@
 #snippet-master .h-5 {
   height: 1.25rem;
 }
+#snippet-master .h-6 {
+  height: 1.5rem;
+}
 #snippet-master .h-7 {
   height: 1.75rem;
 }
@@ -324,6 +327,9 @@
 }
 #snippet-master .min-h-screen {
   min-height: 100vh;
+}
+#snippet-master .w-11 {
+  width: 2.75rem;
 }
 #snippet-master .w-12 {
   width: 3rem;
@@ -1165,8 +1171,8 @@
   --tw-translate-y: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-#snippet-master .data-\[state\=checked\]\:translate-x-4[data-state="checked"] {
-  --tw-translate-x: 1rem;
+#snippet-master .data-\[state\=checked\]\:translate-x-6[data-state="checked"] {
+  --tw-translate-x: 1.5rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 #snippet-master .data-\[state\=unchecked\]\:translate-x-0[data-state="unchecked"] {

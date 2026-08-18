@@ -1,30 +1,16 @@
-import {
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  HStack,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Spinner,
-  Stack,
-  Switch,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useToast
-} from "@chakra-ui/react";
-import { __ } from "@wordpress/i18n";
 import React, { useRef, useState } from "react";
+import { __ } from "@wordpress/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Copy,
+  Pencil,
+  Trash2,
+  Upload,
+  Download,
+  ChevronDown,
+  Loader2
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   bulkUpdateStatus,
   deleteSnippets,
@@ -34,15 +20,6 @@ import {
   importSnippets,
   updateStatusSnippets
 } from "./../../../api/api";
-import { RiDeleteBinFill } from "react-icons/ri";
-import {
-  BiEdit,
-  BiCopy,
-  BiImport,
-  BiExport,
-  BiChevronDown
-} from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
 import SnippetFilter from "./SnippetFilter";
 import SnippetPagination from "./SnippetPagination";
 import {
@@ -53,12 +30,31 @@ import {
 import FloatingBulkAction from "./../../../components/common/FloatingBulkAction";
 import { LanguageBadge, ScopeBadge } from "./../../../components/common/Badges";
 import { downloadExport } from "./../../../utils/download";
+import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/components/ui/sonner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 const isActive = (value: string | number | boolean | undefined): boolean =>
   value === "1" || value === 1 || value === true;
 
 const SnippetTable: React.FC = () => {
-  const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,14 +80,12 @@ const SnippetTable: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: ["snippet-tags"] });
   };
 
-  const onClickCheckAll = () => {
-    const next = !isCheckAll;
-    setIsCheckAll(next);
-    setIsCheck(next && data ? data.results.map((snippet) => snippet.id) : []);
+  const onCheckAll = (checked: boolean) => {
+    setIsCheckAll(checked);
+    setIsCheck(checked && data ? data.results.map((snippet) => snippet.id) : []);
   };
 
-  const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
+  const onCheckRow = (id: string | number, checked: boolean) => {
     setIsCheckAll(false);
     setIsCheck((prev) =>
       checked ? [...prev, id] : prev.filter((item) => item !== id)
@@ -99,7 +93,7 @@ const SnippetTable: React.FC = () => {
   };
 
   const notify = (title: string, status: "success" | "error" = "success") =>
-    toast({ title, status, duration: 3000, isClosable: true });
+    status === "error" ? toast.error(title) : toast.success(title);
 
   const statusMutation = useMutation({
     mutationFn: updateStatusSnippets,
@@ -179,11 +173,9 @@ const SnippetTable: React.FC = () => {
     }
   };
   const handleBulkActivate = () =>
-    isCheck.length > 0 &&
-    bulkStatusMutation.mutate({ ids: isCheck, active: 1 });
+    isCheck.length > 0 && bulkStatusMutation.mutate({ ids: isCheck, active: 1 });
   const handleBulkDeactivate = () =>
-    isCheck.length > 0 &&
-    bulkStatusMutation.mutate({ ids: isCheck, active: 0 });
+    isCheck.length > 0 && bulkStatusMutation.mutate({ ids: isCheck, active: 0 });
 
   const handleExport = async (
     ids: (string | number)[],
@@ -197,9 +189,7 @@ const SnippetTable: React.FC = () => {
     }
   };
 
-  const handleImportFile = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) {
@@ -221,241 +211,226 @@ const SnippetTable: React.FC = () => {
 
   const editSnippet = (id: number) => navigate(`/snippet/edit/${id}`);
 
+  const totalCount = data ? Number(data.total_count) || 0 : 0;
   const paginationProps = {
     params,
     setParams,
-    totalPages: data
-      ? Math.ceil(Number(data.total_count) / (params.limit ?? 10))
-      : 10
-  };
-
-  const cardStyle = {
-    bg: "white",
-    borderRadius: "xl",
-    border: "1px solid",
-    borderColor: "secondary.200"
+    totalCount,
+    totalPages: data ? Math.ceil(totalCount / (params.limit ?? 10)) : 1
   };
 
   if (isError) {
     return (
-      <Box {...cardStyle} p="24px">
-        <Center>
-          <Text color="red.500">
-            {__("Failed to load snippets: ", "snippet-master")} {error.message}
-          </Text>
-        </Center>
-      </Box>
+      <Card className="p-6">
+        <p className="text-center text-destructive">
+          {__("Failed to load snippets: ", "snippet-master")} {error.message}
+        </p>
+      </Card>
     );
   }
 
   return (
-    <Stack gap="16px">
-      <Box {...cardStyle} overflow="hidden">
-        <Box p="16px" borderBottom="1px solid" borderColor="secondary.100">
-          <HStack justify="flex-end" gap="8px" mb="12px">
+    <div className="flex flex-col gap-4">
+      <Card className="overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-border p-4">
+          <SnippetFilter params={params} setParams={setParams} />
+          <div className="flex justify-end gap-2">
             <input
               type="file"
               accept=".json,application/json"
               ref={fileInputRef}
               onChange={handleImportFile}
-              style={{ display: "none" }}
+              className="hidden"
             />
             <Button
-              leftIcon={<BiImport />}
               variant="outline"
               size="sm"
-              isLoading={importMutation.isPending}
+              disabled={importMutation.isPending}
               onClick={() => fileInputRef.current?.click()}
             >
+              <Upload />
               {__("Import", "snippet-master")}
             </Button>
-            <Menu>
-              <MenuButton
-                as={Button}
-                leftIcon={<BiExport />}
-                rightIcon={<BiChevronDown />}
-                variant="outline"
-                size="sm"
-              >
-                {__("Export", "snippet-master")}
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => handleExport([], "json")}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Download />
+                  {__("Export", "snippet-master")}
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleExport([], "json")}>
                   {__("Export all (JSON)", "snippet-master")}
-                </MenuItem>
-                <MenuItem onClick={() => handleExport([], "php")}>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport([], "php")}>
                   {__("Export all PHP (.php)", "snippet-master")}
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </HStack>
-          <SnippetFilter params={params} setParams={setParams} />
-        </Box>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
 
         {isLoading ? (
-          <Center height="300px">
-            <Spinner size="lg" color="primary.500" />
-          </Center>
+          <div className="flex h-72 items-center justify-center">
+            <Loader2 className="size-8 animate-spin text-primary" />
+          </div>
         ) : (
-          <TableContainer>
-            <Table size="sm">
-              <Thead bg="secondary.50">
-                <Tr>
-                  <Th width="48px">
-                    <Checkbox
-                      onChange={onClickCheckAll}
-                      isChecked={isCheckAll}
-                      aria-label={__("Select all snippets", "snippet-master")}
-                    />
-                  </Th>
-                  <Th>{__("Snippet", "snippet-master")}</Th>
-                  <Th>{__("Language", "snippet-master")}</Th>
-                  <Th>{__("Scope", "snippet-master")}</Th>
-                  <Th>{__("Priority", "snippet-master")}</Th>
-                  <Th>{__("Status", "snippet-master")}</Th>
-                  <Th>{__("Updated", "snippet-master")}</Th>
-                  <Th textAlign="right">{__("Actions", "snippet-master")}</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data && data.results && data.results.length > 0 ? (
-                  data.results.map((snippet: Snippet) => (
-                    <Tr key={snippet.id} _hover={{ bg: "secondary.50" }}>
-                      <Td>
-                        <Checkbox
-                          id={String(snippet.id)}
-                          onChange={(e) => handleClick(e)}
-                          isChecked={isCheck.includes(snippet.id)}
-                          aria-label={__("Select snippet", "snippet-master")}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={isCheckAll}
+                    onCheckedChange={(checked) => onCheckAll(checked === true)}
+                    aria-label={__("Select all snippets", "snippet-master")}
+                  />
+                </TableHead>
+                <TableHead>{__("Snippet", "snippet-master")}</TableHead>
+                <TableHead>{__("Language", "snippet-master")}</TableHead>
+                <TableHead>{__("Scope", "snippet-master")}</TableHead>
+                <TableHead>{__("Priority", "snippet-master")}</TableHead>
+                <TableHead>{__("Status", "snippet-master")}</TableHead>
+                <TableHead>{__("Updated", "snippet-master")}</TableHead>
+                <TableHead className="text-right">
+                  {__("Actions", "snippet-master")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data && data.results && data.results.length > 0 ? (
+                data.results.map((snippet: Snippet) => (
+                  <TableRow key={snippet.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={isCheck.includes(snippet.id)}
+                        onCheckedChange={(checked) =>
+                          onCheckRow(snippet.id, checked === true)
+                        }
+                        aria-label={__("Select snippet", "snippet-master")}
+                      />
+                    </TableCell>
+                    <TableCell className="max-w-[260px]">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {snippet.title}
+                      </p>
+                      {snippet.description && (
+                        <p className="truncate text-xs text-muted-foreground">
+                          {snippet.description}
+                        </p>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <LanguageBadge lang={snippet.lang} />
+                    </TableCell>
+                    <TableCell>
+                      <ScopeBadge scope={snippet.scope} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-foreground">
+                        {snippet.priority}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={isActive(snippet.active)}
+                          aria-label={__(
+                            "Toggle snippet status",
+                            "snippet-master"
+                          )}
+                          onCheckedChange={() =>
+                            statusToggler({
+                              id: snippet.id,
+                              active: snippet.active
+                            })
+                          }
                         />
-                      </Td>
-                      <Td maxW="260px">
-                        <Text
-                          fontWeight="600"
-                          fontSize="14px"
-                          color="secondary.900"
-                          isTruncated
+                        <span
+                          className={cn(
+                            "text-xs",
+                            isActive(snippet.active)
+                              ? "font-medium text-emerald-600"
+                              : "text-muted-foreground"
+                          )}
                         >
-                          {snippet.title}
-                        </Text>
-                        {snippet.description && (
-                          <Text
-                            fontSize="12px"
-                            color="secondary.500"
-                            noOfLines={1}
-                          >
-                            {snippet.description}
-                          </Text>
-                        )}
-                      </Td>
-                      <Td>
-                        <LanguageBadge lang={snippet.lang} />
-                      </Td>
-                      <Td>
-                        <ScopeBadge scope={snippet.scope} />
-                      </Td>
-                      <Td>
-                        <Text fontSize="14px" color="secondary.700">
-                          {snippet.priority}
-                        </Text>
-                      </Td>
-                      <Td>
-                        <HStack gap="8px">
-                          <Switch
-                            size="sm"
-                            isChecked={isActive(snippet.active)}
-                            aria-label={__(
-                              "Toggle snippet status",
-                              "snippet-master"
-                            )}
-                            onChange={() =>
-                              statusToggler({
-                                id: snippet.id,
-                                active: snippet.active
-                              })
-                            }
-                          />
-                          <Text fontSize="12px" color="secondary.500">
-                            {isActive(snippet.active)
-                              ? __("Active", "snippet-master")
-                              : __("Inactive", "snippet-master")}
-                          </Text>
-                        </HStack>
-                      </Td>
-                      <Td>
-                        <Text fontSize="13px" color="secondary.500">
-                          {snippet.updated_at
-                            ? snippet.updated_at.split(" ")[0]
-                            : "—"}
-                        </Text>
-                      </Td>
-                      <Td>
-                        <HStack gap="4px" justify="flex-end">
-                          <IconButton
-                            aria-label={__("Duplicate snippet", "snippet-master")}
-                            icon={<BiCopy />}
-                            size="sm"
-                            variant="ghost"
-                            fontSize="16px"
-                            onClick={() => duplicateMutation.mutate(snippet.id)}
-                          />
-                          <IconButton
-                            aria-label={__("Edit snippet", "snippet-master")}
-                            icon={<BiEdit />}
-                            size="sm"
-                            variant="ghost"
-                            fontSize="16px"
-                            onClick={() => editSnippet(Number(snippet.id))}
-                          />
-                          <IconButton
-                            aria-label={__("Delete snippet", "snippet-master")}
-                            icon={<RiDeleteBinFill />}
-                            size="sm"
-                            variant="ghost"
-                            colorScheme="red"
-                            fontSize="16px"
-                            onClick={() => deleteSnippet(Number(snippet.id))}
-                          />
-                        </HStack>
-                      </Td>
-                    </Tr>
-                  ))
-                ) : (
-                  <Tr>
-                    <Td colSpan={8}>
-                      <Center py="40px">
-                        <Text color="secondary.500">
-                          {__("No snippets found", "snippet-master")}
-                        </Text>
-                      </Center>
-                    </Td>
-                  </Tr>
-                )}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                          {isActive(snippet.active)
+                            ? __("Active", "snippet-master")
+                            : __("Inactive", "snippet-master")}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">
+                        {snippet.updated_at
+                          ? snippet.updated_at.split(" ")[0]
+                          : "—"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={__("Duplicate snippet", "snippet-master")}
+                          onClick={() => duplicateMutation.mutate(snippet.id)}
+                        >
+                          <Copy />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={__("Edit snippet", "snippet-master")}
+                          onClick={() => editSnippet(Number(snippet.id))}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          aria-label={__("Delete snippet", "snippet-master")}
+                          onClick={() => deleteSnippet(Number(snippet.id))}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8}>
+                    <div className="flex justify-center py-10">
+                      <p className="text-muted-foreground">
+                        {__("No snippets found", "snippet-master")}
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         )}
 
         {data && (
-          <Box p="16px" borderTop="1px solid" borderColor="secondary.100">
+          <div className="border-t border-border p-4">
             <SnippetPagination {...paginationProps} />
-          </Box>
+          </div>
         )}
-      </Box>
+      </Card>
 
-      {isCheck.length > 0 && (
-        <FloatingBulkAction
-          bulkIds={isCheck}
-          setIsCheckAll={setIsCheckAll}
-          setBulkIds={setIsCheck}
-          onActivate={handleBulkActivate}
-          onDeactivate={handleBulkDeactivate}
-          onExport={() => handleExport(isCheck, "json")}
-          onDelete={handleBulkDelete}
-          isBusy={deleteMutation.isPending || bulkStatusMutation.isPending}
-        />
-      )}
-    </Stack>
+      <FloatingBulkAction
+        bulkIds={isCheck}
+        setIsCheckAll={setIsCheckAll}
+        setBulkIds={setIsCheck}
+        onActivate={handleBulkActivate}
+        onDeactivate={handleBulkDeactivate}
+        onExport={() => handleExport(isCheck, "json")}
+        onDelete={handleBulkDelete}
+        isBusy={deleteMutation.isPending || bulkStatusMutation.isPending}
+      />
+    </div>
   );
 };
 

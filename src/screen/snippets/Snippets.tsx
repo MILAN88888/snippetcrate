@@ -1,48 +1,41 @@
-import { Box, Button, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import { __ } from "@wordpress/i18n";
 import React from "react";
+import { __ } from "@wordpress/i18n";
 import { useNavigate } from "react-router-dom";
-import { BiPlus } from "react-icons/bi";
-import SnippetTable from "./components/SnippetTable";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Logo from "./../../components/common/Logo";
+import SnippetTable from "./components/SnippetTable";
+import SnippetStats from "./components/SnippetStats";
 
 const Snippets: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Stack gap="24px">
-      <Flex
-        justify="space-between"
-        align="flex-start"
-        wrap="wrap"
-        gap="12px"
-      >
-        <HStack align="flex-start" gap="12px">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
           <Logo />
-          <Box>
-            <Heading fontSize="24px" fontWeight="700" color="secondary.900">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
               {__("Snippet Master", "snippet-master")}
-            </Heading>
-            <Text mt="6px" fontSize="14px" color="secondary.500">
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               {__(
                 "Manage the PHP, JavaScript, CSS and HTML snippets running on your site.",
                 "snippet-master"
               )}
-            </Text>
-          </Box>
-        </HStack>
-        <Button
-          leftIcon={<BiPlus />}
-          bg="primary.500"
-          color="white"
-          _hover={{ bg: "primary.600" }}
-          onClick={() => navigate("/snippet/add")}
-        >
+            </p>
+          </div>
+        </div>
+        <Button onClick={() => navigate("/snippet/add")}>
+          <Plus />
           {__("Add New Snippet", "snippet-master")}
         </Button>
-      </Flex>
+      </div>
+
+      <SnippetStats />
       <SnippetTable />
-    </Stack>
+    </div>
   );
 };
 

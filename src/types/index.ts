@@ -106,6 +106,7 @@ export type SnippetPagiProps = {
   params: SnippetParams;
   setParams: React.Dispatch<React.SetStateAction<SnippetParams>>;
   totalPages: number;
+  totalCount: number;
 };
 
 export type GetSnippetsResponse = {

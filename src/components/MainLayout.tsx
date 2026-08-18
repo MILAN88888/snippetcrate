@@ -1,20 +1,15 @@
-import { Box } from "@chakra-ui/react";
 import React from "react";
 import Router from "./router/Router";
+import { Toaster } from "@/components/ui/sonner";
 
 const MainLayout: React.FC = () => {
   return (
-    <Box minH="100vh" bg="secondary.50">
-      <Box
-        as="main"
-        maxW="1400px"
-        mx="auto"
-        px={{ base: "16px", md: "32px" }}
-        py="28px"
-      >
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      <main className="mx-auto w-full max-w-[1400px] px-4 py-7 md:px-8">
         <Router />
-      </Box>
-    </Box>
+      </main>
+      <Toaster position="bottom-right" richColors />
+    </div>
   );
 };
 

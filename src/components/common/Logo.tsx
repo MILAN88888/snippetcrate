@@ -1,21 +1,10 @@
 import React from "react";
-import { Flex } from "@chakra-ui/react";
+import { Code2 } from "lucide-react";
 
 const Logo: React.FC = () => (
-  <Flex
-    align="center"
-    justify="center"
-    boxSize="38px"
-    borderRadius="10px"
-    bgGradient="linear(135deg, primary.400, primary.600)"
-    color="white"
-    fontWeight="800"
-    fontSize="15px"
-    boxShadow="0 4px 12px rgba(37, 99, 235, 0.35)"
-    flexShrink={0}
-  >
-    {"</>"}
-  </Flex>
+  <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+    <Code2 className="size-6" strokeWidth={2.5} />
+  </div>
 );
 
 export default Logo;

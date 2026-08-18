@@ -1,22 +1,14 @@
 import React from "react";
-import {
-  Button,
-  ButtonGroup,
-  IconButton,
-  Portal,
-  Slide,
-  Stack,
-  Text,
-  Tooltip
-} from "@chakra-ui/react";
+import { createPortal } from "react-dom";
 import { __, _n, sprintf } from "@wordpress/i18n";
+import { Trash2, X, CheckCircle2, XCircle, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-  BiTrash,
-  BiX,
-  BiCheckCircle,
-  BiXCircle,
-  BiExport
-} from "react-icons/bi";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+import { usePortalContainer } from "@/components/PortalContext";
 import { BulkActionProps } from "./../../types/index";
 
 const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
@@ -30,104 +22,95 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
     onDelete,
     isBusy
   } = props;
+  const container = usePortalContainer();
   const bulkIdsCount = bulkIds.length;
+
+  if (bulkIdsCount === 0) {
+    return null;
+  }
+
   const actions = [
     {
       label: __("Activate", "snippet-master"),
       value: "activate",
       handler: onActivate,
-      icon: <BiCheckCircle />,
-      colorScheme: "green"
+      icon: <CheckCircle2 />
     },
     {
       label: __("Deactivate", "snippet-master"),
       value: "deactivate",
       handler: onDeactivate,
-      icon: <BiXCircle />,
-      colorScheme: "gray"
+      icon: <XCircle />
     },
     {
       label: __("Export", "snippet-master"),
       value: "export",
       handler: onExport,
-      icon: <BiExport />,
-      colorScheme: "blue"
-    },
-    {
-      label: __("Delete", "snippet-master"),
-      value: "delete",
-      handler: onDelete,
-      icon: <BiTrash />,
-      colorScheme: "red"
+      icon: <Download />
     }
   ];
-  return (
-    <>
-      <Portal>
-        <Slide
-          style={{ pointerEvents: "none", zIndex: 99 }}
-          delay={0.01}
-          in={bulkIdsCount > 0}
-          unmountOnExit={true}
-          direction="bottom"
-        >
-          <Stack justify="center" align="center" mb="4" pointerEvents="none">
-            <Stack
-              direction="row"
-              bg="gray.800"
-              px="3"
-              py="2"
-              rounded="md"
-              alignItems="center"
+
+  const bar = (
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[99] flex justify-center px-4 duration-200 animate-in slide-in-from-bottom-4">
+      <div className="pointer-events-auto flex items-center gap-3 rounded-lg bg-foreground px-3 py-2 text-background shadow-lg">
+        <span className="text-sm">
+          {sprintf(
+            /* Translators: %s: Number of selected items. */
+            _n(
+              "%s item selected",
+              "%s items selected",
+              bulkIdsCount,
+              "snippet-master"
+            ),
+            bulkIdsCount
+          )}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={__("Deselect all", "snippet-master")}
+                className="flex size-6 items-center justify-center rounded text-background/80 hover:text-background"
+                onClick={() => {
+                  setIsCheckAll(false);
+                  setBulkIds([]);
+                }}
+              >
+                <X className="size-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {__("Unselect items", "snippet-master")}
+            </TooltipContent>
+          </Tooltip>
+          {actions.map(({ label, value, icon, handler }) => (
+            <Button
+              key={value}
+              onClick={handler}
+              size="sm"
+              variant="secondary"
+              disabled={isBusy}
             >
-              <Text color="gray.100">
-                {sprintf(
-                  /* Translators: %s: Number of selected items. */
-                  _n(
-                    "%s item selected",
-                    "%s items selected",
-                    bulkIdsCount,
-                    "snippet-master"
-                  ),
-                  bulkIdsCount
-                )}
-              </Text>
-              <ButtonGroup pointerEvents="auto">
-                <Tooltip label={__("Unselect items", "snippet-master")}>
-                  <IconButton
-                    size="xs"
-                    fontSize="lg"
-                    variant="link"
-                    minW="auto"
-                    icon={<BiX />}
-                    colorScheme="red"
-                    aria-label={__("Deselect all", "snippet-master")}
-                    onClick={() => {
-                      setIsCheckAll(false);
-                      setBulkIds([]);
-                    }}
-                  />
-                </Tooltip>
-                {actions.map(({ label, value, icon, colorScheme, handler }) => (
-                  <Button
-                    key={value}
-                    onClick={handler}
-                    colorScheme={colorScheme}
-                    borderRadius="md"
-                    size="xs"
-                    leftIcon={icon}
-                    isLoading={isBusy}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </Stack>
-          </Stack>
-        </Slide>
-      </Portal>
-    </>
+              {icon}
+              {label}
+            </Button>
+          ))}
+          <Button
+            onClick={onDelete}
+            size="sm"
+            variant="destructive"
+            disabled={isBusy}
+          >
+            <Trash2 />
+            {__("Delete", "snippet-master")}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
+
+  return container ? createPortal(bar, container) : bar;
 };
 
 export default FloatingBulkAction;

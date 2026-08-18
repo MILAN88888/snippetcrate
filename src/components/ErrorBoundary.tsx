@@ -1,4 +1,3 @@
-import { Box, Center, Code, Heading, Stack } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import React, { Component, ErrorInfo, PropsWithChildren } from "react";
 
@@ -27,16 +26,16 @@ class ErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <Center minH="90vh">
-          <Box textAlign="center">
-            <Stack direction="column" align="center">
-              <Heading>
-                {__("Oops! Something went wrong.", "snippet-master")}
-              </Heading>
-              <Code>{this.state.error.toString()}</Code>
-            </Stack>
-          </Box>
-        </Center>
+        <div className="flex min-h-[90vh] items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <h1 className="text-2xl font-bold text-foreground">
+              {__("Oops! Something went wrong.", "snippet-master")}
+            </h1>
+            <code className="rounded-md bg-muted px-3 py-2 text-sm text-destructive">
+              {this.state.error.toString()}
+            </code>
+          </div>
+        </div>
       );
     }
 

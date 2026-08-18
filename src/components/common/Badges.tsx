@@ -1,19 +1,28 @@
 import React from "react";
-import { Badge } from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
+import { Badge } from "@/components/ui/badge";
 
-const langMeta: Record<string, { label: string; color: string }> = {
-  PHP: { label: "PHP", color: "purple" },
-  JS: { label: "JavaScript", color: "yellow" },
-  CSS: { label: "CSS", color: "blue" },
-  HTML: { label: "HTML", color: "orange" }
+type BadgeVariant =
+  | "blue"
+  | "purple"
+  | "yellow"
+  | "orange"
+  | "green"
+  | "gray"
+  | "cyan";
+
+const langMeta: Record<string, { label: string; variant: BadgeVariant }> = {
+  PHP: { label: "PHP", variant: "blue" },
+  JS: { label: "JavaScript", variant: "yellow" },
+  CSS: { label: "CSS", variant: "blue" },
+  HTML: { label: "HTML", variant: "orange" }
 };
 
-const scopeColor: Record<string, string> = {
-  global: "blue",
-  header: "green",
-  footer: "orange",
-  shortcode: "cyan"
+const scopeVariant: Record<string, BadgeVariant> = {
+  global: "gray",
+  header: "gray",
+  footer: "gray",
+  shortcode: "gray"
 };
 
 const normalizeLang = (lang?: string): string => {
@@ -23,20 +32,16 @@ const normalizeLang = (lang?: string): string => {
 
 export const LanguageBadge: React.FC<{ lang?: string }> = ({ lang }) => {
   const meta = langMeta[normalizeLang(lang)];
-  return <Badge colorScheme={meta.color}>{meta.label}</Badge>;
+  return <Badge variant={meta.variant}>{meta.label}</Badge>;
 };
 
 export const ScopeBadge: React.FC<{ scope?: string }> = ({ scope }) => {
   const value = (scope ?? "global").toString().toLowerCase();
-  return (
-    <Badge variant="subtle" colorScheme={scopeColor[value] ?? "gray"}>
-      {value}
-    </Badge>
-  );
+  return <Badge variant={scopeVariant[value] ?? "gray"}>{value}</Badge>;
 };
 
 export const StatusBadge: React.FC<{ active?: boolean }> = ({ active }) => (
-  <Badge variant="subtle" colorScheme={active ? "green" : "gray"}>
+  <Badge variant={active ? "green" : "gray"}>
     {active ? __("Active", "snippet-master") : __("Inactive", "snippet-master")}
   </Badge>
 );

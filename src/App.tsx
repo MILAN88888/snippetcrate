@@ -1,23 +1,35 @@
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import MainLayout from "./components/MainLayout";
 import { HashRouter } from "react-router-dom";
-import { theme } from "./theme/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "./style/main.scss";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { PortalContainerProvider } from "@/components/PortalContext";
+import "@fontsource/plus-jakarta-sans/latin-400.css";
+import "@fontsource/plus-jakarta-sans/latin-500.css";
+import "@fontsource/plus-jakarta-sans/latin-600.css";
+import "@fontsource/plus-jakarta-sans/latin-700.css";
+import "./style/globals.css";
 
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
+  // Radix overlays portal here so their content stays inside the scoped subtree.
+  const portalContainer =
+    typeof document !== "undefined"
+      ? document.getElementById("snippet-master")
+      : null;
+
   return (
     <ErrorBoundary>
       <HashRouter>
-        <ChakraProvider theme={theme}>
-          <QueryClientProvider client={queryClient}>
-            <MainLayout />
-          </QueryClientProvider>
-        </ChakraProvider>
+        <QueryClientProvider client={queryClient}>
+          <PortalContainerProvider value={portalContainer}>
+            <TooltipProvider delayDuration={200}>
+              <MainLayout />
+            </TooltipProvider>
+          </PortalContainerProvider>
+        </QueryClientProvider>
       </HashRouter>
     </ErrorBoundary>
   );

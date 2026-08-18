@@ -192,7 +192,7 @@ class ScriptStyleController {
 		// Make the React UI strings translatable (loads languages/*.json when present).
 		wp_set_script_translations(
 			'snippet-master-main',
-			'snippet-master',
+			'custom-code-snippets-manager',
 			plugin_dir_path( SNIPPET_MASTER_PLUGIN_FILE ) . 'languages'
 		);
 	}

@@ -46,7 +46,7 @@ final class SnippetMaster {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain(
-			'snippet-master',
+			'custom-code-snippets-manager',
 			false,
 			dirname( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) ) . '/languages/'
 		);
@@ -64,7 +64,7 @@ final class SnippetMaster {
 	public function plugin_row_meta( $plugin_meta, $plugin_file ) {
 		if ( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) === $plugin_file ) {
 			$new_plugin_meta = array(
-				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'snippet-master' ) . '">' . esc_html__( 'Docs', 'snippet-master' ) . '</a>',
+				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'custom-code-snippets-manager' ) . '">' . esc_html__( 'Docs', 'custom-code-snippets-manager' ) . '</a>',
 			);
 
 			return array_merge( $plugin_meta, $new_plugin_meta );

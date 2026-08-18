@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in the **Snippet Master** plugin.
+Guidance for Claude Code when working in the **Custom Code Snippets Manager** plugin (folder `custom-code-snippets-manager`; internal id/prefix `snippet-master` / `ccsnpt_` are kept for continuity).
 
 ## What this is
 
@@ -14,7 +14,7 @@ beside in this WordPress install.
 
 ### PHP (`includes/`, PSR-4 root `SnippetMaster\`)
 
-- `snippet-master.php` — bootstrap. Loads Composer's autoloader if present, otherwise
+- `custom-code-snippets-manager.php` — bootstrap. Loads Composer's autoloader if present, otherwise
   registers a **built-in PSR-4 fallback** (`SnippetMaster\` → `includes/`) so the plugin
   runs without `composer install`. Boots on `plugins_loaded`; creates the table on
   activation.
@@ -58,8 +58,7 @@ beside in this WordPress install.
 ### Frontend (`src/`, React 18 + TypeScript, built by Webpack into `dist/`)
 
 - **shadcn/ui (Radix primitives) + Tailwind CSS** (not Chakra), `@tanstack/react-query`,
-  `react-router-dom` (HashRouter), **Monaco** editor
-  (`src/screen/addnew/components/MonacoEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
+  `react-router-dom` (HashRouter), **CodeMirror 6** editor (`src/screen/addnew/components/CodeEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
   is scoped to the `#snippet-master` mount via `important` + a disabled preflight (scoped
   reset in `src/style/globals.css`); tokens are oklch CSS vars; font is Plus Jakarta Sans.
   Vendored primitives live in `src/components/ui/*` (`cn()` in `src/lib/utils.ts`); Radix
@@ -72,10 +71,9 @@ beside in this WordPress install.
   supports `searchByItem, startDate/endDate, status, tag, lang, scope`; the date range is
   optional (no default range) and the filter UI uses shadcn `Select` + a `react-day-picker`
   range calendar in a popover.
-- `src/screen/addnew/` — add/edit form with the Monaco editor, language + scope
+- `src/screen/addnew/` — add/edit form with the CodeMirror editor, language + scope
   selectors, and **live syntax validation** (`AddNewForm.tsx`): a debounced effect runs
-  acorn (JS) or calls the `validate` endpoint (PHP), then sets Monaco markers
-  (`monaco.editor.setModelMarkers`) and an inline message. The editor keeps a leading
+  acorn (JS) or calls the `validate` endpoint (PHP), then shows a CodeMirror lint diagnostic and an inline message. The editor keeps a leading
   `<?php` line only while the language is PHP — `AddNewForm` auto-strips it when switching
   to JS/CSS/HTML and re-adds it when switching back (`stripPhpOpen`/`ensurePhpOpen`); the
   server re-adds `<?php` only on a single-snippet (edit) fetch, not on the list query.
@@ -88,7 +86,7 @@ beside in this WordPress install.
   `webpack --mode production`. `dist/` is tracked — rebuild and commit it (with a
   `build:` prefix) whenever `src/` changes.
 - **Runtime verification**: use the **`verify-snippet-master`** skill (wp-cli smoke test
-  on `urm.local`, plus the browser-auth flow for the admin UI).
+  on `urm.me`, plus the browser-auth flow for the admin UI).
 - After changing `package.json` deps, regenerate the tracked npm `package-lock.json`
   (`npm install --package-lock-only`) and delete any `pnpm-lock.yaml`.
 
@@ -96,6 +94,6 @@ beside in this WordPress install.
 
 - Commits: single-line, lowercase `type: message` (`fix:`, `add:`, `refactor:`,
   `build:`). **No** `Co-Authored-By` trailer. Push to `main`.
-- i18n text domain is **`snippet-master`** for every user-facing string.
+- i18n text domain is **`custom-code-snippets-manager`** for every user-facing string.
 - Table `{prefix}ccsnpt_snippets` columns: `title, lang, description, codesnippet, tags,
   scope, priority, active, created_by, updated_by, created_at, updated_at`.

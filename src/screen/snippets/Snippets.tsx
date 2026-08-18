@@ -17,19 +17,19 @@ const Snippets: React.FC = () => {
           <Logo />
           <div>
             <h1 className="text-2xl font-bold text-foreground">
-              {__("Snippet Master", "snippet-master")}
+              {__("Custom Code Snippets Manager", "custom-code-snippets-manager")}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {__(
                 "Manage the PHP, JavaScript, CSS and HTML snippets running on your site.",
-                "snippet-master"
+                "custom-code-snippets-manager"
               )}
             </p>
           </div>
         </div>
         <Button onClick={() => navigate("/snippet/add")}>
           <Plus />
-          {__("Add New Snippet", "snippet-master")}
+          {__("Add New Snippet", "custom-code-snippets-manager")}
         </Button>
       </div>
 

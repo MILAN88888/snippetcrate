@@ -103,12 +103,12 @@ const SnippetTable: React.FC = () => {
     mutationFn: updateStatusSnippets,
     onSuccess: (res: any) => {
       if (res === false) {
-        notify(__("Update failed!!", "snippet-master"), "error");
+        notify(__("Update failed!!", "custom-code-snippets-manager"), "error");
       } else {
         notify(
           res.active
-            ? __("Activated successfully!!", "snippet-master")
-            : __("Deactivated successfully!!", "snippet-master")
+            ? __("Activated successfully!!", "custom-code-snippets-manager")
+            : __("Deactivated successfully!!", "custom-code-snippets-manager")
         );
       }
       queryClient.invalidateQueries({ queryKey: ["snippets"] });
@@ -120,9 +120,9 @@ const SnippetTable: React.FC = () => {
     mutationFn: deleteSnippets,
     onSuccess: (res: any) => {
       if (res === false) {
-        notify(__("Deletion failed!!", "snippet-master"), "error");
+        notify(__("Deletion failed!!", "custom-code-snippets-manager"), "error");
       } else {
-        notify(__("Deleted successfully!!", "snippet-master"));
+        notify(__("Deleted successfully!!", "custom-code-snippets-manager"));
         setIsCheck([]);
         setIsCheckAll(false);
       }
@@ -134,7 +134,7 @@ const SnippetTable: React.FC = () => {
   const duplicateMutation = useMutation({
     mutationFn: duplicateSnippet,
     onSuccess: () => {
-      notify(__("Snippet duplicated!!", "snippet-master"));
+      notify(__("Snippet duplicated!!", "custom-code-snippets-manager"));
       refresh();
     },
     onError: (err) => notify(err.message, "error")
@@ -143,7 +143,7 @@ const SnippetTable: React.FC = () => {
   const bulkStatusMutation = useMutation({
     mutationFn: bulkUpdateStatus,
     onSuccess: () => {
-      notify(__("Snippets updated!!", "snippet-master"));
+      notify(__("Snippets updated!!", "custom-code-snippets-manager"));
       setIsCheck([]);
       setIsCheckAll(false);
       queryClient.invalidateQueries({ queryKey: ["snippets"] });
@@ -154,7 +154,7 @@ const SnippetTable: React.FC = () => {
   const importMutation = useMutation({
     mutationFn: importSnippets,
     onSuccess: (res: any) => {
-      notify(res?.message ?? __("Snippets imported!!", "snippet-master"));
+      notify(res?.message ?? __("Snippets imported!!", "custom-code-snippets-manager"));
       refresh();
     },
     onError: (err) => notify(err.message, "error")
@@ -204,12 +204,12 @@ const SnippetTable: React.FC = () => {
       const parsed = JSON.parse(text);
       const snippets = Array.isArray(parsed) ? parsed : parsed?.snippets;
       if (!Array.isArray(snippets)) {
-        notify(__("Invalid import file.", "snippet-master"), "error");
+        notify(__("Invalid import file.", "custom-code-snippets-manager"), "error");
         return;
       }
       importMutation.mutate(snippets);
     } catch (err) {
-      notify(__("Could not read the import file.", "snippet-master"), "error");
+      notify(__("Could not read the import file.", "custom-code-snippets-manager"), "error");
     }
   };
 
@@ -227,7 +227,7 @@ const SnippetTable: React.FC = () => {
     return (
       <Card className="p-6">
         <p className="text-center text-destructive">
-          {__("Failed to load snippets: ", "snippet-master")} {error.message}
+          {__("Failed to load snippets: ", "custom-code-snippets-manager")} {error.message}
         </p>
       </Card>
     );
@@ -253,22 +253,22 @@ const SnippetTable: React.FC = () => {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload />
-              {__("Import", "snippet-master")}
+              {__("Import", "custom-code-snippets-manager")}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Download />
-                  {__("Export", "snippet-master")}
+                  {__("Export", "custom-code-snippets-manager")}
                   <ChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => handleExport([], "json")}>
-                  {__("Export all (JSON)", "snippet-master")}
+                  {__("Export all (JSON)", "custom-code-snippets-manager")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport([], "php")}>
-                  {__("Export all PHP (.php)", "snippet-master")}
+                  {__("Export all PHP (.php)", "custom-code-snippets-manager")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -287,17 +287,17 @@ const SnippetTable: React.FC = () => {
                   <Checkbox
                     checked={isCheckAll}
                     onCheckedChange={(checked) => onCheckAll(checked === true)}
-                    aria-label={__("Select all snippets", "snippet-master")}
+                    aria-label={__("Select all snippets", "custom-code-snippets-manager")}
                   />
                 </TableHead>
-                <TableHead>{__("Snippet", "snippet-master")}</TableHead>
-                <TableHead>{__("Language", "snippet-master")}</TableHead>
-                <TableHead>{__("Scope", "snippet-master")}</TableHead>
-                <TableHead>{__("Priority", "snippet-master")}</TableHead>
-                <TableHead>{__("Status", "snippet-master")}</TableHead>
-                <TableHead>{__("Updated", "snippet-master")}</TableHead>
+                <TableHead>{__("Snippet", "custom-code-snippets-manager")}</TableHead>
+                <TableHead>{__("Language", "custom-code-snippets-manager")}</TableHead>
+                <TableHead>{__("Scope", "custom-code-snippets-manager")}</TableHead>
+                <TableHead>{__("Priority", "custom-code-snippets-manager")}</TableHead>
+                <TableHead>{__("Status", "custom-code-snippets-manager")}</TableHead>
+                <TableHead>{__("Updated", "custom-code-snippets-manager")}</TableHead>
                 <TableHead className="text-right">
-                  {__("Actions", "snippet-master")}
+                  {__("Actions", "custom-code-snippets-manager")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -311,7 +311,7 @@ const SnippetTable: React.FC = () => {
                         onCheckedChange={(checked) =>
                           onCheckRow(snippet.id, checked === true)
                         }
-                        aria-label={__("Select snippet", "snippet-master")}
+                        aria-label={__("Select snippet", "custom-code-snippets-manager")}
                       />
                     </TableCell>
                     <TableCell className="max-w-[260px]">
@@ -340,7 +340,7 @@ const SnippetTable: React.FC = () => {
                         checked={isActive(snippet.active)}
                         aria-label={__(
                           "Toggle snippet status",
-                          "snippet-master"
+                          "custom-code-snippets-manager"
                         )}
                         onCheckedChange={() =>
                           statusToggler({
@@ -366,7 +366,7 @@ const SnippetTable: React.FC = () => {
                               size="icon"
                               aria-label={__(
                                 "Duplicate snippet",
-                                "snippet-master"
+                                "custom-code-snippets-manager"
                               )}
                               onClick={() =>
                                 duplicateMutation.mutate(snippet.id)
@@ -376,7 +376,7 @@ const SnippetTable: React.FC = () => {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {__("Duplicate", "snippet-master")}
+                            {__("Duplicate", "custom-code-snippets-manager")}
                           </TooltipContent>
                         </Tooltip>
                         <Tooltip>
@@ -384,14 +384,14 @@ const SnippetTable: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              aria-label={__("Edit snippet", "snippet-master")}
+                              aria-label={__("Edit snippet", "custom-code-snippets-manager")}
                               onClick={() => editSnippet(Number(snippet.id))}
                             >
                               <Pencil />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {__("Edit", "snippet-master")}
+                            {__("Edit", "custom-code-snippets-manager")}
                           </TooltipContent>
                         </Tooltip>
                         <Tooltip>
@@ -402,7 +402,7 @@ const SnippetTable: React.FC = () => {
                               className="text-destructive hover:text-destructive"
                               aria-label={__(
                                 "Delete snippet",
-                                "snippet-master"
+                                "custom-code-snippets-manager"
                               )}
                               onClick={() => deleteSnippet(Number(snippet.id))}
                             >
@@ -410,7 +410,7 @@ const SnippetTable: React.FC = () => {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {__("Delete", "snippet-master")}
+                            {__("Delete", "custom-code-snippets-manager")}
                           </TooltipContent>
                         </Tooltip>
                       </div>
@@ -422,7 +422,7 @@ const SnippetTable: React.FC = () => {
                   <TableCell colSpan={8}>
                     <div className="flex justify-center py-10">
                       <p className="text-muted-foreground">
-                        {__("No snippets found", "snippet-master")}
+                        {__("No snippets found", "custom-code-snippets-manager")}
                       </p>
                     </div>
                   </TableCell>

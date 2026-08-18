@@ -42,7 +42,7 @@ class MenusController {
   </g>
 </svg>';
 		$base64_svg = 'data:image/svg+xml;base64,' . base64_encode($svg); // phpcs:ignore
-		$page       = add_menu_page( esc_html__( 'Snippet Master', 'snippet-master' ), esc_html__( 'Snippet Master', 'snippet-master' ), 'manage_options', 'snippet-master', array( $this, 'main_page' ), $base64_svg );
+		$page       = add_menu_page( esc_html__( 'Custom Code Snippets Manager', 'custom-code-snippets-manager' ), esc_html__( 'Code Snippets', 'custom-code-snippets-manager' ), 'manage_options', 'snippet-master', array( $this, 'main_page' ), $base64_svg );
 
 		add_action( "admin_print_scripts-$page", array( $this, 'enqueue' ) );
 	}

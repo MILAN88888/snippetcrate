@@ -1,6 +1,6 @@
 {
-	"name": "snippet-master/snippet-master",
-	"description": "Effortlessly user can add the block of code to code file.",
+	"name": "wpmilan/custom-code-snippets-manager",
+	"description": "Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress.",
 	"version": "1.0.0",
 	"license": "GPL-2.0-or-later",
 	"autoload": {
@@ -36,7 +36,7 @@
 			"phpcbf -p"
 		],
 		"makepot-audit": [
-			"\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=snippet-master"
+			"\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=custom-code-snippets-manager"
 		],
 		"makepot": [
 			"@makepot-audit --skip-audit"

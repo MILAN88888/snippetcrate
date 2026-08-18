@@ -42,6 +42,6 @@ export const ScopeBadge: React.FC<{ scope?: string }> = ({ scope }) => {
 
 export const StatusBadge: React.FC<{ active?: boolean }> = ({ active }) => (
   <Badge variant={active ? "green" : "gray"}>
-    {active ? __("Active", "snippet-master") : __("Inactive", "snippet-master")}
+    {active ? __("Active", "custom-code-snippets-manager") : __("Inactive", "custom-code-snippets-manager")}
   </Badge>
 );

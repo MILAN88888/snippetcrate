@@ -76,7 +76,7 @@ with a `build:` prefix. Set `ANALYZE=true` to also emit the bundle-analyzer repo
 ## PHP checks
 
 ```bash
-for f in $(find includes snippet-master.php -name '*.php'); do php -l "$f"; done
+for f in $(find includes custom-code-snippets-manager.php -name '*.php'); do php -l "$f"; done
 ```
 
 Full WordPress Coding Standards (`composer run-script phpcs`) require WPCS installed

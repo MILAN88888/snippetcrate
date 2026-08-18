@@ -54,7 +54,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
         <p className="text-sm text-muted-foreground">
           {sprintf(
             /* translators: 1: first row, 2: last row, 3: total. */
-            __("Showing %1$s–%2$s of %3$s snippets", "snippet-master"),
+            __("Showing %1$s–%2$s of %3$s snippets", "custom-code-snippets-manager"),
             first,
             last,
             totalCount
@@ -62,7 +62,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
         </p>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">
-            {__("Per page", "snippet-master")}
+            {__("Per page", "custom-code-snippets-manager")}
           </span>
           <Select
             value={String(limit)}
@@ -92,7 +92,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
         <Button
           variant="outline"
           size="icon"
-          aria-label={__("Previous page", "snippet-master")}
+          aria-label={__("Previous page", "custom-code-snippets-manager")}
           disabled={current <= 1}
           onClick={() => goTo(current - 1)}
         >
@@ -121,7 +121,7 @@ const SnippetPagination: React.FC<SnippetPagiProps> = ({
         <Button
           variant="outline"
           size="icon"
-          aria-label={__("Next page", "snippet-master")}
+          aria-label={__("Next page", "custom-code-snippets-manager")}
           disabled={current >= totalPages}
           onClick={() => goTo(current + 1)}
         >

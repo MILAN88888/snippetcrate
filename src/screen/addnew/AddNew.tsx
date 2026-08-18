@@ -20,22 +20,22 @@ const AddNew: React.FC = () => {
           <div>
             <h1 className="text-2xl font-bold text-foreground">
               {id
-                ? __("Edit Snippet", "snippet-master")
-                : __("Add New Snippet", "snippet-master")}
+                ? __("Edit Snippet", "custom-code-snippets-manager")
+                : __("Add New Snippet", "custom-code-snippets-manager")}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {id
-                ? __("Update this snippet and its settings.", "snippet-master")
+                ? __("Update this snippet and its settings.", "custom-code-snippets-manager")
                 : __(
                     "Create a new PHP, JavaScript, CSS or HTML snippet for your site.",
-                    "snippet-master"
+                    "custom-code-snippets-manager"
                   )}
             </p>
           </div>
         </div>
         <Button variant="outline" onClick={() => navigate("/")}>
           <ArrowLeft />
-          {__("Back to snippets", "snippet-master")}
+          {__("Back to snippets", "custom-code-snippets-manager")}
         </Button>
       </div>
       <AddNewForm {...editProps} />

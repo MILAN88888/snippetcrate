@@ -31,7 +31,7 @@ const fileList = {
     dest: `build/${pkg.name}/`
   },
   other: {
-    src: ["readme.txt", "changelog.txt", "snippet-master.php"],
+    src: ["readme.txt", "changelog.txt", "custom-code-snippets-manager.php"],
     dest: `build/${pkg.name}/`
   },
   dist: {
@@ -134,7 +134,7 @@ async function bumpMinorVersion() {
     )
     .pipe(dest("./"));
 
-  src("./snippet-master.php")
+  src("./custom-code-snippets-manager.php")
     .pipe(
       bump({
         key: "SNIPPET_MASTER_VERSION",
@@ -175,7 +175,7 @@ async function bumpPatchVersion() {
     )
     .pipe(dest("./"));
 
-  src("./snippet-master.php")
+  src("./custom-code-snippets-manager.php")
     .pipe(
       bump({
         key: "SNIPPET_MASTER_VERSION",

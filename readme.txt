@@ -1,4 +1,4 @@
-=== Snippet Master ===
+=== Custom Code Snippets Manager ===
 Contributors: MILAN88888
 Tags: code snippets, custom code, php snippets, code manager, css
 Requires at least: 5.2
@@ -12,7 +12,7 @@ Easily manage and run custom PHP, JavaScript, CSS and HTML code snippets in Word
 
 == Description ==
 
-Snippet Master is a 100% free and open-source plugin that lets you add, manage, and run custom code snippets on your WordPress site without editing theme or plugin files.
+Custom Code Snippets Manager is a 100% free and open-source plugin that lets you add, manage, and run custom code snippets on your WordPress site without editing theme or plugin files.
 
 Everything is managed from a clean, modern admin screen with a built-in code editor, so you can add a tracking script, a small PHP tweak, or some custom CSS in seconds — and turn it off just as fast.
 
@@ -35,9 +35,9 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 
 == Installation ==
 
-1. Upload the `snippet-master` folder to the `/wp-content/plugins/` directory, or install the plugin through the **Plugins → Add New** screen in WordPress.
+1. Upload the `custom-code-snippets-manager` folder to the `/wp-content/plugins/` directory, or install the plugin through the **Plugins → Add New** screen in WordPress.
 2. Activate the plugin through the **Plugins** screen.
-3. Open **Snippet Master** from the WordPress admin menu.
+3. Open **Custom Code Snippets Manager** from the WordPress admin menu.
 4. Click **Add New Snippet**, choose a language and scope, paste your code, and Save & Activate.
 
 == Frequently Asked Questions ==
@@ -48,7 +48,7 @@ Only administrators (users with the `manage_options` capability). All admin scre
 
 = What happens if my PHP snippet has an error? =
 
-Snippet Master validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated so it cannot break your site.
+Custom Code Snippets Manager validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated so it cannot break your site.
 
 = Which languages are supported? =
 
@@ -76,7 +76,7 @@ Yes. Deleting the plugin removes its database table and options. Deactivating th
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Snippet Master.
+Initial release of Custom Code Snippets Manager.
 
 == Changelog ==
 

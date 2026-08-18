@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<
         <div className="flex min-h-[90vh] items-center justify-center">
           <div className="flex flex-col items-center gap-3 text-center">
             <h1 className="text-2xl font-bold text-foreground">
-              {__("Oops! Something went wrong.", "snippet-master")}
+              {__("Oops! Something went wrong.", "custom-code-snippets-manager")}
             </h1>
             <code className="rounded-md bg-muted px-3 py-2 text-sm text-destructive">
               {this.state.error.toString()}

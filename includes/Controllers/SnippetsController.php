@@ -45,9 +45,9 @@ class SnippetsController {
 		$title  = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
 
 		if ( empty( $title ) ) {
-			$errors['title'] = esc_html__( 'Title is required.', 'snippet-master' );
+			$errors['title'] = esc_html__( 'Title is required.', 'custom-code-snippets-manager' );
 		} elseif ( strlen( $title ) > 255 ) {
-			$errors['title'] = esc_html__( 'Title must be less than 255 characters.', 'snippet-master' );
+			$errors['title'] = esc_html__( 'Title must be less than 255 characters.', 'custom-code-snippets-manager' );
 		}
 
 		$codesnippet = isset( $params['codesnippet'] ) && is_string( $params['codesnippet'] ) ? $params['codesnippet'] : '';
@@ -61,13 +61,13 @@ class SnippetsController {
 		}
 
 		if ( empty( $codesnippet ) ) {
-			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'snippet-master' );
+			$errors['codesnippet'] = esc_html__( 'Code snippet is required.', 'custom-code-snippets-manager' );
 		} elseif ( 'PHP' === $lang ) {
 			$syntax_error = Helper::php_syntax_error( $codesnippet );
 			if ( false !== $syntax_error ) {
 				$errors['codesnippet'] = sprintf(
 					/* translators: %s: PHP parse error message. */
-					esc_html__( 'PHP syntax error: %s', 'snippet-master' ),
+					esc_html__( 'PHP syntax error: %s', 'custom-code-snippets-manager' ),
 					$syntax_error
 				);
 			}
@@ -76,16 +76,16 @@ class SnippetsController {
 		$priority = isset( $params['priority'] ) ? $params['priority'] : null;
 
 		if ( null === $priority || '' === $priority || ! is_numeric( $priority ) ) {
-			$errors['priority'] = esc_html__( 'Priority is required and must be an integer.', 'snippet-master' );
+			$errors['priority'] = esc_html__( 'Priority is required and must be an integer.', 'custom-code-snippets-manager' );
 		} elseif ( (int) $priority < 0 ) {
-			$errors['priority'] = esc_html__( 'Priority must be a non-negative integer.', 'snippet-master' );
+			$errors['priority'] = esc_html__( 'Priority must be a non-negative integer.', 'custom-code-snippets-manager' );
 		}
 		$priority = absint( $priority );
 
 		$description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
 
 		if ( empty( $description ) ) {
-			$errors['description'] = esc_html__( 'Description is required.', 'snippet-master' );
+			$errors['description'] = esc_html__( 'Description is required.', 'custom-code-snippets-manager' );
 		}
 
 		$tags = isset( $params['tags'] ) ? sanitize_text_field( $params['tags'] ) : '';
@@ -93,9 +93,9 @@ class SnippetsController {
 		$allowed_scopes = array( 'global', 'header', 'footer', 'shortcode' );
 		$scope          = isset( $params['scope'] ) ? sanitize_text_field( $params['scope'] ) : 'global';
 		if ( ! in_array( $scope, $allowed_scopes, true ) ) {
-			$errors['scope'] = esc_html__( 'Scope must be one of global, header, footer or shortcode.', 'snippet-master' );
+			$errors['scope'] = esc_html__( 'Scope must be one of global, header, footer or shortcode.', 'custom-code-snippets-manager' );
 		} elseif ( 'PHP' !== $lang && 'global' === $scope ) {
-			$errors['scope'] = esc_html__( 'Only PHP snippets can use the global scope. Choose header, footer or shortcode.', 'snippet-master' );
+			$errors['scope'] = esc_html__( 'Only PHP snippets can use the global scope. Choose header, footer or shortcode.', 'custom-code-snippets-manager' );
 		}
 
 		$active = isset( $params['active'] ) ? absint( $params['active'] ) : 0;
@@ -123,7 +123,7 @@ class SnippetsController {
 		if ( ! empty( $validated_data['errors'] ) ) {
 			return new \WP_REST_Response(
 				array(
-					'message' => esc_html__( 'Validation failed. Please check the errors.', 'snippet-master' ),
+					'message' => esc_html__( 'Validation failed. Please check the errors.', 'custom-code-snippets-manager' ),
 					'errors'  => $validated_data['errors'],
 				),
 				400
@@ -133,7 +133,7 @@ class SnippetsController {
 		$res = $this->snippets->save_snippets( $validated_data['data'] );
 
 		return new \WP_REST_Response(
-			array( 'message' => $res ? esc_html__( 'Saved successfully!!', 'snippet-master' ) : esc_html__( 'Save Failed!!', 'snippet-master' ) ),
+			array( 'message' => $res ? esc_html__( 'Saved successfully!!', 'custom-code-snippets-manager' ) : esc_html__( 'Save Failed!!', 'custom-code-snippets-manager' ) ),
 			200
 		);
 	}
@@ -169,7 +169,7 @@ class SnippetsController {
 		$params = $request->get_json_params();
 		if ( ! isset( $params['id'] ) || empty( $params['id'] ) || ! isset( $params['active'] ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Failed to update!!', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'Failed to update!!', 'custom-code-snippets-manager' ) ),
 				400
 			);
 		}
@@ -188,7 +188,7 @@ class SnippetsController {
 
 		if ( empty( $params ) || ! is_array( $params ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Deletion failed!!', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'Deletion failed!!', 'custom-code-snippets-manager' ) ),
 				400
 			);
 		}
@@ -254,7 +254,7 @@ class SnippetsController {
 
 		if ( ! $id ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'Duplication failed!!', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'Duplication failed!!', 'custom-code-snippets-manager' ) ),
 				400
 			);
 		}
@@ -264,8 +264,8 @@ class SnippetsController {
 		return new \WP_REST_Response(
 			array(
 				'message' => $new_id
-					? esc_html__( 'Snippet duplicated!!', 'snippet-master' )
-					: esc_html__( 'Duplication failed!!', 'snippet-master' ),
+					? esc_html__( 'Snippet duplicated!!', 'custom-code-snippets-manager' )
+					: esc_html__( 'Duplication failed!!', 'custom-code-snippets-manager' ),
 				'id'      => $new_id ? $new_id : null,
 			),
 			$new_id ? 200 : 400
@@ -286,7 +286,7 @@ class SnippetsController {
 
 		if ( empty( $ids ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'No snippets selected.', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'No snippets selected.', 'custom-code-snippets-manager' ) ),
 				400
 			);
 		}
@@ -296,8 +296,8 @@ class SnippetsController {
 		return new \WP_REST_Response(
 			array(
 				'message' => $updated
-					? esc_html__( 'Snippets updated!!', 'snippet-master' )
-					: esc_html__( 'Update failed!!', 'snippet-master' ),
+					? esc_html__( 'Snippets updated!!', 'custom-code-snippets-manager' )
+					: esc_html__( 'Update failed!!', 'custom-code-snippets-manager' ),
 			),
 			$updated ? 200 : 400
 		);
@@ -379,7 +379,7 @@ class SnippetsController {
 
 		if ( empty( $snippets ) ) {
 			return new \WP_REST_Response(
-				array( 'message' => esc_html__( 'No snippets to import.', 'snippet-master' ) ),
+				array( 'message' => esc_html__( 'No snippets to import.', 'custom-code-snippets-manager' ) ),
 				400
 			);
 		}
@@ -413,7 +413,7 @@ class SnippetsController {
 			array(
 				'message'  => sprintf(
 					/* translators: 1: imported count, 2: skipped count. */
-					esc_html__( 'Imported %1$d snippet(s), skipped %2$d.', 'snippet-master' ),
+					esc_html__( 'Imported %1$d snippet(s), skipped %2$d.', 'custom-code-snippets-manager' ),
 					$imported,
 					$skipped
 				),

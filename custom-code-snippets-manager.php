@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Snippet Master
- * Plugin URI: https://wordpress.org/plugins/snippet-master
- * Description: Easily manage and execute custom code snippets in WordPress with the Snippet Master plugin.
+ * Plugin Name: Custom Code Snippets Manager
+ * Plugin URI: https://wordpress.org/plugins/custom-code-snippets-manager
+ * Description: Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress — no theme or plugin file editing required.
  * Version: 1.0.0
  * Author: @wpmilan
  * Author URI: https://milanc.com.np/
- * Text Domain: snippet-master
+ * Text Domain: custom-code-snippets-manager
  * Domain Path: /languages/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

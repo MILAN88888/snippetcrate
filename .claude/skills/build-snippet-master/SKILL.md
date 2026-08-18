@@ -9,6 +9,27 @@ The admin UI is a Webpack + Babel + TypeScript React app in `src/`, compiled int
 tracked `dist/` bundle. The PHP lives in `includes/`. Run everything from the plugin
 root (`wp-content/plugins/snippet-master`).
 
+## UI stack
+
+The app uses **shadcn/ui (Radix primitives) + Tailwind CSS**, not Chakra (Chakra,
+Emotion, framer-motion, chakra-react-select, react-select, react-icons,
+react-date-range and react-responsive-pagination were all removed). Key pieces:
+
+- Tailwind is configured in `tailwind.config.js` with `important: '#snippet-master'`
+  (scopes every utility to the mount node so nothing leaks into wp-admin) and
+  `corePlugins.preflight = false` (a scoped reset lives in `src/style/globals.css`).
+- `postcss.config.js` runs `tailwindcss` + `autoprefixer`; `webpack.config.js` adds
+  `postcss-loader` to the `.css`/`.scss` rules and a `@ → src` `resolve.alias`
+  (mirrored by `paths` in `tsconfig.json`).
+- Design tokens are oklch CSS variables in `src/style/globals.css`; the font is
+  Plus Jakarta Sans via `@fontsource/plus-jakarta-sans` (self-hosted, no CDN).
+- Vendored shadcn components live in `src/components/ui/*`; `cn()` is in
+  `src/lib/utils.ts`. Radix overlays (select/popover/dropdown/tooltip) portal into
+  the `#snippet-master` container via `src/components/PortalContext.tsx` — required
+  so the scoped Tailwind utilities still match portalled content.
+- Icons are `lucide-react`; toasts are `sonner`; the date range uses
+  `react-day-picker` (v9 API) through `src/components/ui/calendar.tsx`.
+
 ## Install dependencies
 
 Use the **globally installed `pnpm` (v10)**, NOT `corepack pnpm` — corepack resolves
@@ -30,11 +51,10 @@ npm install --package-lock-only --no-audit --no-fund
 
 ### Dependency gotchas (pnpm strict layout)
 
-`react-select`, `monaco-editor`, and `@babel/runtime` must be declared in
-`package.json` even though they arrive transitively — pnpm's strict `node_modules`
-won't resolve them otherwise and the build fails with `Module not found`.
-`webpackbar` is intentionally absent: v6 is incompatible with the installed Webpack 5
-(rejects its ProgressPlugin options).
+`monaco-editor` and `@babel/runtime` must be declared in `package.json` even though
+they arrive transitively — pnpm's strict `node_modules` won't resolve them otherwise
+and the build fails with `Module not found`. `webpackbar` is intentionally absent: v6
+is incompatible with the installed Webpack 5 (rejects its ProgressPlugin options).
 
 ## Quality checks (must pass before committing)
 

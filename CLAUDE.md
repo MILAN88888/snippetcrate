@@ -57,12 +57,21 @@ beside in this WordPress install.
 
 ### Frontend (`src/`, React 18 + TypeScript, built by Webpack into `dist/`)
 
-- Chakra UI, `@tanstack/react-query`, `react-router-dom` (HashRouter), **Monaco**
-  editor (`src/screen/addnew/components/MonacoEditor.tsx`), `react-hook-form`, `acorn`.
-- `src/screen/snippets/` — list + table (language/scope/status badges, bulk delete).
-  The list filter (`Snippets::get_snippets()`) supports `searchByItem, startDate/endDate,
-  status, tag, lang, scope`; the date range is optional (no default range) and the filter
-  UI uses `chakra-react-select`.
+- **shadcn/ui (Radix primitives) + Tailwind CSS** (not Chakra), `@tanstack/react-query`,
+  `react-router-dom` (HashRouter), **Monaco** editor
+  (`src/screen/addnew/components/MonacoEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
+  is scoped to the `#snippet-master` mount via `important` + a disabled preflight (scoped
+  reset in `src/style/globals.css`); tokens are oklch CSS vars; font is Plus Jakarta Sans.
+  Vendored primitives live in `src/components/ui/*` (`cn()` in `src/lib/utils.ts`); Radix
+  overlays portal into the mount node via `src/components/PortalContext.tsx`. Icons =
+  `lucide-react`, toasts = `sonner`, date range = `react-day-picker`. See the
+  **`build-snippet-master`** skill for the Tailwind/PostCSS/webpack wiring.
+- `src/screen/snippets/` — list + table (language/scope/status badges, bulk delete),
+  a Total/Active/Inactive stat-cards row (`SnippetStats.tsx`, counts via `getSnippets`
+  `total_count`), and a hand-rolled pager. The list filter (`Snippets::get_snippets()`)
+  supports `searchByItem, startDate/endDate, status, tag, lang, scope`; the date range is
+  optional (no default range) and the filter UI uses shadcn `Select` + a `react-day-picker`
+  range calendar in a popover.
 - `src/screen/addnew/` — add/edit form with the Monaco editor, language + scope
   selectors, and **live syntax validation** (`AddNewForm.tsx`): a debounced effect runs
   acorn (JS) or calls the `validate` endpoint (PHP), then sets Monaco markers

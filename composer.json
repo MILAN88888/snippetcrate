@@ -2,6 +2,7 @@
 	"name": "snippet-master/snippet-master",
 	"description": "Effortlessly user can add the block of code to code file.",
 	"version": "1.0.0",
+	"license": "GPL-2.0-or-later",
 	"autoload": {
 		"psr-4": {
 			"SnippetMaster\\": "includes/"

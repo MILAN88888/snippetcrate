@@ -17,7 +17,7 @@
 		"custom code snippets"
 	],
 	"author": "milan",
-	"license": "ISC",
+	"license": "GPL-2.0-or-later",
 	"dependencies": {
 		"@babel/runtime": "^7.25.0",
 		"acorn": "^8.12.0",

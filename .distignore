@@ -1,21 +1,36 @@
-# A set of files you probably don't want in your WordPress.org distribution
-
-.\*
+# Files and directories that must NOT ship in the WordPress.org distribution.
+.*
 bin
-/build
-/release
+node_modules
+src
+tests
+build
+release
+webpack
+.wordpress-org
+
+# Build / tooling config (not needed at runtime)
+composer.json
 composer.lock
-GruntFile.js
-tsconfig.json
 package.json
+package-lock.json
 pnpm-lock.yaml
 webpack.config.js
-phpcs.xml.dist
-README.md
-webpack
-/node_modules
-CLAUDE.md
 postcss.config.js
+tailwind.config.js
+tsconfig.json
+gulpFile.js
+phpcs.xml
+phpcs.xml.dist
+.babelrc
+.eslintrc.js
+
+# Docs / dev-only
+README.md
+CLAUDE.md
 output.log
 docker_tag
 DOCKER_ENV
+
+# Build artifacts that should never ship
+dist/report.html

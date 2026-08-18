@@ -2,3 +2,5 @@ vendor
 node_modules
 build
 release
+
+bundle-report.html

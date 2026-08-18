@@ -76,6 +76,8 @@ module.exports = (env, argv) => {
       process.env.ANALYZE === "true" &&
         new BundleAnalyzerPlugin({
           analyzerMode: isDevelopment ? "server" : "static",
+          // Write outside dist/ so the dev-only report never ships.
+          reportFilename: path.resolve(process.cwd(), "bundle-report.html"),
           openAnalyzer: false
         })
     ].filter(Boolean),

@@ -83,6 +83,28 @@ class ScriptStyleController {
 	}
 
 	/**
+	 * Asset version used for cache-busting.
+	 *
+	 * Prefers the content hash Webpack writes to dist/main.asset.php so every
+	 * rebuild busts the browser cache; falls back to the plugin version.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
+	public static function get_asset_version() {
+		$asset_file = plugin_dir_path( SNIPPET_MASTER_PLUGIN_FILE ) . 'dist/main.asset.php';
+
+		if ( file_exists( $asset_file ) ) {
+			$asset = include $asset_file;
+			if ( is_array( $asset ) && ! empty( $asset['version'] ) ) {
+				return $asset['version'];
+			}
+		}
+
+		return SNIPPET_MASTER_VERSION;
+	}
+
+	/**
 	 * After WP init.
 	 *
 	 * @since 1.0.0
@@ -90,18 +112,20 @@ class ScriptStyleController {
 	 */
 	public function after_wp_init() {
 
+		$version = self::get_asset_version();
+
 		$this->scripts = array(
 			'main' => array(
 				'src'     => self::get_asset_url( 'main.js' ),
 				'deps'    => array( 'wp-element', 'react', 'react-dom', 'wp-api-fetch', 'wp-i18n', 'wp-blocks' ),
-				'version' => SNIPPET_MASTER_VERSION,
+				'version' => $version,
 			),
 		);
 
 		$this->styles = array(
 			'main' => array(
 				'src'     => self::get_asset_url( 'main.css' ),
-				'version' => SNIPPET_MASTER_VERSION,
+				'version' => $version,
 				'deps'    => array(),
 			),
 		);

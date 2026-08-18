@@ -1,10 +1,10 @@
-import { Box, Button, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import { __ } from "@wordpress/i18n";
 import React from "react";
+import { __ } from "@wordpress/i18n";
 import { useNavigate, useParams } from "react-router-dom";
-import { TiArrowBack } from "react-icons/ti";
-import AddNewForm from "./components/AddNewForm";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Logo from "./../../components/common/Logo";
+import AddNewForm from "./components/AddNewForm";
 
 const AddNew: React.FC = () => {
   const navigate = useNavigate();
@@ -13,39 +13,33 @@ const AddNew: React.FC = () => {
   const editProps = id ? { id: id } : {};
 
   return (
-    <Stack gap="24px">
-      <Flex justify="space-between" align="center" wrap="wrap" gap="12px">
-        <HStack align="flex-start" gap="12px">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-start gap-3">
           <Logo />
-          <Box>
-            <Heading fontSize="24px" fontWeight="700" color="secondary.900">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
               {id
                 ? __("Edit Snippet", "snippet-master")
                 : __("Add New Snippet", "snippet-master")}
-            </Heading>
-            <Text mt="6px" fontSize="14px" color="secondary.500">
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               {id
-                ? __(
-                    "Update this snippet and its settings.",
-                    "snippet-master"
-                  )
+                ? __("Update this snippet and its settings.", "snippet-master")
                 : __(
                     "Create a new PHP, JavaScript, CSS or HTML snippet for your site.",
                     "snippet-master"
                   )}
-            </Text>
-          </Box>
-        </HStack>
-        <Button
-          variant="outline"
-          leftIcon={<TiArrowBack />}
-          onClick={() => navigate("/")}
-        >
+            </p>
+          </div>
+        </div>
+        <Button variant="outline" onClick={() => navigate("/")}>
+          <ArrowLeft />
           {__("Back to snippets", "snippet-master")}
         </Button>
-      </Flex>
+      </div>
       <AddNewForm {...editProps} />
-    </Stack>
+    </div>
   );
 };
 

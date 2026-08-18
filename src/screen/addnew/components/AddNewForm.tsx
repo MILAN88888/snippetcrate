@@ -1,25 +1,8 @@
-import {
-  Box,
-  Button,
-  Center,
-  Code,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  HStack,
-  Input,
-  Select,
-  SimpleGrid,
-  Spinner,
-  Stack,
-  Text,
-  Textarea,
-  useToast
-} from "@chakra-ui/react";
 import { __ } from "@wordpress/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Parser } from "acorn";
+import { Loader2 } from "lucide-react";
 import MonacoEditor from "./MonacoEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -29,18 +12,24 @@ import {
   validateSnippet
 } from "./../../../api/api";
 import { useDebounce } from "./../../../hooks/index";
+import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface AddNewFormProps {
   id?: string | number;
 }
-
-const cardStyle = {
-  bg: "white",
-  borderRadius: "xl",
-  border: "1px solid",
-  borderColor: "secondary.200",
-  p: { base: "16px", md: "28px" }
-};
 
 // Drop a leading `<?php`/`<?` (and its trailing newline) and a trailing `?>`.
 const stripPhpOpen = (code: string): string =>
@@ -52,19 +41,17 @@ const stripPhpOpen = (code: string): string =>
 const ensurePhpOpen = (code: string): string =>
   /^\s*<\?(php)?/i.test(code ?? "") ? code : `<?php\n${code ?? ""}`;
 
-const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
-  const toast = useToast();
+const RequiredMark: React.FC = () => (
+  <span className="text-destructive"> *</span>
+);
 
+const labelClass = "text-sm font-semibold text-foreground";
+
+const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
   const addNewSnippetMutation = useMutation({
     mutationFn: addNewSnippet,
     onSuccess: (res: any) => {
-      toast({
-        title: res.message,
-        status: "success",
-        duration: 3000,
-        isClosable: true
-      });
-
+      toast.success(res.message);
       if (!id) {
         reset();
       }
@@ -79,12 +66,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           });
         });
       }
-      toast({
-        title: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true
-      });
+      toast.error(error.message);
     }
   });
 
@@ -332,56 +314,58 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
   if (id && isFetching) {
     return (
-      <Box {...cardStyle}>
-        <Center minH="300px">
-          <Spinner size="lg" color="primary.500" />
-        </Center>
-      </Box>
+      <Card className="flex min-h-[300px] items-center justify-center p-7">
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </Card>
     );
   }
 
   if (id && isFetchError) {
     return (
-      <Box {...cardStyle}>
-        <Center minH="300px">
-          <Text color="red.500">
-            {__("Failed to load snippet: ", "snippet-master")}
-            {(fetchError as Error)?.message}
-          </Text>
-        </Center>
-      </Box>
+      <Card className="flex min-h-[300px] items-center justify-center p-7">
+        <p className="text-destructive">
+          {__("Failed to load snippet: ", "snippet-master")}
+          {(fetchError as Error)?.message}
+        </p>
+      </Card>
     );
   }
 
   return (
-    <Box {...cardStyle}>
+    <Card className="p-4 md:p-7">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack gap="24px">
-          <FormControl isRequired isInvalid={!!errors.title}>
-            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+        <div className="flex flex-col gap-6">
+          <div>
+            <Label htmlFor="sm-title" className={labelClass}>
               {__("Title", "snippet-master")}
-            </FormLabel>
+              <RequiredMark />
+            </Label>
             <Input
+              id="sm-title"
+              className="mt-2"
               placeholder={__("Enter a descriptive title", "snippet-master")}
+              type="text"
               {...register("title", {
                 required: __("Title is required", "snippet-master")
               })}
-              type="text"
             />
             {errors.title && (
-              <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+              <p className="mt-1 text-xs text-destructive">
+                {errors.title.message}
+              </p>
             )}
-          </FormControl>
+          </div>
 
-          <FormControl isRequired isInvalid={!!codeError}>
-            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+          <div>
+            <Label className={labelClass}>
               {__("Code", "snippet-master")}
-            </FormLabel>
-            <Box
-              borderRadius="lg"
-              overflow="hidden"
-              border="1px solid"
-              borderColor={codeError ? "red.400" : "secondary.300"}
+              <RequiredMark />
+            </Label>
+            <div
+              className={cn(
+                "mt-2 overflow-hidden rounded-xl border",
+                codeError ? "border-destructive" : "border-border"
+              )}
             >
               <Controller
                 name="codesnippet"
@@ -413,13 +397,11 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                   />
                 )}
               />
-            </Box>
+            </div>
             {codeError ? (
-              <Text mt="6px" fontSize="12px" color="red.500">
-                {codeError}
-              </Text>
+              <p className="mt-1.5 text-xs text-destructive">{codeError}</p>
             ) : (
-              <Text mt="6px" fontSize="12px" color="secondary.500">
+              <p className="mt-1.5 text-xs text-muted-foreground">
                 {lang === "JS"
                   ? __(
                       "JavaScript is validated as you type (in your browser).",
@@ -434,45 +416,78 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                         "CSS and HTML are not syntax-checked.",
                         "snippet-master"
                       )}
-              </Text>
+              </p>
             )}
-          </FormControl>
+          </div>
 
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap="20px">
-            <FormControl>
-              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            <div>
+              <Label className={labelClass}>
                 {__("Language", "snippet-master")}
-              </FormLabel>
-              <Select {...register("lang")}>
-                <option value="PHP">{__("PHP", "snippet-master")}</option>
-                <option value="JS">{__("JavaScript", "snippet-master")}</option>
-                <option value="CSS">{__("CSS", "snippet-master")}</option>
-                <option value="HTML">{__("HTML", "snippet-master")}</option>
-              </Select>
-            </FormControl>
+              </Label>
+              <Controller
+                name="lang"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PHP">
+                        {__("PHP", "snippet-master")}
+                      </SelectItem>
+                      <SelectItem value="JS">
+                        {__("JavaScript", "snippet-master")}
+                      </SelectItem>
+                      <SelectItem value="CSS">
+                        {__("CSS", "snippet-master")}
+                      </SelectItem>
+                      <SelectItem value="HTML">
+                        {__("HTML", "snippet-master")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
 
-            <FormControl isInvalid={!!errors.scope}>
-              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+            <div>
+              <Label className={labelClass}>
                 {__("Scope", "snippet-master")}
-              </FormLabel>
-              <Select {...register("scope")}>
-                {scopeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-              {errors.scope && (
-                <FormErrorMessage>{errors.scope.message}</FormErrorMessage>
-              )}
-            </FormControl>
+              </Label>
+              <Controller
+                name="scope"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {scopeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
 
-            <FormControl isRequired isInvalid={!!errors.priority}>
-              <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+            <div>
+              <Label htmlFor="sm-priority" className={labelClass}>
                 {__("Priority", "snippet-master")}
-              </FormLabel>
+                <RequiredMark />
+              </Label>
               <Input
+                id="sm-priority"
+                className="mt-2"
                 placeholder="10"
+                type="number"
+                min="0"
+                step="1"
                 {...register("priority", {
                   required: __("Priority is required", "snippet-master"),
                   validate: (value) =>
@@ -482,25 +497,18 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                       "snippet-master"
                     )
                 })}
-                type="number"
-                min="0"
-                step="1"
               />
               {errors.priority && (
-                <FormErrorMessage>{errors.priority.message}</FormErrorMessage>
+                <p className="mt-1 text-xs text-destructive">
+                  {errors.priority.message}
+                </p>
               )}
-            </FormControl>
-          </SimpleGrid>
+            </div>
+          </div>
 
           {scope === "shortcode" && (
-            <Box
-              bg="secondary.50"
-              border="1px solid"
-              borderColor="secondary.200"
-              borderRadius="md"
-              p="12px"
-            >
-              <Text fontSize="13px" color="secondary.700" mb="6px">
+            <div className="rounded-md border border-border bg-muted/50 p-3">
+              <p className="mb-1.5 text-[13px] text-muted-foreground">
                 {id
                   ? __(
                       "Insert this shortcode where you want the snippet to render:",
@@ -510,76 +518,84 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                       "Save the snippet first to get its shortcode.",
                       "snippet-master"
                     )}
-              </Text>
-              {id && <Code>{`[snippet_master id="${id}"]`}</Code>}
-            </Box>
+              </p>
+              {id && (
+                <code className="rounded bg-card px-2 py-1 text-sm">
+                  {`[snippet_master id="${id}"]`}
+                </code>
+              )}
+            </div>
           )}
 
-          <FormControl isRequired isInvalid={!!errors.description}>
-            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+          <div>
+            <Label htmlFor="sm-description" className={labelClass}>
               {__("Description", "snippet-master")}
-            </FormLabel>
+              <RequiredMark />
+            </Label>
             <Textarea
+              id="sm-description"
+              className="mt-2"
               placeholder={__("What does this snippet do?", "snippet-master")}
               {...register("description", {
                 required: __("Description is required", "snippet-master")
               })}
             />
             {errors.description && (
-              <FormErrorMessage>{errors.description.message}</FormErrorMessage>
+              <p className="mt-1 text-xs text-destructive">
+                {errors.description.message}
+              </p>
             )}
-          </FormControl>
+          </div>
 
-          <FormControl>
-            <FormLabel fontWeight="600" fontSize="14px" color="secondary.800">
+          <div>
+            <Label htmlFor="sm-tags" className={labelClass}>
               {__("Tags", "snippet-master")}
-            </FormLabel>
+            </Label>
             <Input
+              id="sm-tags"
+              className="mt-2"
               placeholder={__(
                 "Comma-separated, e.g. analytics, header",
                 "snippet-master"
               )}
-              {...register("tags")}
               type="text"
+              {...register("tags")}
             />
-          </FormControl>
+          </div>
 
-          <HStack justify="flex-end" gap="12px" pt="8px">
+          <div className="flex justify-end gap-3 border-t border-border pt-6">
             <Button
+              type="submit"
               variant="outline"
-              isDisabled={isSubmitting}
+              disabled={isSubmitting}
               onClick={() => {
                 if (id) {
                   setValue("id", id);
                 }
                 setValue("active", 0);
               }}
-              type="submit"
             >
               {id ? __("Update", "snippet-master") : __("Save", "snippet-master")}
             </Button>
             <Button
-              bg="primary.500"
-              color="white"
-              _hover={{ bg: "primary.600" }}
-              isDisabled={isSubmitting}
-              isLoading={isSubmitting}
+              type="submit"
+              disabled={isSubmitting}
               onClick={() => {
                 if (id) {
                   setValue("id", id);
                 }
                 setValue("active", 1);
               }}
-              type="submit"
             >
+              {isSubmitting && <Loader2 className="animate-spin" />}
               {id
                 ? __("Update & Activate", "snippet-master")
                 : __("Save & Activate", "snippet-master")}
             </Button>
-          </HStack>
-        </Stack>
+          </div>
+        </div>
       </form>
-    </Box>
+    </Card>
   );
 };
 

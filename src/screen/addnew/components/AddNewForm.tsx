@@ -4,7 +4,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Parser } from "acorn";
 import { Loader2 } from "lucide-react";
-import MonacoEditor from "./MonacoEditor";
+import CodeEditor, { CodeLanguage, EditorDiagnostic } from "./CodeEditor";
 import { AddNew, BackendErrors } from "./../../../types/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -104,10 +104,9 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
   const code = watch("codesnippet");
   const debouncedCode = useDebounce(code ?? "", 500);
 
-  const editorRef = useRef<any>(null);
-  const monacoRef = useRef<any>(null);
   const prevLangRef = useRef<string | undefined>(undefined);
   const [liveError, setLiveError] = useState<string | null>(null);
+  const [diagnostic, setDiagnostic] = useState<EditorDiagnostic | null>(null);
 
   const {
     data,
@@ -173,43 +172,15 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     }
   }, [lang, scope, setValue]);
 
-  // Live syntax validation while typing: acorn for JS, a debounced
-  // server round-trip for PHP. Errors are shown as Monaco markers and a message.
+  // Live syntax validation while typing: acorn for JS, a debounced server
+  // round-trip for PHP. Errors surface as a CodeMirror diagnostic + a message.
   useEffect(() => {
     let cancelled = false;
-
-    const applyMarker = (
-      err: { line: number; column: number; message: string } | null
-    ) => {
-      const editor = editorRef.current;
-      const monaco = monacoRef.current;
-      if (!editor || !monaco) {
-        return;
-      }
-      const model = editor.getModel();
-      if (!model) {
-        return;
-      }
-      if (!err) {
-        monaco.editor.setModelMarkers(model, "snippet-master", []);
-        return;
-      }
-      monaco.editor.setModelMarkers(model, "snippet-master", [
-        {
-          startLineNumber: err.line,
-          startColumn: err.column,
-          endLineNumber: err.line,
-          endColumn: model.getLineMaxColumn(err.line),
-          message: err.message,
-          severity: monaco.MarkerSeverity.Error
-        }
-      ]);
-    };
 
     const value = debouncedCode ?? "";
     if (value.trim() === "") {
       setLiveError(null);
-      applyMarker(null);
+      setDiagnostic(null);
       return;
     }
 
@@ -221,14 +192,14 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           allowReturnOutsideFunction: true
         });
         setLiveError(null);
-        applyMarker(null);
+        setDiagnostic(null);
         clearErrors("codesnippet");
       } catch (e: any) {
         const loc = e?.loc ?? { line: 1, column: 0 };
         const message =
           __("JavaScript syntax error: ", "snippet-master") + e.message;
         setLiveError(message);
-        applyMarker({
+        setDiagnostic({
           line: loc.line ?? 1,
           column: (loc.column ?? 0) + 1,
           message
@@ -240,7 +211,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     if (lang !== "PHP") {
       // CSS and HTML are not syntax-checked.
       setLiveError(null);
-      applyMarker(null);
+      setDiagnostic(null);
       clearErrors("codesnippet");
       return;
     }
@@ -253,7 +224,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
         }
         if (res.valid) {
           setLiveError(null);
-          applyMarker(null);
+          setDiagnostic(null);
           clearErrors("codesnippet");
         } else {
           const message =
@@ -262,7 +233,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           // The server strips the leading `<?php` before parsing, so its line
           // numbers are one short whenever the tag is present in the editor.
           const offset = /^\s*<\?(php)?/i.test(value) ? 1 : 0;
-          applyMarker({ line: (res.line ?? 1) + offset, column: 1, message });
+          setDiagnostic({ line: (res.line ?? 1) + offset, column: 1, message });
         }
       })
       .catch(() => {
@@ -306,7 +277,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       ? [{ value: "global", label: __("Global", "snippet-master") }, ...baseScopes]
       : baseScopes;
 
-  const monacoLanguage =
+  const codeLanguage: CodeLanguage =
     lang === "JS"
       ? "javascript"
       : lang === "CSS"
@@ -381,24 +352,12 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                     __("Code snippet is required", "snippet-master")
                 }}
                 render={({ field }) => (
-                  <MonacoEditor
-                    {...field}
+                  <CodeEditor
+                    value={field.value ?? ""}
+                    onChange={(value) => field.onChange(value)}
+                    language={codeLanguage}
                     height="440px"
-                    theme="vs-dark"
-                    language={monacoLanguage}
-                    options={{
-                      minimap: { enabled: false },
-                      fontSize: 14,
-                      scrollBeyondLastLine: false,
-                      padding: { top: 12, bottom: 12 }
-                    }}
-                    onMount={(editor, monaco) => {
-                      editorRef.current = editor;
-                      monacoRef.current = monaco;
-                    }}
-                    onChange={(value: string | undefined) =>
-                      field.onChange(value ?? "")
-                    }
+                    diagnostic={diagnostic}
                   />
                 )}
               />

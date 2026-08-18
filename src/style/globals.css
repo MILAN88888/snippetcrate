@@ -64,6 +64,8 @@
 }
 
 #snippet-master button {
+  margin: 0;
+  padding: 0;
   background: none;
   cursor: pointer;
   font: inherit;
@@ -85,6 +87,7 @@
 #snippet-master input,
 #snippet-master textarea,
 #snippet-master select {
+  margin: 0;
   font: inherit;
   color: inherit;
   box-shadow: none;

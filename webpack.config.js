@@ -34,7 +34,8 @@ module.exports = (env, argv) => {
           test: /\.css$/i,
           use: [
             isDevelopment ? "style-loader" : MiniCSSExtractPlugin.loader,
-            "css-loader"
+            "css-loader",
+            "postcss-loader"
           ]
         },
         {
@@ -42,6 +43,7 @@ module.exports = (env, argv) => {
           use: [
             isDevelopment ? "style-loader" : MiniCSSExtractPlugin.loader,
             "css-loader",
+            "postcss-loader",
             "sass-loader"
           ]
         },
@@ -78,7 +80,10 @@ module.exports = (env, argv) => {
         })
     ].filter(Boolean),
     resolve: {
-      extensions: [".js", ".jsx", ".ts", ".tsx"]
+      extensions: [".js", ".jsx", ".ts", ".tsx"],
+      alias: {
+        "@": path.resolve(process.cwd(), "src")
+      }
     },
     devtool: isDevelopment ? "source-map" : false
   };

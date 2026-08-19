@@ -69,6 +69,7 @@ class InitController {
 		if ( 'PHP' === $lang ) {
 			ob_start();
 			try {
+				// phpcs:ignore Squiz.PHP.Eval.Discouraged, Generic.PHP.ForbiddenFunctions.Found -- Running admin-authored snippet code is this plugin's core purpose; access is manage_options-only and PHP is syntax-checked before it can be saved.
 				eval( $snippet->codesnippet );
 			} catch ( \Throwable $error ) {
 				ob_end_clean();
@@ -196,6 +197,7 @@ class InitController {
 		}
 
 		try {
+			// phpcs:ignore Squiz.PHP.Eval.Discouraged, Generic.PHP.ForbiddenFunctions.Found -- Running admin-authored snippet code is this plugin's core purpose; access is manage_options-only and PHP is syntax-checked before it can be saved.
 			$result = eval( $snippet->codesnippet );
 		} catch ( \Throwable $error ) {
 			$result = $error;

@@ -19,22 +19,22 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 function ccsnpt_uninstall_cleanup() {
 	global $wpdb;
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- One-off schema teardown on uninstall; caching is irrelevant.
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}ccsnpt_snippets" );
 
 	delete_option( 'ccsnpt_db_version' );
 }
 
 if ( is_multisite() ) {
-	$site_ids = get_sites(
+	$ccsnpt_site_ids = get_sites(
 		array(
 			'fields' => 'ids',
 			'number' => 0,
 		)
 	);
 
-	foreach ( $site_ids as $site_id ) {
-		switch_to_blog( $site_id );
+	foreach ( $ccsnpt_site_ids as $ccsnpt_site_id ) {
+		switch_to_blog( $ccsnpt_site_id );
 		ccsnpt_uninstall_cleanup();
 		restore_current_blog();
 	}

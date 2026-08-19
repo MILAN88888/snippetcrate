@@ -33,23 +33,8 @@ final class SnippetMaster {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 20, 2 );
 		$this->includes();
-	}
-
-	/**
-	 * Load the plugin translations.
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain(
-			'custom-code-snippets-manager',
-			false,
-			dirname( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) ) . '/languages/'
-		);
 	}
 
 	/**

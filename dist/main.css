@@ -276,6 +276,10 @@
   width: 1.5rem;
   height: 1.5rem;
 }
+#snippet-master .size-7 {
+  width: 1.75rem;
+  height: 1.75rem;
+}
 #snippet-master .size-8 {
   width: 2rem;
   height: 2rem;
@@ -822,6 +826,10 @@
 #snippet-master .text-violet-700 {
   --tw-text-opacity: 1;
   color: rgb(109 40 217 / var(--tw-text-opacity, 1));
+}
+#snippet-master .text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 #snippet-master .underline-offset-4 {
   text-underline-offset: 4px;

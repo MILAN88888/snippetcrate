@@ -1,13 +1,13 @@
 ---
 name: verify-snippet-master
-description: Runtime smoke-test the Snippet Master plugin on the local urm.local site via wp-cli — activate, confirm snippets execute per scope, confirm broken snippets are contained, then restore. Use to prove a PHP/behaviour change actually works end-to-end, not just that it compiles.
+description: Runtime smoke-test the Snippet Master plugin on the local urm.me site via wp-cli — activate, confirm snippets execute per scope, confirm broken snippets are contained, then restore. Use to prove a PHP/behaviour change actually works end-to-end, not just that it compiles.
 ---
 
 # Verify Snippet Master
 
 Confirms the plugin runs correctly on the local WordPress install. Run wp-cli from the
 WordPress root (`/home/devsme/Sites/urm`). The site is **host-served at
-`http://urm.local/`** — the Docker `localhost:8080` stack is broken (wrong DB_HOST).
+`http://urm.me/`** — the Docker `localhost:8080` stack is broken (wrong DB_HOST).
 `WP_DEBUG_LOG` is on, so fatals land in `wp-content/debug.log`.
 
 The plugin ships a PSR-4 autoloader fallback, so it runs **without** `composer install`.
@@ -47,8 +47,8 @@ wp eval '$u=get_user_by("login","admin");$e=time()+7200;$h=COOKIEHASH;
   echo "wordpress_logged_in_".$h."=".wp_generate_auth_cookie($u->ID,$e,"logged_in")."\n";'
 ```
 
-Add both cookies (domain `urm.local`, path `/`, httpOnly) to the Playwright context,
-then open `http://urm.local/wp-admin/admin.php?page=snippet-master`. The Monaco editor
+Add both cookies (domain `urm.me`, path `/`, httpOnly) to the Playwright context,
+then open `http://urm.me/wp-admin/admin.php?page=custom-code-snippets-manager`. The Monaco editor
 exposes `window.monaco`; set code with
 `window.monaco.editor.getModels()[0].setValue(...)` (fires the form's onChange). Note
 the app is hash-routed — `page.goto` to a different `#/...` on the same document does
@@ -67,7 +67,7 @@ wp db query "INSERT INTO wp_ccsnpt_snippets
   ('good','PHP','t','error_log(\"SM_RAN\");','','global',10,1,'1','1'),
   ('bad','PHP','t','error_log(\"x\"','','global',10,1,'1','1')"
 
-curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://urm.local/   # expect 200
+curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://urm.me/   # expect 200
 
 grep -iE 'SM_RAN|error executing snippet|fatal' wp-content/debug.log
 wp db query "SELECT id,title,active FROM wp_ccsnpt_snippets"       # 'bad' should be active=0

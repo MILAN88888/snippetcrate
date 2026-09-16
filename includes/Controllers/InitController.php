@@ -4,15 +4,15 @@
  *
  * @since 1.0.0
  *
- * @package  namespace SnippetMaster\Controllers\InitController
+ * @package  namespace CustomCodeSnippetsManager\Controllers\InitController
  */
 
-namespace SnippetMaster\Controllers;
+namespace CustomCodeSnippetsManager\Controllers;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Models\Snippets;
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Models\Snippets;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
  * Initial Controller class.
@@ -33,17 +33,17 @@ class InitController {
 		add_action( 'wp', array( $this, 'run_global_snippets' ) );
 		add_action( 'wp_head', array( $this, 'load_snippets_at_header' ) );
 		add_action( 'wp_footer', array( $this, 'load_snippets_at_footer' ) );
-		add_shortcode( 'snippet_master', array( $this, 'render_shortcode' ) );
+		add_shortcode( 'ccsm_snippet', array( $this, 'render_shortcode' ) );
 	}
 
 	/**
-	 * Render a shortcode-scoped snippet: [snippet_master id="1"].
+	 * Render a shortcode-scoped snippet: [ccsm_snippet id="1"].
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string The rendered output.
 	 */
 	public function render_shortcode( $atts ) {
-		$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'snippet_master' );
+		$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'ccsm_snippet' );
 		$id   = absint( $atts['id'] );
 
 		if ( ! $id ) {

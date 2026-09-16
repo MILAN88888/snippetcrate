@@ -3,15 +3,15 @@
  *  Menus class.
  *
  * @since 1.0.0
- * @package SnippetMaster\Menus
+ * @package CustomCodeSnippetsManager\Menus
  */
 
-namespace SnippetMaster\Controllers\Admin;
+namespace CustomCodeSnippetsManager\Controllers\Admin;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Helper;
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Helper;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
  * Menus class.
@@ -54,8 +54,8 @@ class MenusController {
 	 * Handles output of the reports page in admin.
 	 */
 	public function main_page() {
-		wp_enqueue_style( 'snippet-master-main' );
-		echo '<div id="snippet-master"></div>';
+		wp_enqueue_style( 'ccsm-main' );
+		echo '<div id="ccsm-app"></div>';
 	}
 
 	/**
@@ -64,6 +64,6 @@ class MenusController {
 	 * @since 1.0.0
 	 */
 	public function enqueue() {
-		wp_enqueue_script( 'snippet-master-main' );
+		wp_enqueue_script( 'ccsm-main' );
 	}
 }

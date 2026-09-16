@@ -7,7 +7,7 @@ or plugin files.
 ## Features
 
 - PHP, JavaScript, CSS and HTML snippets with header / footer / global / shortcode scope
-  (`[snippet_master id="X"]`).
+  (`[ccsm_snippet id="X"]`).
 - Monaco code editor with **live syntax checking** while you type (PHP on the server via
   `token_get_all(TOKEN_PARSE)`, JavaScript in the browser via `acorn`); invalid snippets
   cannot be saved.
@@ -34,5 +34,5 @@ composer run-script phpcs    # PHP CodeSniffer (WordPress standards)
 `dist/` is committed — rebuild it whenever `src/` changes. The plugin also ships a
 built-in PSR-4 autoloader fallback, so it runs even without `composer install`.
 
-The React source lives in `src/`, the PHP in `includes/` (PSR-4 root `SnippetMaster\`).
+The React source lives in `src/`, the PHP in `includes/` (PSR-4 root `CustomCodeSnippetsManager\`).
 See `CLAUDE.md` for the full architecture and the execution/validation model.

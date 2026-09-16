@@ -2,10 +2,10 @@
 /**
  * Singleton class trait.
  *
- * @package SnippetMaster\Traits
+ * @package CustomCodeSnippetsManager\Traits
  */
 
-namespace SnippetMaster\Traits;
+namespace CustomCodeSnippetsManager\Traits;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 

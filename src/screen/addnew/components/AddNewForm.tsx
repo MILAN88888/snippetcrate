@@ -485,7 +485,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
               </p>
               {id && (
                 <code className="rounded bg-card px-2 py-1 text-sm">
-                  {`[snippet_master id="${id}"]`}
+                  {`[ccsm_snippet id="${id}"]`}
                 </code>
               )}
             </div>

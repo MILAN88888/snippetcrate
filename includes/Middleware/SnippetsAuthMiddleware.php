@@ -4,10 +4,10 @@
  *
  * @since 1.0.0
  *
- * @package  namespace SnippetMaster\Middleware\SnippetsAuthMiddleware
+ * @package  namespace CustomCodeSnippetsManager\Middleware\SnippetsAuthMiddleware
  */
 
-namespace SnippetMaster\Middleware;
+namespace CustomCodeSnippetsManager\Middleware;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 

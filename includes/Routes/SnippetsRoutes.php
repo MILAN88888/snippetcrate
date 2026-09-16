@@ -2,15 +2,15 @@
 /**
  * Snippet Master SnippetsRoutes class.
  *
- * @package SnippetMaster\Routes\SnippetsRoutes
+ * @package CustomCodeSnippetsManager\Routes\SnippetsRoutes
  */
 
-namespace SnippetMaster\Routes;
+namespace CustomCodeSnippetsManager\Routes;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Controllers\SnippetsController;
-use SnippetMaster\Middleware\SnippetsAuthMiddleware;
+use CustomCodeSnippetsManager\Controllers\SnippetsController;
+use CustomCodeSnippetsManager\Middleware\SnippetsAuthMiddleware;
 
 /**
  * Add Snippets Routes class.
@@ -22,7 +22,7 @@ class SnippetsRoutes extends BaseRoutes {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'snippet-master';
+	protected $namespace = 'ccsm';
 
 	/**
 	 * Route base.

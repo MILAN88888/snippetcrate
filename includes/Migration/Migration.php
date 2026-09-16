@@ -1,16 +1,16 @@
 <?php
 /**
- * SnippetMaster Migration.
+ * Plugin Migration.
  *
  * @class Migration
- * @package SnippetMaster\Migration
+ * @package CustomCodeSnippetsManager\Migration
  */
 
-namespace SnippetMaster\Migration;
+namespace CustomCodeSnippetsManager\Migration;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
  * Migration class.
@@ -109,7 +109,7 @@ class Migration {
 
 		dbDelta( $sql );
 
-		update_option( 'ccsnpt_db_version', SNIPPET_MASTER_VERSION );
+		update_option( 'ccsnpt_db_version', CCSM_VERSION );
 
 		return true;
 	}
@@ -121,11 +121,11 @@ class Migration {
 	 * @return void
 	 */
 	public static function maybe_upgrade() {
-		if ( ! defined( 'SNIPPET_MASTER_VERSION' ) ) {
+		if ( ! defined( 'CCSM_VERSION' ) ) {
 			return;
 		}
 
-		if ( get_option( 'ccsnpt_db_version' ) !== SNIPPET_MASTER_VERSION ) {
+		if ( get_option( 'ccsnpt_db_version' ) !== CCSM_VERSION ) {
 			self::init();
 		}
 	}

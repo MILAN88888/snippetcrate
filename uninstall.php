@@ -5,7 +5,7 @@
  * Removes the plugin's custom table and options when the plugin is deleted from
  * the WordPress admin. Runs on every site of a multisite network.
  *
- * @package SnippetMaster
+ * @package CustomCodeSnippetsManager
  */
 
 // Exit if accessed directly or not called by WordPress during uninstall.

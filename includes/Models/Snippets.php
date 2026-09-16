@@ -2,10 +2,10 @@
 /**
  * Snippet Master Snippets class.
  *
- * @package  namespace SnippetMaster\Controllers\Snippets
+ * @package  namespace CustomCodeSnippetsManager\Controllers\Snippets
  */
 
-namespace SnippetMaster\Models;
+namespace CustomCodeSnippetsManager\Models;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 

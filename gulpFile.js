@@ -80,7 +80,7 @@ function removeRelease() {
 }
 
 function removeLanguageFiles() {
-  return exec("rm -rf languages/snippet-master*");
+  return exec("rm -rf languages/custom-code-snippets-manager*");
 }
 
 const copyToBuild = [

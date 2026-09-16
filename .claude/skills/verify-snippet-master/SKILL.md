@@ -33,7 +33,7 @@ The plugin ships a PSR-4 autoloader fallback, so it runs **without** `composer i
 - **JavaScript** is checked in the browser with `acorn` on submit before the request
   is sent.
 - Verify quickly server-side:
-  `php -r 'require "includes/Helper.php"; var_dump(SnippetMaster\Helper::php_syntax_error("$x = ;"));'`
+  `php -r 'require "includes/Helper.php"; var_dump(CustomCodeSnippetsManager\Helper::php_syntax_error("$x = ;"));'`
   → should return the parse-error message (not `false`).
 
 ## Driving the admin UI in a browser (Playwright)
@@ -58,7 +58,7 @@ the app is hash-routed — `page.goto` to a different `#/...` on the same docume
 
 ```bash
 cd /home/devsme/Sites/urm
-wp plugin activate snippet-master
+wp plugin activate custom-code-snippets-manager
 : > wp-content/debug.log
 
 # One working global snippet + one deliberately broken one.
@@ -84,7 +84,7 @@ in the HTML while `grep -c '<?php'` on the response is `0`.
 
 ```bash
 wp db query "DELETE FROM wp_ccsnpt_snippets"
-wp plugin deactivate snippet-master          # it starts inactive
+wp plugin deactivate custom-code-snippets-manager          # it starts inactive
 : > wp-content/debug.log
 ```
 

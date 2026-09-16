@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in the **Custom Code Snippets Manager** plugin (folder `custom-code-snippets-manager`; internal id/prefix `snippet-master` / `ccsnpt_` are kept for continuity).
+Guidance for Claude Code when working in the **Custom Code Snippets Manager** plugin (folder `custom-code-snippets-manager`; PHP namespace `CustomCodeSnippetsManager\`, constants `CCSM_*`, REST namespace `ccsm`, shortcode `[ccsm_snippet]`. The DB table prefix `ccsnpt_` and the localized object `ccsnpt_script_data` are kept for continuity).
 
 ## What this is
 
@@ -12,18 +12,18 @@ beside in this WordPress install.
 
 ## Architecture
 
-### PHP (`includes/`, PSR-4 root `SnippetMaster\`)
+### PHP (`includes/`, PSR-4 root `CustomCodeSnippetsManager\`)
 
 - `custom-code-snippets-manager.php` — bootstrap. Loads Composer's autoloader if present, otherwise
-  registers a **built-in PSR-4 fallback** (`SnippetMaster\` → `includes/`) so the plugin
+  registers a **built-in PSR-4 fallback** (`CustomCodeSnippetsManager\` → `includes/`) so the plugin
   runs without `composer install`. Boots on `plugins_loaded`; creates the table on
   activation.
-- `includes/SnippetMaster.php` — wires the controllers (`Migration::maybe_upgrade`,
+- `includes/Plugin.php` — wires the controllers (`Migration::maybe_upgrade`,
   `MenusController`, `ScriptStyleController`, `InitController`, `RestApi`).
 - `includes/Controllers/InitController.php` — **execution engine** (see below).
 - `includes/Controllers/SnippetsController.php` — REST callbacks + validation.
 - `includes/Models/Snippets.php` — `wpdb` data layer over `{prefix}ccsnpt_snippets`.
-- `includes/Routes/SnippetsRoutes.php` — registers `snippet-master/snippets/{save,get,
+- `includes/Routes/SnippetsRoutes.php` — registers `ccsm/snippets/{save,get,
   update/status,delete,validate}`, all gated by `SnippetsAuthMiddleware` (`manage_options`).
 - `includes/Helper.php` — `php_syntax_error()` / `check_php_syntax()` (parse-only, no exec).
 - `includes/Migration/Migration.php` — `dbDelta` schema + `ccsnpt_db_version` upgrade check.
@@ -38,7 +38,7 @@ beside in this WordPress install.
   `wp_head`/`wp_footer` with echoed output appearing in the page.
 - **JS / CSS / HTML** are never `eval`'d — emitted as markup at `wp_head`/`wp_footer`
   via `print_snippet_markup()`: JS → `<script>`, CSS → `<style>`, HTML → raw echo.
-- **Shortcode** scope: rendered on demand via `[snippet_master id="X"]`
+- **Shortcode** scope: rendered on demand via `[ccsm_snippet id="X"]`
   (`InitController::render_shortcode`) — PHP output is captured and returned; CSS/JS/HTML
   are returned as markup. Shortcode snippets never auto-run.
 - A PHP snippet that throws is caught (`\Throwable`), logged under `WP_DEBUG`, and
@@ -59,7 +59,7 @@ beside in this WordPress install.
 
 - **shadcn/ui (Radix primitives) + Tailwind CSS** (not Chakra), `@tanstack/react-query`,
   `react-router-dom` (HashRouter), **CodeMirror 6** editor (`src/screen/addnew/components/CodeEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
-  is scoped to the `#snippet-master` mount via `important` + a disabled preflight (scoped
+  is scoped to the `#ccsm-app` mount via `important` + a disabled preflight (scoped
   reset in `src/style/globals.css`); tokens are oklch CSS vars; font is Plus Jakarta Sans.
   Vendored primitives live in `src/components/ui/*` (`cn()` in `src/lib/utils.ts`); Radix
   overlays portal into the mount node via `src/components/PortalContext.tsx`. Icons =

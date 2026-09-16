@@ -2,15 +2,15 @@
 /**
  * Snippet Master RestApi class.
  *
- * @package  namespace SnippetMaster\RestApi
+ * @package  namespace CustomCodeSnippetsManager\RestApi
  */
 
-namespace SnippetMaster;
+namespace CustomCodeSnippetsManager;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Routes\SnippetsRoutes;
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Routes\SnippetsRoutes;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
  * RestApi class.

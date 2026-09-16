@@ -2,15 +2,15 @@
 /**
  * Snippet Master SnippetsController class.
  *
- * @package  namespace SnippetMaster\Controllers\SnippetsController
+ * @package  namespace CustomCodeSnippetsManager\Controllers\SnippetsController
  */
 
-namespace SnippetMaster\Controllers;
+namespace CustomCodeSnippetsManager\Controllers;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Models\Snippets;
-use SnippetMaster\Helper;
+use CustomCodeSnippetsManager\Models\Snippets;
+use CustomCodeSnippetsManager\Helper;
 
 /**
  * Add Snippets Routes class.
@@ -347,7 +347,7 @@ class SnippetsController {
 			return new \WP_REST_Response(
 				array(
 					'format'   => 'php',
-					'filename' => 'snippet-master-export.php',
+					'filename' => 'ccsm-export.php',
 					'content'  => $content,
 				),
 				200
@@ -357,7 +357,7 @@ class SnippetsController {
 		return new \WP_REST_Response(
 			array(
 				'format'   => 'json',
-				'filename' => 'snippet-master-export.json',
+				'filename' => 'ccsm-export.json',
 				'snippets' => $export,
 			),
 			200

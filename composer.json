@@ -1,59 +1,59 @@
 {
-	"name": "wpmilan/custom-code-snippets-manager",
-	"description": "Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress.",
-	"version": "1.0.0",
-	"license": "GPL-2.0-or-later",
-	"autoload": {
-		"psr-4": {
-			"SnippetMaster\\": "includes/"
-		}
-	},
-	"authors": [
-		{
-			"name": "milan",
-			"email": "chaudharymilan996@gmail.com"
-		}
-	],
-	"require": {
-		"composer/installers": "^2.0"
-	},
-	"require-dev": {
-		"wp-cli/wp-cli": "^2.8",
-		"wp-cli/i18n-command": "^2.2",
-		"squizlabs/php_codesniffer": "^3.7",
-		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"wp-coding-standards/wpcs": "^3.0",
-		"phpcompatibility/phpcompatibility-wp": "^2.1"
-	},
-	"scripts": {
-		"phpcs": [
-			"phpcs -s -p"
-		],
-		"phpcs-pre-commit": [
-			"phpcs -s -p -n"
-		],
-		"phpcbf": [
-			"phpcbf -p"
-		],
-		"makepot-audit": [
-			"\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=custom-code-snippets-manager"
-		],
-		"makepot": [
-			"@makepot-audit --skip-audit"
-		]
-	},
-	"extra": {
-		"scripts-description": {
-			"phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
-			"phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
-			"makepot-audit": "Generate langauges/snippet-master.pot file and run audit",
-			"makepot": "Generate langauges/snippet-master.pot file"
-		}
-	},
-	"config": {
-		"allow-plugins": {
-			"composer/installers": true,
-			"dealerdirect/phpcodesniffer-composer-installer": true
-		}
-	}
+    "name": "wpmilan/custom-code-snippets-manager",
+    "description": "Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress.",
+    "version": "1.0.0",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "CustomCodeSnippetsManager\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "milan",
+            "email": "chaudharymilan996@gmail.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "^2.0"
+    },
+    "require-dev": {
+        "wp-cli/wp-cli": "^2.8",
+        "wp-cli/i18n-command": "^2.2",
+        "squizlabs/php_codesniffer": "^3.7",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1"
+    },
+    "scripts": {
+        "phpcs": [
+            "phpcs -s -p"
+        ],
+        "phpcs-pre-commit": [
+            "phpcs -s -p -n"
+        ],
+        "phpcbf": [
+            "phpcbf -p"
+        ],
+        "makepot-audit": [
+            "\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=custom-code-snippets-manager"
+        ],
+        "makepot": [
+            "@makepot-audit --skip-audit"
+        ]
+    },
+    "extra": {
+        "scripts-description": {
+            "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+            "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
+            "makepot-audit": "Generate languages/custom-code-snippets-manager.pot file and run audit",
+            "makepot": "Generate languages/custom-code-snippets-manager.pot file"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }

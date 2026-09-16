@@ -21,7 +21,7 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 * Add **PHP, JavaScript, CSS and HTML** snippets from a clean, modern admin screen.
 * A built-in **CodeMirror** editor with syntax highlighting and line numbers.
 * **Live syntax checking** as you type — PHP is validated on the server and JavaScript in your browser — so snippets with errors cannot be saved.
-* Choose **where each snippet runs**: PHP globally, any language in the header or footer, or on demand via the `[snippet_master id="X"]` shortcode.
+* Choose **where each snippet runs**: PHP globally, any language in the header or footer, or on demand via the `[ccsm_snippet id="X"]` shortcode.
 * **Duplicate** snippets, **filter** by status, language, tag or date, and **bulk** activate, deactivate, export or delete.
 * **Import and export** snippets as a JSON file, or export your PHP snippets to a `.php` file.
 * **Safe execution**: a PHP snippet that throws an error is caught and automatically deactivated, so a bad snippet can never take your site down.
@@ -31,7 +31,7 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 
 * **Global** (PHP only) — runs on every front-end request.
 * **Header / Footer** — output is printed in `wp_head` or `wp_footer` (PHP, JS, CSS or HTML).
-* **Shortcode** — rendered only where you place `[snippet_master id="X"]`.
+* **Shortcode** — rendered only where you place `[ccsm_snippet id="X"]`.
 
 == Installation ==
 
@@ -56,7 +56,7 @@ PHP, JavaScript, CSS and HTML. Only PHP can use the "Global" scope; every other 
 
 = How do I run a snippet only in one place? =
 
-Set its scope to **Shortcode** and insert `[snippet_master id="X"]` (the shortcode is shown on the edit screen) wherever you want it to render.
+Set its scope to **Shortcode** and insert `[ccsm_snippet id="X"]` (the shortcode is shown on the edit screen) wherever you want it to render.
 
 = Does the plugin load anything from a third-party server? =
 

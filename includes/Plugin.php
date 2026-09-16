@@ -4,26 +4,26 @@
  *
  * @since 1.0.0
  *
- * @package SnippetMaster
+ * @package CustomCodeSnippetsManager
  */
 
-namespace SnippetMaster;
+namespace CustomCodeSnippetsManager;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Controllers\Admin\ScriptStyleController;
-use SnippetMaster\Controllers\Admin\MenusController;
-use SnippetMaster\Controllers\InitController;
-use SnippetMaster\Migration\Migration;
-use SnippetMaster\RestApi;
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Controllers\Admin\ScriptStyleController;
+use CustomCodeSnippetsManager\Controllers\Admin\MenusController;
+use CustomCodeSnippetsManager\Controllers\InitController;
+use CustomCodeSnippetsManager\Migration\Migration;
+use CustomCodeSnippetsManager\RestApi;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
- * Snippet Master setup.
+ * Custom Code Snippets Manager setup.
  *
  * @since 1.0.0
  */
-final class SnippetMaster {
+final class Plugin {
 
 	use Singleton;
 
@@ -47,7 +47,7 @@ final class SnippetMaster {
 	 * @return array
 	 */
 	public function plugin_row_meta( $plugin_meta, $plugin_file ) {
-		if ( plugin_basename( SNIPPET_MASTER_PLUGIN_FILE ) === $plugin_file ) {
+		if ( plugin_basename( CCSM_PLUGIN_FILE ) === $plugin_file ) {
 			$new_plugin_meta = array(
 				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'custom-code-snippets-manager' ) . '">' . esc_html__( 'Docs', 'custom-code-snippets-manager' ) . '</a>',
 			);

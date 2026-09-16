@@ -3,15 +3,15 @@
  * ScriptStyleController class.
  *
  * @since 1.0.0
- * @package  namespace SnippetMaster\Controller\Admin\ScriptStyleController
+ * @package  namespace CustomCodeSnippetsManager\Controller\Admin\ScriptStyleController
  */
 
-namespace SnippetMaster\Controllers\Admin;
+namespace CustomCodeSnippetsManager\Controllers\Admin;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use SnippetMaster\Helper;
-use SnippetMaster\Traits\Singleton;
+use CustomCodeSnippetsManager\Helper;
+use CustomCodeSnippetsManager\Traits\Singleton;
 
 /**
  * ScriptStyleController class.
@@ -76,7 +76,7 @@ class ScriptStyleController {
 	 * @return string
 	 */
 	public static function get_asset_url( $filename, $dev = true ) {
-		$path = plugins_url( 'dist/', SNIPPET_MASTER_PLUGIN_FILE );
+		$path = plugins_url( 'dist/', CCSM_PLUGIN_FILE );
 
 		if ( $dev && Helper::is_development() ) {
 			$path = 'http://localhost:3000/dist/';
@@ -94,7 +94,7 @@ class ScriptStyleController {
 	 * @return string
 	 */
 	public static function get_asset_version() {
-		$asset_file = plugin_dir_path( SNIPPET_MASTER_PLUGIN_FILE ) . 'dist/main.asset.php';
+		$asset_file = plugin_dir_path( CCSM_PLUGIN_FILE ) . 'dist/main.asset.php';
 
 		if ( file_exists( $asset_file ) ) {
 			$asset = include $asset_file;
@@ -103,7 +103,7 @@ class ScriptStyleController {
 			}
 		}
 
-		return SNIPPET_MASTER_VERSION;
+		return CCSM_VERSION;
 	}
 
 	/**
@@ -144,7 +144,7 @@ class ScriptStyleController {
 	 */
 	public function register_scripts() {
 		foreach ( $this->scripts as $handle => $script ) {
-			wp_register_script( "snippet-master-$handle", $script['src'], $script['deps'], $script['version'], true );
+			wp_register_script( "ccsm-$handle", $script['src'], $script['deps'], $script['version'], true );
 		}
 	}
 
@@ -156,7 +156,7 @@ class ScriptStyleController {
 	 */
 	public function register_styles() {
 		foreach ( $this->styles as $handle => $style ) {
-			wp_register_style( "snippet-master-$handle", $style['src'], $style['deps'], $style['version'] );
+			wp_register_style( "ccsm-$handle", $style['src'], $style['deps'], $style['version'] );
 		}
 	}
 
@@ -177,7 +177,7 @@ class ScriptStyleController {
 	 */
 	public function localize_admin_scripts() {
 		wp_localize_script(
-			'snippet-master-main',
+			'ccsm-main',
 			'ccsnpt_script_data',
 			array(
 				'adminURL'           => esc_url( admin_url() ),
@@ -185,15 +185,15 @@ class ScriptStyleController {
 				'ccsnptRestApiNonce' => wp_create_nonce( 'wp_rest' ),
 				'rootApiUrl'         => esc_url_raw( rest_url() ),
 				'restURL'            => rest_url(),
-				'version'            => defined( 'SNIPPET_MASTER_VERSION' ) ? SNIPPET_MASTER_VERSION : '',
+				'version'            => defined( 'CCSM_VERSION' ) ? CCSM_VERSION : '',
 			)
 		);
 
 		// Make the React UI strings translatable (loads languages/*.json when present).
 		wp_set_script_translations(
-			'snippet-master-main',
+			'ccsm-main',
 			'custom-code-snippets-manager',
-			plugin_dir_path( SNIPPET_MASTER_PLUGIN_FILE ) . 'languages'
+			plugin_dir_path( CCSM_PLUGIN_FILE ) . 'languages'
 		);
 	}
 }

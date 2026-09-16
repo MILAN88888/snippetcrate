@@ -2,12 +2,12 @@
 /**
  * Snippet Master Helper class.
  *
- * @package  namespace SnippetMaster\Helper
+ * @package  namespace CustomCodeSnippetsManager\Helper
  *
  * @since 1.0.0
  */
 
-namespace SnippetMaster;
+namespace CustomCodeSnippetsManager;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
@@ -25,7 +25,7 @@ class Helper {
 	 * @param  string $path Path.
 	 */
 	public static function plugin_url( $path = '/' ) {
-		return untrailingslashit( plugins_url( $path, SNIPPET_MASTER_PLUGIN_FILE ) );
+		return untrailingslashit( plugins_url( $path, CCSM_PLUGIN_FILE ) );
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_development() {
-		return defined( 'SNIPPET_MASTER_DEVELOPMENT' ) && SNIPPET_MASTER_DEVELOPMENT;
+		return defined( 'CCSM_DEVELOPMENT' ) && CCSM_DEVELOPMENT;
 	}
 
 	/**
@@ -91,6 +91,6 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_production() {
-		return ! defined( 'SNIPPET_MASTER_DEVELOPMENT' ) || ! SNIPPET_MASTER_DEVELOPMENT;
+		return ! defined( 'CCSM_DEVELOPMENT' ) || ! CCSM_DEVELOPMENT;
 	}
 }

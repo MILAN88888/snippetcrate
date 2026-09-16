@@ -17,7 +17,7 @@ const App: React.FC = () => {
   // Radix overlays portal here so their content stays inside the scoped subtree.
   const portalContainer =
     typeof document !== "undefined"
-      ? document.getElementById("snippet-master")
+      ? document.getElementById("ccsm-app")
       : null;
 
   return (

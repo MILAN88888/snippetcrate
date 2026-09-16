@@ -36,7 +36,7 @@
             "phpcbf -p"
         ],
         "makepot-audit": [
-            "\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests, build\" --slug=custom-code-snippets-manager"
+            "\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests,build,release\" --slug=custom-code-snippets-manager"
         ],
         "makepot": [
             "@makepot-audit --skip-audit"

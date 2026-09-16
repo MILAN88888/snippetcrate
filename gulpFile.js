@@ -31,7 +31,13 @@ const fileList = {
     dest: `build/${pkg.name}/`
   },
   other: {
-    src: ["readme.txt", "changelog.txt", "custom-code-snippets-manager.php"],
+    src: [
+      "readme.txt",
+      "changelog.txt",
+      "custom-code-snippets-manager.php",
+      "uninstall.php",
+      "LICENSE"
+    ],
     dest: `build/${pkg.name}/`
   },
   dist: {
@@ -81,6 +87,16 @@ function removeRelease() {
 
 function removeLanguageFiles() {
   return exec("rm -rf languages/custom-code-snippets-manager*");
+}
+
+function generateLanguageFiles() {
+  // Prefer the dev dependency, fall back to a global wp-cli so a --no-dev
+  // vendor tree still builds a complete package.
+  const wp = fs.existsSync("vendor/bin/wp") ? "vendor/bin/wp" : "wp";
+
+  return exec(
+    `${wp} i18n make-pot . languages/${pkg.name}.pot --exclude=".github,.wordpress-org,bin,node_modules,vendor,tests,build,release" --slug=${pkg.name} --skip-audit`
+  );
 }
 
 const copyToBuild = [
@@ -197,7 +213,7 @@ async function bumpPatchVersion() {
     .pipe(dest("./"));
 }
 
-const build = series(removeBuild, removeLanguageFiles);
+const build = series(removeBuild, removeLanguageFiles, generateLanguageFiles);
 
 const dev = series(startBrowserSync, watchChanges);
 const release = series(

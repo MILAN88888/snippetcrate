@@ -22,14 +22,6 @@ const fileList = {
     src: "languages/**/*",
     dest: `build/${pkg.name}/languages`
   },
-  composer: {
-    src: ["composer.json"],
-    dest: `build/${pkg.name}/`
-  },
-  npm: {
-    src: ["package.json"],
-    dest: `build/${pkg.name}/`
-  },
   other: {
     src: [
       "readme.txt",
@@ -102,20 +94,12 @@ function generateLanguageFiles() {
 const copyToBuild = [
   () => src(fileList.includes.src).pipe(dest(fileList.includes.dest)),
   () => src(fileList.languages.src).pipe(dest(fileList.languages.dest)),
-  () => src(fileList.composer.src).pipe(dest(fileList.composer.dest)),
-  () => src(fileList.npm.src).pipe(dest(fileList.npm.dest)),
   () =>
     src(fileList.other.src, { allowEmpty: true }).pipe(
       dest(fileList.other.dest)
     ),
   () => src(fileList.dist.src).pipe(dest(fileList.dist.dest))
 ];
-
-function runComposerInBuild() {
-  return exec(
-    `cd build/${pkg.name} && composer install --no-dev --optimize-autoloader`
-  );
-}
 
 async function compressBuildWithoutVersion() {
   const { zip } = await loadModules();
@@ -141,7 +125,7 @@ async function bumpMinorVersion() {
     )
     .pipe(dest("./"));
 
-  src(["./README.md"], { allowEmpty: true })
+  src(["./readme.txt"], { allowEmpty: true })
     .pipe(
       bump({
         keys: ["Stable tag", "\\*\\*Stable tag\\*\\*"],
@@ -153,10 +137,10 @@ async function bumpMinorVersion() {
   src("./custom-code-snippets-manager.php")
     .pipe(
       bump({
-        key: "SNIPPET_MASTER_VERSION",
+        key: "CCSM_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "SNIPPET_MASTER_VERSION" +
+            "CCSM_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),
@@ -182,7 +166,7 @@ async function bumpPatchVersion() {
     )
     .pipe(dest("./"));
 
-  src(["./readme.md"], { allowEmpty: true })
+  src(["./readme.txt"], { allowEmpty: true })
     .pipe(
       bump({
         keys: ["Stable tag", "\\*\\*Stable tag\\*\\*"],
@@ -194,10 +178,10 @@ async function bumpPatchVersion() {
   src("./custom-code-snippets-manager.php")
     .pipe(
       bump({
-        key: "SNIPPET_MASTER_VERSION",
+        key: "CCSM_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "SNIPPET_MASTER_VERSION" +
+            "CCSM_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),
@@ -220,7 +204,6 @@ const release = series(
   removeRelease,
   build,
   copyToBuild,
-  runComposerInBuild,
   parallel(compressBuildWithVersion, compressBuildWithoutVersion)
 );
 

@@ -15,6 +15,7 @@
         }
     ],
     "require": {
+        "php": ">=7.4",
         "composer/installers": "^2.0"
     },
     "require-dev": {
@@ -54,6 +55,9 @@
         "allow-plugins": {
             "composer/installers": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "7.4"
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master InitController class.
+ * Custom Code Snippets Manager InitController class.
  *
  * @since 1.0.0
  *
@@ -227,7 +227,7 @@ class InitController {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				sprintf(
-					'Snippet Master: error executing snippet #%1$s: %2$s',
+					'Custom Code Snippets Manager: error executing snippet #%1$s: %2$s',
 					isset( $snippet->id ) ? $snippet->id : '?',
 					$error->getMessage()
 				)

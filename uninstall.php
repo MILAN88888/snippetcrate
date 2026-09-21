@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master uninstall.
+ * Custom Code Snippets Manager uninstall.
  *
  * Removes the plugin's custom table and options when the plugin is deleted from
  * the WordPress admin. Runs on every site of a multisite network.
@@ -12,7 +12,7 @@
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 /**
- * Delete the Snippet Master table and options for the current site.
+ * Delete the Custom Code Snippets Manager table and options for the current site.
  *
  * @return void
  */

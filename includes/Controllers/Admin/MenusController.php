@@ -36,7 +36,7 @@ class MenusController {
 	public function add_menu() {
 			// Brackets framing two code lines — a "code snippet" mark. Coloured in
 			// the default admin-menu grey so it reads on the dark menu background.
-			$svg        = '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+			$svg    = '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g stroke="#a7aaad" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M17 15 L9 24 L17 33"/>
     <path d="M31 15 L39 24 L31 33"/>

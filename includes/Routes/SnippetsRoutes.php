@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master SnippetsRoutes class.
+ * Custom Code Snippets Manager SnippetsRoutes class.
  *
  * @package CustomCodeSnippetsManager\Routes\SnippetsRoutes
  */

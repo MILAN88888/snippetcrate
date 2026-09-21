@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Custom Code Snippets Manager
- * Plugin URI: https://wordpress.org/plugins/custom-code-snippets-manager
+ * Plugin URI: https://github.com/MILAN88888/custom-code-snippets-manager
  * Description: Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress — no theme or plugin file editing required.
  * Version: 1.0.0
  * Author: @wpmilan
@@ -26,16 +26,16 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require __DIR__ . '/vendor/autoload.php';
 } else {
 	spl_autoload_register(
-		function ( $class ) {
+		function ( $class_name ) {
 			$prefix   = 'CustomCodeSnippetsManager\\';
 			$base_dir = __DIR__ . '/includes/';
 			$len      = strlen( $prefix );
 
-			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+			if ( 0 !== strncmp( $prefix, $class_name, $len ) ) {
 				return;
 			}
 
-			$relative = substr( $class, $len );
+			$relative = substr( $class_name, $len );
 			$file     = $base_dir . str_replace( '\\', '/', $relative ) . '.php';
 
 			if ( file_exists( $file ) ) {

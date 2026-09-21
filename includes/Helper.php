@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master Helper class.
+ * Custom Code Snippets Manager Helper class.
  *
  * @package  namespace CustomCodeSnippetsManager\Helper
  *

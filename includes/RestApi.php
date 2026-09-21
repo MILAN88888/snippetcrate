@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master RestApi class.
+ * Custom Code Snippets Manager RestApi class.
  *
  * @package  namespace CustomCodeSnippetsManager\RestApi
  */

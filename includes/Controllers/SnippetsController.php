@@ -1,6 +1,6 @@
 <?php
 /**
- * Snippet Master SnippetsController class.
+ * Custom Code Snippets Manager SnippetsController class.
  *
  * @package  namespace CustomCodeSnippetsManager\Controllers\SnippetsController
  */

@@ -1,28 +1,48 @@
 name: Release Build
+
 on:
   release:
     types: [published]
+
+permissions:
+  contents: write
+
 jobs:
   build:
-    name: Release Build
-    runs-on: ubuntu-20.04
+    name: Build and attach the distributable
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set env
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF:10}
-      - name: Build
-        id: build
-        uses: MILAN88888/build-action@snippet-master
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          generate-zip: true
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+          php-version: '7.4'
+          tools: composer
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build the admin app
+        run: npm run build
+
+      - name: Package the plugin
+        run: npx gulp release
+
+      - name: Attach the zip to the release
         env:
-          GITHUB_TOKEN: ${{ secrets.MILAN_GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.build.outputs.zip_path }}
-          asset_name: ${{ github.event.repository.name }}-${{ steps.vars.outputs.tag }}.zip
-          asset_content_type: application/zip
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF_NAME}" \
+            "release/custom-code-snippets-manager.zip#custom-code-snippets-manager-${GITHUB_REF_NAME}.zip" \
+            --clobber

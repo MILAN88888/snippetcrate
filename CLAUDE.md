@@ -89,6 +89,13 @@ beside in this WordPress install.
   on `urm.me`, plus the browser-auth flow for the admin UI).
 - After changing `package.json` deps, regenerate the tracked npm `package-lock.json`
   (`npm install --package-lock-only`) and delete any `pnpm-lock.yaml`.
+- **Packaging**: `npx gulp release` regenerates the `.pot` and writes
+  `release/custom-code-snippets-manager.zip`. Composer is dev-only — the package ships
+  no `vendor/`, no `composer.json` and no `package.json`; the bootstrap's PSR-4 fallback
+  autoloader covers it. `composer.json` pins `config.platform.php` to 7.4 so the dev
+  toolchain installs on the declared minimum. Gate every release on
+  `wp plugin check custom-code-snippets-manager` run against the *extracted zip*, not the
+  working tree (the working tree always trips the hidden-file and compressed-file checks).
 
 ## Conventions
 

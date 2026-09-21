@@ -24,7 +24,7 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 * Choose **where each snippet runs**: PHP globally, any language in the header or footer, or on demand via the `[ccsm_snippet id="X"]` shortcode.
 * **Duplicate** snippets, **filter** by status, language, tag or date, and **bulk** activate, deactivate, export or delete.
 * **Import and export** snippets as a JSON file, or export your PHP snippets to a `.php` file.
-* **Safe execution**: a PHP snippet that throws an error is caught and automatically deactivated, so a bad snippet can never take your site down.
+* **Contained execution**: a PHP snippet that throws an error is caught and the snippet is automatically deactivated, so one bad snippet does not break every page load that follows.
 * All snippet management is restricted to administrators (`manage_options`).
 
 **Scopes explained**
@@ -48,7 +48,7 @@ Only administrators (users with the `manage_options` capability). All admin scre
 
 = What happens if my PHP snippet has an error? =
 
-Custom Code Snippets Manager validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated so it cannot break your site.
+Custom Code Snippets Manager validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated, so the failure does not repeat on the next request. Failures PHP cannot catch — an infinite loop, or exhausting the memory limit — cannot be recovered this way, so test substantial snippets on a staging site first.
 
 = Which languages are supported? =
 

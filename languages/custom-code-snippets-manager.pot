@@ -9,14 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T12:46:51+05:45\n"
+"POT-Creation-Date: 2026-09-21T14:37:10+05:45\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: custom-code-snippets-manager\n"
 
 #. Plugin Name of the plugin
 #: custom-code-snippets-manager.php:3
-#: includes/Controllers/Admin/MenusController.php:48
+#: includes/Controllers/Admin/MenusController.php:52
 #: dist/main.js:2
 msgid "Custom Code Snippets Manager"
 msgstr ""
@@ -41,7 +41,7 @@ msgstr ""
 msgid "https://milanc.com.np/"
 msgstr ""
 
-#: includes/Controllers/Admin/MenusController.php:48
+#: includes/Controllers/Admin/MenusController.php:52
 msgid "Code Snippets"
 msgstr ""
 
@@ -138,7 +138,7 @@ msgstr ""
 msgid "Imported %1$d snippet(s), skipped %2$d."
 msgstr ""
 
-#: includes/Middleware/SnippetsAuthMiddleware.php:31
+#: includes/Middleware/SnippetsAuthMiddleware.php:34
 msgid "You do not have permission to manage snippets."
 msgstr ""
 

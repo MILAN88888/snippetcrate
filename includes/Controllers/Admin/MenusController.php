@@ -34,6 +34,10 @@ class MenusController {
 	 * Add menu items.
 	 */
 	public function add_menu() {
+		if ( ! Helper::current_user_can_manage() ) {
+			return;
+		}
+
 			// Brackets framing two code lines — a "code snippet" mark. Coloured in
 			// the default admin-menu grey so it reads on the dark menu background.
 			$svg    = '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">

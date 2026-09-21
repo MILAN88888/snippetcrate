@@ -29,6 +29,26 @@ class Helper {
 	}
 
 	/**
+	 * Whether the current user may manage snippets.
+	 *
+	 * Saving a snippet is arbitrary code execution, so the site-scoped
+	 * `manage_options` is not sufficient on multisite: a site administrator
+	 * would gain network-wide PHP execution and raw script output, neither of
+	 * which multisite grants them.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	public static function current_user_can_manage() {
+		if ( is_multisite() && ! is_super_admin() ) {
+			return false;
+		}
+
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
 	 * Check PHP code for syntax errors without executing it.
 	 *
 	 * Uses token_get_all() with the TOKEN_PARSE flag, which performs a full

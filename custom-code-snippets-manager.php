@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Custom Code Snippets Manager
- * Plugin URI: https://github.com/MILAN88888/custom-code-snippets-manager
+ * Plugin URI: https://techzigya.com/custom-code-snippets-manager
  * Description: Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress — no theme or plugin file editing required.
  * Version: 1.0.0
  * Author: @wpmilan

@@ -41,11 +41,11 @@ class MenusController {
 			// Brackets framing two code lines — a "code snippet" mark. Coloured in
 			// the default admin-menu grey so it reads on the dark menu background.
 			$svg    = '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="#a7aaad" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M17 15 L9 24 L17 33"/>
-    <path d="M31 15 L39 24 L31 33"/>
-    <path d="M21 20 H28" opacity="0.9"/>
-    <path d="M21 28 H26" opacity="0.9"/>
+  <g stroke="#a7aaad" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="9" y="20" width="30" height="21" rx="3.5"/>
+    <rect x="5" y="11" width="38" height="9" rx="2.5"/>
+    <path d="M22 27 L18.5 30.8 L22 34.6"/>
+    <path d="M26 27 L29.5 30.8 L26 34.6"/>
   </g>
 </svg>';
 		$base64_svg = 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore

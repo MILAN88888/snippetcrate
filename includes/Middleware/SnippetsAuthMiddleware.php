@@ -4,12 +4,12 @@
  *
  * @since 1.0.0
  *
- * @package  namespace CustomCodeSnippetsManager\Middleware\SnippetsAuthMiddleware
+ * @package  namespace SnippetCrate\Middleware\SnippetsAuthMiddleware
  */
 
-namespace CustomCodeSnippetsManager\Middleware;
+namespace SnippetCrate\Middleware;
 
-use CustomCodeSnippetsManager\Helper;
+use SnippetCrate\Helper;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
@@ -31,7 +31,7 @@ class SnippetsAuthMiddleware {
 		if ( ! Helper::current_user_can_manage() ) {
 			return new \WP_Error(
 				'rest_forbidden',
-				__( 'You do not have permission to manage snippets.', 'custom-code-snippets-manager' ),
+				__( 'You do not have permission to manage snippets.', 'snippetcrate' ),
 				array( 'status' => 403 )
 			);
 		}

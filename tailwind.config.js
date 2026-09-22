@@ -3,7 +3,7 @@ module.exports = {
   darkMode: "class",
   // Scope every utility under the mount node so nothing leaks into wp-admin and
   // our classes out-specify wp-admin's own input/button/table rules.
-  important: "#ccsm-app",
+  important: "#snippetcrate-app",
   content: ["./src/**/*.{ts,tsx}"],
   // Preflight resets globals (html/body/button/input…) and is NOT affected by
   // `important`, so it would bleed into all of wp-admin. Disabled here; a scoped

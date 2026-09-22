@@ -1,18 +1,18 @@
 <?php
 /**
- * Custom Code Snippets Manager InitController class.
+ * SnippetCrate InitController class.
  *
  * @since 1.0.0
  *
- * @package  namespace CustomCodeSnippetsManager\Controllers\InitController
+ * @package  namespace SnippetCrate\Controllers\InitController
  */
 
-namespace CustomCodeSnippetsManager\Controllers;
+namespace SnippetCrate\Controllers;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use CustomCodeSnippetsManager\Models\Snippets;
-use CustomCodeSnippetsManager\Traits\Singleton;
+use SnippetCrate\Models\Snippets;
+use SnippetCrate\Traits\Singleton;
 
 /**
  * Initial Controller class.
@@ -33,17 +33,17 @@ class InitController {
 		add_action( 'wp', array( $this, 'run_global_snippets' ) );
 		add_action( 'wp_head', array( $this, 'load_snippets_at_header' ) );
 		add_action( 'wp_footer', array( $this, 'load_snippets_at_footer' ) );
-		add_shortcode( 'ccsm_snippet', array( $this, 'render_shortcode' ) );
+		add_shortcode( 'snippetcrate_snippet', array( $this, 'render_shortcode' ) );
 	}
 
 	/**
-	 * Render a shortcode-scoped snippet: [ccsm_snippet id="1"].
+	 * Render a shortcode-scoped snippet: [snippetcrate_snippet id="1"].
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string The rendered output.
 	 */
 	public function render_shortcode( $atts ) {
-		$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'ccsm_snippet' );
+		$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'snippetcrate_snippet' );
 		$id   = absint( $atts['id'] );
 
 		if ( ! $id ) {
@@ -180,7 +180,7 @@ class InitController {
 			echo "\n<script>\n" . $snippet->codesnippet . "\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		do_action( 'custom_code_snippets_after_execute_snippet', $snippet );
+		do_action( 'snippetcrate_after_execute_snippet', $snippet );
 	}
 
 	/**
@@ -208,7 +208,7 @@ class InitController {
 			}
 		}
 
-		do_action( 'custom_code_snippets_after_execute_snippet', $snippet );
+		do_action( 'snippetcrate_after_execute_snippet', $snippet );
 
 		return $result;
 	}
@@ -227,7 +227,7 @@ class InitController {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				sprintf(
-					'Custom Code Snippets Manager: error executing snippet #%1$s: %2$s',
+					'SnippetCrate: error executing snippet #%1$s: %2$s',
 					isset( $snippet->id ) ? $snippet->id : '?',
 					$error->getMessage()
 				)

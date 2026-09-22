@@ -1,11 +1,11 @@
 {
-    "name": "wpmilan/custom-code-snippets-manager",
+    "name": "wpmilan/snippetcrate",
     "description": "Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress.",
     "version": "1.0.0",
     "license": "GPL-2.0-or-later",
     "autoload": {
         "psr-4": {
-            "CustomCodeSnippetsManager\\": "includes/"
+            "SnippetCrate\\": "includes/"
         }
     },
     "authors": [
@@ -37,7 +37,7 @@
             "phpcbf -p"
         ],
         "makepot-audit": [
-            "\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests,build,release\" --slug=custom-code-snippets-manager"
+            "\"vendor/bin/wp\" i18n make-pot . --exclude=\".github,.wordpress-org,bin,node_modules,vendor,tests,build,release\" --slug=snippetcrate"
         ],
         "makepot": [
             "@makepot-audit --skip-audit"
@@ -47,8 +47,8 @@
         "scripts-description": {
             "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
             "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
-            "makepot-audit": "Generate languages/custom-code-snippets-manager.pot file and run audit",
-            "makepot": "Generate languages/custom-code-snippets-manager.pot file"
+            "makepot-audit": "Generate languages/snippetcrate.pot file and run audit",
+            "makepot": "Generate languages/snippetcrate.pot file"
         }
     },
     "config": {

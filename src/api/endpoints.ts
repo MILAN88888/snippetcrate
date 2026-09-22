@@ -1,4 +1,4 @@
-const BASE_URL = "ccsm/";
+const BASE_URL = "snippetcrate/";
 
 export const ENDPOINTS = {
   AddNew: `${BASE_URL}snippets/save`,

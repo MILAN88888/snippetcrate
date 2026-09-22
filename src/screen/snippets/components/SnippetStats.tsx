@@ -41,18 +41,18 @@ const SnippetStats: React.FC = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <StatCard
-        label={__("Total Snippets", "custom-code-snippets-manager")}
+        label={__("Total Snippets", "snippetcrate")}
         value={total.data}
         loading={total.isLoading}
       />
       <StatCard
-        label={__("Active", "custom-code-snippets-manager")}
+        label={__("Active", "snippetcrate")}
         value={active.data}
         loading={active.isLoading}
         valueClassName="text-emerald-600"
       />
       <StatCard
-        label={__("Inactive", "custom-code-snippets-manager")}
+        label={__("Inactive", "snippetcrate")}
         value={inactive.data}
         loading={inactive.isLoading}
       />

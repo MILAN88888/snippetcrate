@@ -1,4 +1,4 @@
-# Custom Code Snippets Manager
+# SnippetCrate
 
 A free WordPress plugin to add, manage, and run custom **PHP, JavaScript, CSS and HTML**
 code snippets — with a CodeMirror editor and live syntax validation — without touching theme
@@ -7,7 +7,7 @@ or plugin files.
 ## Features
 
 - PHP, JavaScript, CSS and HTML snippets with header / footer / global / shortcode scope
-  (`[ccsm_snippet id="X"]`).
+  (`[snippetcrate_snippet id="X"]`).
 - CodeMirror code editor with **live syntax checking** while you type (PHP on the server via
   `token_get_all(TOKEN_PARSE)`, JavaScript in the browser via `acorn`); invalid snippets
   cannot be saved.
@@ -41,16 +41,16 @@ distributed package ships no `vendor/` directory.
 npx gulp release             # regenerates the .pot and writes release/*.zip
 ```
 
-The zip contains only the runtime files (`custom-code-snippets-manager.php`,
+The zip contains only the runtime files (`snippetcrate.php`,
 `uninstall.php`, `includes/`, `dist/`, `languages/`, `readme.txt`, `LICENSE`).
 Verify it with the WordPress Plugin Check plugin before submitting:
 
 ```bash
-wp plugin check custom-code-snippets-manager
+wp plugin check snippetcrate
 ```
 
 WordPress.org assets (banners, icon, screenshots) live in `.wordpress-org/` and are
 uploaded to the SVN `assets/` directory, not shipped inside the plugin.
 
-The React source lives in `src/`, the PHP in `includes/` (PSR-4 root `CustomCodeSnippetsManager\`).
+The React source lives in `src/`, the PHP in `includes/` (PSR-4 root `SnippetCrate\`).
 See `CLAUDE.md` for the full architecture and the execution/validation model.

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in the **Custom Code Snippets Manager** plugin (folder `custom-code-snippets-manager`; PHP namespace `CustomCodeSnippetsManager\`, constants `CCSM_*`, REST namespace `ccsm`, shortcode `[ccsm_snippet]`. The DB table prefix `ccsnpt_` and the localized object `ccsnpt_script_data` are kept for continuity).
+Guidance for Claude Code when working in the **SnippetCrate** plugin (folder `snippetcrate`; PHP namespace `SnippetCrate\`, constants `SNIPPETCRATE_*`, REST namespace `snippetcrate`, shortcode `[snippetcrate_snippet]`. The DB table prefix `ccsnpt_` and the localized object `snippetcrate_script_data` are kept for continuity).
 
 ## What this is
 
@@ -12,10 +12,10 @@ beside in this WordPress install.
 
 ## Architecture
 
-### PHP (`includes/`, PSR-4 root `CustomCodeSnippetsManager\`)
+### PHP (`includes/`, PSR-4 root `SnippetCrate\`)
 
-- `custom-code-snippets-manager.php` — bootstrap. Loads Composer's autoloader if present, otherwise
-  registers a **built-in PSR-4 fallback** (`CustomCodeSnippetsManager\` → `includes/`) so the plugin
+- `snippetcrate.php` — bootstrap. Loads Composer's autoloader if present, otherwise
+  registers a **built-in PSR-4 fallback** (`SnippetCrate\` → `includes/`) so the plugin
   runs without `composer install`. Boots on `plugins_loaded`; creates the table on
   activation.
 - `includes/Plugin.php` — wires the controllers (`Migration::maybe_upgrade`,
@@ -23,7 +23,7 @@ beside in this WordPress install.
 - `includes/Controllers/InitController.php` — **execution engine** (see below).
 - `includes/Controllers/SnippetsController.php` — REST callbacks + validation.
 - `includes/Models/Snippets.php` — `wpdb` data layer over `{prefix}ccsnpt_snippets`.
-- `includes/Routes/SnippetsRoutes.php` — registers `ccsm/snippets/{save,get,
+- `includes/Routes/SnippetsRoutes.php` — registers `snippetcrate/snippets/{save,get,
   update/status,delete,validate}`, all gated by `SnippetsAuthMiddleware` (`manage_options`).
 - `includes/Helper.php` — `php_syntax_error()` / `check_php_syntax()` (parse-only, no exec).
 - `includes/Migration/Migration.php` — `dbDelta` schema + `ccsnpt_db_version` upgrade check.
@@ -38,7 +38,7 @@ beside in this WordPress install.
   `wp_head`/`wp_footer` with echoed output appearing in the page.
 - **JS / CSS / HTML** are never `eval`'d — emitted as markup at `wp_head`/`wp_footer`
   via `print_snippet_markup()`: JS → `<script>`, CSS → `<style>`, HTML → raw echo.
-- **Shortcode** scope: rendered on demand via `[ccsm_snippet id="X"]`
+- **Shortcode** scope: rendered on demand via `[snippetcrate_snippet id="X"]`
   (`InitController::render_shortcode`) — PHP output is captured and returned; CSS/JS/HTML
   are returned as markup. Shortcode snippets never auto-run.
 - A PHP snippet that throws is caught (`\Throwable`), logged under `WP_DEBUG`, and
@@ -59,7 +59,7 @@ beside in this WordPress install.
 
 - **shadcn/ui (Radix primitives) + Tailwind CSS** (not Chakra), `@tanstack/react-query`,
   `react-router-dom` (HashRouter), **CodeMirror 6** editor (`src/screen/addnew/components/CodeEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
-  is scoped to the `#ccsm-app` mount via `important` + a disabled preflight (scoped
+  is scoped to the `#snippetcrate-app` mount via `important` + a disabled preflight (scoped
   reset in `src/style/globals.css`); tokens are oklch CSS vars; font is Plus Jakarta Sans.
   Vendored primitives live in `src/components/ui/*` (`cn()` in `src/lib/utils.ts`); Radix
   overlays portal into the mount node via `src/components/PortalContext.tsx`. Icons =
@@ -77,7 +77,7 @@ beside in this WordPress install.
   `<?php` line only while the language is PHP — `AddNewForm` auto-strips it when switching
   to JS/CSS/HTML and re-adds it when switching back (`stripPhpOpen`/`ensurePhpOpen`); the
   server re-adds `<?php` only on a single-snippet (edit) fetch, not on the list query.
-- `src/api/` — thin `@wordpress/api-fetch` wrappers; nonce from `window.ccsnpt_script_data`.
+- `src/api/` — thin `@wordpress/api-fetch` wrappers; nonce from `window.snippetcrate_script_data`.
 
 ## Working here
 
@@ -90,17 +90,17 @@ beside in this WordPress install.
 - After changing `package.json` deps, regenerate the tracked npm `package-lock.json`
   (`npm install --package-lock-only`) and delete any `pnpm-lock.yaml`.
 - **Packaging**: `npx gulp release` regenerates the `.pot` and writes
-  `release/custom-code-snippets-manager.zip`. Composer is dev-only — the package ships
+  `release/snippetcrate.zip`. Composer is dev-only — the package ships
   no `vendor/`, no `composer.json` and no `package.json`; the bootstrap's PSR-4 fallback
   autoloader covers it. `composer.json` pins `config.platform.php` to 7.4 so the dev
   toolchain installs on the declared minimum. Gate every release on
-  `wp plugin check custom-code-snippets-manager` run against the *extracted zip*, not the
+  `wp plugin check snippetcrate` run against the *extracted zip*, not the
   working tree (the working tree always trips the hidden-file and compressed-file checks).
 
 ## Conventions
 
 - Commits: single-line, lowercase `type: message` (`fix:`, `add:`, `refactor:`,
   `build:`). **No** `Co-Authored-By` trailer. Push to `main`.
-- i18n text domain is **`custom-code-snippets-manager`** for every user-facing string.
+- i18n text domain is **`snippetcrate`** for every user-facing string.
 - Table `{prefix}ccsnpt_snippets` columns: `title, lang, description, codesnippet, tags,
   scope, priority, active, created_by, updated_by, created_at, updated_at`.

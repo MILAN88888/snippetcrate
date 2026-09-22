@@ -1,4 +1,4 @@
-=== Custom Code Snippets Manager ===
+=== SnippetCrate ===
 Contributors: wpmilan
 Tags: code snippets, custom code, php snippets, code manager, css
 Requires at least: 5.2
@@ -12,7 +12,7 @@ Easily manage and run custom PHP, JavaScript, CSS and HTML code snippets in Word
 
 == Description ==
 
-Custom Code Snippets Manager is a 100% free and open-source plugin that lets you add, manage, and run custom code snippets on your WordPress site without editing theme or plugin files.
+SnippetCrate is a 100% free and open-source plugin that lets you add, manage, and run custom code snippets on your WordPress site without editing theme or plugin files.
 
 Everything is managed from a clean, modern admin screen with a built-in code editor, so you can add a tracking script, a small PHP tweak, or some custom CSS in seconds — and turn it off just as fast.
 
@@ -21,7 +21,7 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 * Add **PHP, JavaScript, CSS and HTML** snippets from a clean, modern admin screen.
 * A built-in **CodeMirror** editor with syntax highlighting and line numbers.
 * **Live syntax checking** as you type — PHP is validated on the server and JavaScript in your browser — so snippets with errors cannot be saved.
-* Choose **where each snippet runs**: PHP globally, any language in the header or footer, or on demand via the `[ccsm_snippet id="X"]` shortcode.
+* Choose **where each snippet runs**: PHP globally, any language in the header or footer, or on demand via the `[snippetcrate_snippet id="X"]` shortcode.
 * **Duplicate** snippets, **filter** by status, language, tag or date, and **bulk** activate, deactivate, export or delete.
 * **Import and export** snippets as a JSON file, or export your PHP snippets to a `.php` file.
 * **Contained execution**: a PHP snippet that throws an error is caught and the snippet is automatically deactivated, so one bad snippet does not break every page load that follows.
@@ -31,13 +31,13 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 
 * **Global** (PHP only) — runs on every front-end request.
 * **Header / Footer** — output is printed in `wp_head` or `wp_footer` (PHP, JS, CSS or HTML).
-* **Shortcode** — rendered only where you place `[ccsm_snippet id="X"]`.
+* **Shortcode** — rendered only where you place `[snippetcrate_snippet id="X"]`.
 
 == Installation ==
 
-1. Upload the `custom-code-snippets-manager` folder to the `/wp-content/plugins/` directory, or install the plugin through the **Plugins → Add New** screen in WordPress.
+1. Upload the `snippetcrate` folder to the `/wp-content/plugins/` directory, or install the plugin through the **Plugins → Add New** screen in WordPress.
 2. Activate the plugin through the **Plugins** screen.
-3. Open **Custom Code Snippets Manager** from the WordPress admin menu.
+3. Open **SnippetCrate** from the WordPress admin menu.
 4. Click **Add New Snippet**, choose a language and scope, paste your code, and Save & Activate.
 
 == Frequently Asked Questions ==
@@ -48,7 +48,7 @@ Only administrators (users with the `manage_options` capability). All admin scre
 
 = What happens if my PHP snippet has an error? =
 
-Custom Code Snippets Manager validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated, so the failure does not repeat on the next request. Failures PHP cannot catch — an infinite loop, or exhausting the memory limit — cannot be recovered this way, so test substantial snippets on a staging site first.
+SnippetCrate validates PHP syntax on save, so code that does not parse cannot be saved. If an active snippet still throws an error at runtime, it is caught and the snippet is automatically deactivated, so the failure does not repeat on the next request. Failures PHP cannot catch — an infinite loop, or exhausting the memory limit — cannot be recovered this way, so test substantial snippets on a staging site first.
 
 = Which languages are supported? =
 
@@ -56,7 +56,7 @@ PHP, JavaScript, CSS and HTML. Only PHP can use the "Global" scope; every other 
 
 = How do I run a snippet only in one place? =
 
-Set its scope to **Shortcode** and insert `[ccsm_snippet id="X"]` (the shortcode is shown on the edit screen) wherever you want it to render.
+Set its scope to **Shortcode** and insert `[snippetcrate_snippet id="X"]` (the shortcode is shown on the edit screen) wherever you want it to render.
 
 = Does the plugin load anything from a third-party server? =
 
@@ -76,7 +76,7 @@ Yes. Deleting the plugin removes its database table and options. Deactivating th
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Custom Code Snippets Manager.
+Initial release of SnippetCrate.
 
 == Changelog ==
 

@@ -1,16 +1,16 @@
 <?php
 /**
- * Custom Code Snippets Manager RestApi class.
+ * SnippetCrate RestApi class.
  *
- * @package  namespace CustomCodeSnippetsManager\RestApi
+ * @package  namespace SnippetCrate\RestApi
  */
 
-namespace CustomCodeSnippetsManager;
+namespace SnippetCrate;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use CustomCodeSnippetsManager\Routes\SnippetsRoutes;
-use CustomCodeSnippetsManager\Traits\Singleton;
+use SnippetCrate\Routes\SnippetsRoutes;
+use SnippetCrate\Traits\Singleton;
 
 /**
  * RestApi class.

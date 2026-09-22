@@ -33,7 +33,7 @@ The plugin ships a PSR-4 autoloader fallback, so it runs **without** `composer i
 - **JavaScript** is checked in the browser with `acorn` on submit before the request
   is sent.
 - Verify quickly server-side:
-  `php -r 'require "includes/Helper.php"; var_dump(CustomCodeSnippetsManager\Helper::php_syntax_error("$x = ;"));'`
+  `php -r 'require "includes/Helper.php"; var_dump(SnippetCrate\Helper::php_syntax_error("$x = ;"));'`
   → should return the parse-error message (not `false`).
 
 ## Driving the admin UI in a browser (Playwright)
@@ -48,7 +48,7 @@ wp eval '$u=get_user_by("login","admin");$e=time()+7200;$h=COOKIEHASH;
 ```
 
 Add both cookies (domain `urm.me`, path `/`, httpOnly) to the Playwright context,
-then open `http://urm.me/wp-admin/admin.php?page=custom-code-snippets-manager`. The Monaco editor
+then open `http://urm.me/wp-admin/admin.php?page=snippetcrate`. The Monaco editor
 exposes `window.monaco`; set code with
 `window.monaco.editor.getModels()[0].setValue(...)` (fires the form's onChange). Note
 the app is hash-routed — `page.goto` to a different `#/...` on the same document does
@@ -58,7 +58,7 @@ the app is hash-routed — `page.goto` to a different `#/...` on the same docume
 
 ```bash
 cd /home/devsme/Sites/urm
-wp plugin activate custom-code-snippets-manager
+wp plugin activate snippetcrate
 : > wp-content/debug.log
 
 # One working global snippet + one deliberately broken one.
@@ -84,7 +84,7 @@ in the HTML while `grep -c '<?php'` on the response is `0`.
 
 ```bash
 wp db query "DELETE FROM wp_ccsnpt_snippets"
-wp plugin deactivate custom-code-snippets-manager          # it starts inactive
+wp plugin deactivate snippetcrate          # it starts inactive
 : > wp-content/debug.log
 ```
 

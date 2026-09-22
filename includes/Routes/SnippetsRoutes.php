@@ -1,16 +1,16 @@
 <?php
 /**
- * Custom Code Snippets Manager SnippetsRoutes class.
+ * SnippetCrate SnippetsRoutes class.
  *
- * @package CustomCodeSnippetsManager\Routes\SnippetsRoutes
+ * @package SnippetCrate\Routes\SnippetsRoutes
  */
 
-namespace CustomCodeSnippetsManager\Routes;
+namespace SnippetCrate\Routes;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use CustomCodeSnippetsManager\Controllers\SnippetsController;
-use CustomCodeSnippetsManager\Middleware\SnippetsAuthMiddleware;
+use SnippetCrate\Controllers\SnippetsController;
+use SnippetCrate\Middleware\SnippetsAuthMiddleware;
 
 /**
  * Add Snippets Routes class.
@@ -22,7 +22,7 @@ class SnippetsRoutes extends BaseRoutes {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'ccsm';
+	protected $namespace = 'snippetcrate';
 
 	/**
 	 * Route base.

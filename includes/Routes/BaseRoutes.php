@@ -4,10 +4,10 @@
  *
  * @since 1.0.0
  *
- * @package CustomCodeSnippetsManager\Routes\BaseRoutes
+ * @package SnippetCrate\Routes\BaseRoutes
  */
 
-namespace CustomCodeSnippetsManager\Routes;
+namespace SnippetCrate\Routes;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 

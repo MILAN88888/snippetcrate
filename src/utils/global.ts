@@ -1,2 +1,2 @@
 import { ccsnptScriptDataType } from "./../types/index";
-export const ccsnptScriptData: ccsnptScriptDataType = window.ccsnpt_script_data;
+export const ccsnptScriptData: ccsnptScriptDataType = window.snippetcrate_script_data;

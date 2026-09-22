@@ -31,19 +31,19 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
 
   const actions = [
     {
-      label: __("Activate", "custom-code-snippets-manager"),
+      label: __("Activate", "snippetcrate"),
       value: "activate",
       handler: onActivate,
       icon: <CheckCircle2 />
     },
     {
-      label: __("Deactivate", "custom-code-snippets-manager"),
+      label: __("Deactivate", "snippetcrate"),
       value: "deactivate",
       handler: onDeactivate,
       icon: <XCircle />
     },
     {
-      label: __("Export", "custom-code-snippets-manager"),
+      label: __("Export", "snippetcrate"),
       value: "export",
       handler: onExport,
       icon: <Download />
@@ -60,7 +60,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
               "%s item selected",
               "%s items selected",
               bulkIdsCount,
-              "custom-code-snippets-manager"
+              "snippetcrate"
             ),
             bulkIdsCount
           )}
@@ -70,7 +70,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
             <TooltipTrigger asChild>
               <button
                 type="button"
-                aria-label={__("Deselect all", "custom-code-snippets-manager")}
+                aria-label={__("Deselect all", "snippetcrate")}
                 className="flex size-6 items-center justify-center rounded text-background/80 hover:text-background"
                 onClick={() => {
                   setIsCheckAll(false);
@@ -81,7 +81,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              {__("Unselect items", "custom-code-snippets-manager")}
+              {__("Unselect items", "snippetcrate")}
             </TooltipContent>
           </Tooltip>
           {actions.map(({ label, value, icon, handler }) => (
@@ -103,7 +103,7 @@ const FloatingBulkAction: React.FC<BulkActionProps> = (props) => {
             disabled={isBusy}
           >
             <Trash2 />
-            {__("Delete", "custom-code-snippets-manager")}
+            {__("Delete", "snippetcrate")}
           </Button>
         </div>
       </div>

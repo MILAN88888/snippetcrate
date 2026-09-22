@@ -32,15 +32,15 @@ interface SnippetFilterProps {
 const ANY = "__any__";
 
 const statusOptions = [
-  { label: __("Active", "custom-code-snippets-manager"), value: "1" },
-  { label: __("Inactive", "custom-code-snippets-manager"), value: "0" }
+  { label: __("Active", "snippetcrate"), value: "1" },
+  { label: __("Inactive", "snippetcrate"), value: "0" }
 ];
 
 const langOptions = [
-  { label: __("PHP", "custom-code-snippets-manager"), value: "PHP" },
-  { label: __("JavaScript", "custom-code-snippets-manager"), value: "JS" },
-  { label: __("CSS", "custom-code-snippets-manager"), value: "CSS" },
-  { label: __("HTML", "custom-code-snippets-manager"), value: "HTML" }
+  { label: __("PHP", "snippetcrate"), value: "PHP" },
+  { label: __("JavaScript", "snippetcrate"), value: "JS" },
+  { label: __("CSS", "snippetcrate"), value: "CSS" },
+  { label: __("HTML", "snippetcrate"), value: "HTML" }
 ];
 
 // Local YYYY-MM-DD (never toISOString, which shifts the day west of UTC).
@@ -111,7 +111,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       ? `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`
       : range?.from
         ? range.from.toLocaleDateString()
-        : __("Select date range", "custom-code-snippets-manager");
+        : __("Select date range", "snippetcrate");
 
   const hasActiveFilters = Boolean(
     searchByItem ||
@@ -144,7 +144,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
         <Input
           type="text"
           value={searchByItem}
-          placeholder={__("Search snippets", "custom-code-snippets-manager")}
+          placeholder={__("Search snippets", "snippetcrate")}
           className="pl-9"
           onChange={(e) => setSearchByItem(e.target.value)}
         />
@@ -161,10 +161,10 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
         }
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder={__("Any status", "custom-code-snippets-manager")} />
+          <SelectValue placeholder={__("Any status", "snippetcrate")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ANY}>{__("Any status", "custom-code-snippets-manager")}</SelectItem>
+          <SelectItem value={ANY}>{__("Any status", "snippetcrate")}</SelectItem>
           {statusOptions.map((o) => (
             <SelectItem key={o.value} value={o.value}>
               {o.label}
@@ -184,11 +184,11 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
         }
       >
         <SelectTrigger className="w-[160px]">
-          <SelectValue placeholder={__("Any language", "custom-code-snippets-manager")} />
+          <SelectValue placeholder={__("Any language", "snippetcrate")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ANY}>
-            {__("Any language", "custom-code-snippets-manager")}
+            {__("Any language", "snippetcrate")}
           </SelectItem>
           {langOptions.map((o) => (
             <SelectItem key={o.value} value={o.value}>
@@ -221,7 +221,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
           />
           <div className="flex justify-end border-t border-border p-2">
             <Button variant="ghost" size="sm" onClick={clearDate}>
-              {__("Clear", "custom-code-snippets-manager")}
+              {__("Clear", "snippetcrate")}
             </Button>
           </div>
         </PopoverContent>
@@ -239,10 +239,10 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       >
         <SelectTrigger className="w-[150px]">
           <Tag className="size-4 opacity-60" />
-          <SelectValue placeholder={__("Any tag", "custom-code-snippets-manager")} />
+          <SelectValue placeholder={__("Any tag", "snippetcrate")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ANY}>{__("Any tag", "custom-code-snippets-manager")}</SelectItem>
+          <SelectItem value={ANY}>{__("Any tag", "snippetcrate")}</SelectItem>
           {tagOptions.map((o) => (
             <SelectItem key={o.value} value={o.value}>
               {o.label}
@@ -254,7 +254,7 @@ const SnippetFilter: React.FC<SnippetFilterProps> = ({ params, setParams }) => {
       {hasActiveFilters && (
         <Button variant="ghost" onClick={clearAll}>
           <X />
-          {__("Clear filters", "custom-code-snippets-manager")}
+          {__("Clear filters", "snippetcrate")}
         </Button>
       )}
     </div>

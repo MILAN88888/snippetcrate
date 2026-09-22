@@ -1,11 +1,11 @@
 <?php
 /**
- * Custom Code Snippets Manager Snippets class.
+ * SnippetCrate Snippets class.
  *
- * @package  namespace CustomCodeSnippetsManager\Controllers\Snippets
+ * @package  namespace SnippetCrate\Controllers\Snippets
  */
 
-namespace CustomCodeSnippetsManager\Models;
+namespace SnippetCrate\Models;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 

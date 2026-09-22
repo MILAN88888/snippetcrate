@@ -197,7 +197,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
       } catch (e: any) {
         const loc = e?.loc ?? { line: 1, column: 0 };
         const message =
-          __("JavaScript syntax error: ", "custom-code-snippets-manager") + e.message;
+          __("JavaScript syntax error: ", "snippetcrate") + e.message;
         setLiveError(message);
         setDiagnostic({
           line: loc.line ?? 1,
@@ -228,7 +228,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           clearErrors("codesnippet");
         } else {
           const message =
-            __("PHP syntax error: ", "custom-code-snippets-manager") + (res.message ?? "");
+            __("PHP syntax error: ", "snippetcrate") + (res.message ?? "");
           setLiveError(message);
           // The server strips the leading `<?php` before parsing, so its line
           // numbers are one short whenever the tag is present in the editor.
@@ -258,7 +258,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
         setError("codesnippet", {
           type: "syntax",
           message:
-            __("JavaScript syntax error: ", "custom-code-snippets-manager") +
+            __("JavaScript syntax error: ", "snippetcrate") +
             (e as Error).message
         });
         return;
@@ -268,13 +268,13 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
   };
 
   const baseScopes = [
-    { value: "header", label: __("Header", "custom-code-snippets-manager") },
-    { value: "footer", label: __("Footer", "custom-code-snippets-manager") },
-    { value: "shortcode", label: __("Shortcode", "custom-code-snippets-manager") }
+    { value: "header", label: __("Header", "snippetcrate") },
+    { value: "footer", label: __("Footer", "snippetcrate") },
+    { value: "shortcode", label: __("Shortcode", "snippetcrate") }
   ];
   const scopeOptions =
     lang === "PHP"
-      ? [{ value: "global", label: __("Global", "custom-code-snippets-manager") }, ...baseScopes]
+      ? [{ value: "global", label: __("Global", "snippetcrate") }, ...baseScopes]
       : baseScopes;
 
   const codeLanguage: CodeLanguage =
@@ -300,7 +300,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
     return (
       <Card className="flex min-h-[300px] items-center justify-center p-7">
         <p className="text-destructive">
-          {__("Failed to load snippet: ", "custom-code-snippets-manager")}
+          {__("Failed to load snippet: ", "snippetcrate")}
           {(fetchError as Error)?.message}
         </p>
       </Card>
@@ -313,16 +313,16 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
         <div className="flex flex-col gap-6">
           <div>
             <Label htmlFor="sm-title" className={labelClass}>
-              {__("Title", "custom-code-snippets-manager")}
+              {__("Title", "snippetcrate")}
               <RequiredMark />
             </Label>
             <Input
               id="sm-title"
               className="mt-2"
-              placeholder={__("Enter a descriptive title", "custom-code-snippets-manager")}
+              placeholder={__("Enter a descriptive title", "snippetcrate")}
               type="text"
               {...register("title", {
-                required: __("Title is required", "custom-code-snippets-manager")
+                required: __("Title is required", "snippetcrate")
               })}
             />
             {errors.title && (
@@ -334,7 +334,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
           <div>
             <Label className={labelClass}>
-              {__("Code", "custom-code-snippets-manager")}
+              {__("Code", "snippetcrate")}
               <RequiredMark />
             </Label>
             <div
@@ -349,7 +349,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 rules={{
                   validate: (v) =>
                     stripPhpOpen(v ?? "").trim() !== "" ||
-                    __("Code snippet is required", "custom-code-snippets-manager")
+                    __("Code snippet is required", "snippetcrate")
                 }}
                 render={({ field }) => (
                   <CodeEditor
@@ -369,16 +369,16 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 {lang === "JS"
                   ? __(
                       "JavaScript is validated as you type (in your browser).",
-                      "custom-code-snippets-manager"
+                      "snippetcrate"
                     )
                   : lang === "PHP"
                     ? __(
                         "PHP is syntax-checked as you type (on the server).",
-                        "custom-code-snippets-manager"
+                        "snippetcrate"
                       )
                     : __(
                         "CSS and HTML are not syntax-checked.",
-                        "custom-code-snippets-manager"
+                        "snippetcrate"
                       )}
               </p>
             )}
@@ -387,7 +387,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
               <Label className={labelClass}>
-                {__("Language", "custom-code-snippets-manager")}
+                {__("Language", "snippetcrate")}
               </Label>
               <Controller
                 name="lang"
@@ -399,16 +399,16 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="PHP">
-                        {__("PHP", "custom-code-snippets-manager")}
+                        {__("PHP", "snippetcrate")}
                       </SelectItem>
                       <SelectItem value="JS">
-                        {__("JavaScript", "custom-code-snippets-manager")}
+                        {__("JavaScript", "snippetcrate")}
                       </SelectItem>
                       <SelectItem value="CSS">
-                        {__("CSS", "custom-code-snippets-manager")}
+                        {__("CSS", "snippetcrate")}
                       </SelectItem>
                       <SelectItem value="HTML">
-                        {__("HTML", "custom-code-snippets-manager")}
+                        {__("HTML", "snippetcrate")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -418,7 +418,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
             <div>
               <Label className={labelClass}>
-                {__("Scope", "custom-code-snippets-manager")}
+                {__("Scope", "snippetcrate")}
               </Label>
               <Controller
                 name="scope"
@@ -442,7 +442,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
             <div>
               <Label htmlFor="sm-priority" className={labelClass}>
-                {__("Priority", "custom-code-snippets-manager")}
+                {__("Priority", "snippetcrate")}
                 <RequiredMark />
               </Label>
               <Input
@@ -453,12 +453,12 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 min="0"
                 step="1"
                 {...register("priority", {
-                  required: __("Priority is required", "custom-code-snippets-manager"),
+                  required: __("Priority is required", "snippetcrate"),
                   validate: (value) =>
                     value >= 0 ||
                     __(
                       "Priority must be a non-negative number.",
-                      "custom-code-snippets-manager"
+                      "snippetcrate"
                     )
                 })}
               />
@@ -476,16 +476,16 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 {id
                   ? __(
                       "Insert this shortcode where you want the snippet to render:",
-                      "custom-code-snippets-manager"
+                      "snippetcrate"
                     )
                   : __(
                       "Save the snippet first to get its shortcode.",
-                      "custom-code-snippets-manager"
+                      "snippetcrate"
                     )}
               </p>
               {id && (
                 <code className="rounded bg-card px-2 py-1 text-sm">
-                  {`[ccsm_snippet id="${id}"]`}
+                  {`[snippetcrate_snippet id="${id}"]`}
                 </code>
               )}
             </div>
@@ -493,15 +493,15 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
           <div>
             <Label htmlFor="sm-description" className={labelClass}>
-              {__("Description", "custom-code-snippets-manager")}
+              {__("Description", "snippetcrate")}
               <RequiredMark />
             </Label>
             <Textarea
               id="sm-description"
               className="mt-2"
-              placeholder={__("What does this snippet do?", "custom-code-snippets-manager")}
+              placeholder={__("What does this snippet do?", "snippetcrate")}
               {...register("description", {
-                required: __("Description is required", "custom-code-snippets-manager")
+                required: __("Description is required", "snippetcrate")
               })}
             />
             {errors.description && (
@@ -513,14 +513,14 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
 
           <div>
             <Label htmlFor="sm-tags" className={labelClass}>
-              {__("Tags", "custom-code-snippets-manager")}
+              {__("Tags", "snippetcrate")}
             </Label>
             <Input
               id="sm-tags"
               className="mt-2"
               placeholder={__(
                 "Comma-separated, e.g. analytics, header",
-                "custom-code-snippets-manager"
+                "snippetcrate"
               )}
               type="text"
               {...register("tags")}
@@ -539,7 +539,7 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
                 setValue("active", 0);
               }}
             >
-              {id ? __("Update", "custom-code-snippets-manager") : __("Save", "custom-code-snippets-manager")}
+              {id ? __("Update", "snippetcrate") : __("Save", "snippetcrate")}
             </Button>
             <Button
               type="submit"
@@ -553,8 +553,8 @@ const AddNewForm: React.FC<AddNewFormProps> = ({ id }) => {
             >
               {isSubmitting && <Loader2 className="animate-spin" />}
               {id
-                ? __("Update & Activate", "custom-code-snippets-manager")
-                : __("Save & Activate", "custom-code-snippets-manager")}
+                ? __("Update & Activate", "snippetcrate")
+                : __("Save & Activate", "snippetcrate")}
             </Button>
           </div>
         </div>

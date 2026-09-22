@@ -1,22 +1,22 @@
 <?php
 /**
- * Plugin Name: Custom Code Snippets Manager
- * Plugin URI: https://techzigya.com/custom-code-snippets-manager
+ * Plugin Name: SnippetCrate
+ * Plugin URI: https://techzigya.com/snippetcrate
  * Description: Add, manage and run custom PHP, JavaScript, CSS and HTML code snippets in WordPress — no theme or plugin file editing required.
  * Version: 1.0.0
  * Author: @wpmilan
  * Author URI: https://milanc.com.np/
- * Text Domain: custom-code-snippets-manager
+ * Text Domain: snippetcrate
  * Domain Path: /languages/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 5.2
  * Requires PHP: 7.4
  *
- * @package CustomCodeSnippetsManager
+ * @package SnippetCrate
  */
 
-use CustomCodeSnippetsManager\Migration\Migration;
+use SnippetCrate\Migration\Migration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,7 +27,7 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 } else {
 	spl_autoload_register(
 		function ( $class_name ) {
-			$prefix   = 'CustomCodeSnippetsManager\\';
+			$prefix   = 'SnippetCrate\\';
 			$base_dir = __DIR__ . '/includes/';
 			$len      = strlen( $prefix );
 
@@ -45,35 +45,35 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	);
 }
 
-// Define CCSM_VERSION.
-if ( ! defined( 'CCSM_VERSION' ) ) {
-	define( 'CCSM_VERSION', '1.0.0' );
+// Define SNIPPETCRATE_VERSION.
+if ( ! defined( 'SNIPPETCRATE_VERSION' ) ) {
+	define( 'SNIPPETCRATE_VERSION', '1.0.0' );
 }
 
-// Define CCSM_PLUGIN_FILE.
-if ( ! defined( 'CCSM_PLUGIN_FILE' ) ) {
-	define( 'CCSM_PLUGIN_FILE', __FILE__ );
+// Define SNIPPETCRATE_PLUGIN_FILE.
+if ( ! defined( 'SNIPPETCRATE_PLUGIN_FILE' ) ) {
+	define( 'SNIPPETCRATE_PLUGIN_FILE', __FILE__ );
 }
 
-// Define CCSM_DIR.
-if ( ! defined( 'CCSM_DIR' ) ) {
-	define( 'CCSM_DIR', plugin_dir_path( __FILE__ ) );
+// Define SNIPPETCRATE_DIR.
+if ( ! defined( 'SNIPPETCRATE_DIR' ) ) {
+	define( 'SNIPPETCRATE_DIR', plugin_dir_path( __FILE__ ) );
 }
 
-// Define CCSM_DS.
-if ( ! defined( 'CCSM_DS' ) ) {
-	define( 'CCSM_DS', DIRECTORY_SEPARATOR );
+// Define SNIPPETCRATE_DS.
+if ( ! defined( 'SNIPPETCRATE_DS' ) ) {
+	define( 'SNIPPETCRATE_DS', DIRECTORY_SEPARATOR );
 }
 
-// Define CCSM_URL.
-if ( ! defined( 'CCSM_URL' ) ) {
-	define( 'CCSM_URL', plugin_dir_url( __FILE__ ) );
+// Define SNIPPETCRATE_URL.
+if ( ! defined( 'SNIPPETCRATE_URL' ) ) {
+	define( 'SNIPPETCRATE_URL', plugin_dir_url( __FILE__ ) );
 }
 
 /**
  * Initialization of Plugin.
  */
-add_action( 'plugins_loaded', array( 'CustomCodeSnippetsManager\Plugin', 'init' ) );
+add_action( 'plugins_loaded', array( 'SnippetCrate\Plugin', 'init' ) );
 
 /**
  * Register activation hook.

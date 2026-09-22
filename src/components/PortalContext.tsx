@@ -2,8 +2,8 @@ import * as React from "react";
 
 /**
  * Radix overlays (Select, Popover, DropdownMenu, Tooltip) portal to
- * document.body by default — outside #ccsm-app — where our
- * `important: '#ccsm-app'` Tailwind utilities no longer match. We provide
+ * document.body by default — outside #snippetcrate-app — where our
+ * `important: '#snippetcrate-app'` Tailwind utilities no longer match. We provide
  * the mount element here and pass it as each overlay's `container` so portalled
  * content stays inside the scoped subtree and is styled correctly.
  */

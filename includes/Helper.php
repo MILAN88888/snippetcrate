@@ -1,13 +1,13 @@
 <?php
 /**
- * Custom Code Snippets Manager Helper class.
+ * SnippetCrate Helper class.
  *
- * @package  namespace CustomCodeSnippetsManager\Helper
+ * @package  namespace SnippetCrate\Helper
  *
  * @since 1.0.0
  */
 
-namespace CustomCodeSnippetsManager;
+namespace SnippetCrate;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
@@ -25,7 +25,7 @@ class Helper {
 	 * @param  string $path Path.
 	 */
 	public static function plugin_url( $path = '/' ) {
-		return untrailingslashit( plugins_url( $path, CCSM_PLUGIN_FILE ) );
+		return untrailingslashit( plugins_url( $path, SNIPPETCRATE_PLUGIN_FILE ) );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_development() {
-		return defined( 'CCSM_DEVELOPMENT' ) && CCSM_DEVELOPMENT;
+		return defined( 'SNIPPETCRATE_DEVELOPMENT' ) && SNIPPETCRATE_DEVELOPMENT;
 	}
 
 	/**
@@ -111,6 +111,6 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_production() {
-		return ! defined( 'CCSM_DEVELOPMENT' ) || ! CCSM_DEVELOPMENT;
+		return ! defined( 'SNIPPETCRATE_DEVELOPMENT' ) || ! SNIPPETCRATE_DEVELOPMENT;
 	}
 }

@@ -26,7 +26,7 @@ const fileList = {
     src: [
       "readme.txt",
       "changelog.txt",
-      "custom-code-snippets-manager.php",
+      "snippetcrate.php",
       "uninstall.php",
       "LICENSE"
     ],
@@ -78,7 +78,7 @@ function removeRelease() {
 }
 
 function removeLanguageFiles() {
-  return exec("rm -rf languages/custom-code-snippets-manager*");
+  return exec("rm -rf languages/snippetcrate*");
 }
 
 function generateLanguageFiles() {
@@ -134,13 +134,13 @@ async function bumpMinorVersion() {
     )
     .pipe(dest("./"));
 
-  src("./custom-code-snippets-manager.php")
+  src("./snippetcrate.php")
     .pipe(
       bump({
-        key: "CCSM_VERSION",
+        key: "SNIPPETCRATE_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "CCSM_VERSION" +
+            "SNIPPETCRATE_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),
@@ -175,13 +175,13 @@ async function bumpPatchVersion() {
     )
     .pipe(dest("./"));
 
-  src("./custom-code-snippets-manager.php")
+  src("./snippetcrate.php")
     .pipe(
       bump({
-        key: "CCSM_VERSION",
+        key: "SNIPPETCRATE_VERSION",
         regex: new RegExp(
           "([<|'|\"]?(" +
-            "CCSM_VERSION" +
+            "SNIPPETCRATE_VERSION" +
             ")[>|'|\"]?[ ]*[:=,]?[ ]*['|\"]?[a-z]?)(\\d+.\\d+.\\d+)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z\\.-]+)?(['|\"|<]?)",
           "i"
         ),

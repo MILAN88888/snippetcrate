@@ -28,9 +28,9 @@
 
 /*
  * Scoped reset — replaces Tailwind preflight (disabled in tailwind.config.js so
- * it can't bleed into wp-admin). Everything here is confined to #ccsm-app.
+ * it can't bleed into wp-admin). Everything here is confined to #snippetcrate-app.
  */
-#ccsm-app {
+#snippetcrate-app {
   /* Cancel wp-admin's content gutter (was the Chakra ml:-20px fix). */
   margin-left: -20px;
   box-sizing: border-box;
@@ -43,27 +43,27 @@
   -webkit-font-smoothing: antialiased;
 }
 
-#ccsm-app *,
-#ccsm-app *::before,
-#ccsm-app *::after {
+#snippetcrate-app *,
+#snippetcrate-app *::before,
+#snippetcrate-app *::after {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
   border-color: var(--border);
 }
 
-#ccsm-app h1,
-#ccsm-app h2,
-#ccsm-app h3,
-#ccsm-app h4,
-#ccsm-app h5,
-#ccsm-app h6,
-#ccsm-app p,
-#ccsm-app figure {
+#snippetcrate-app h1,
+#snippetcrate-app h2,
+#snippetcrate-app h3,
+#snippetcrate-app h4,
+#snippetcrate-app h5,
+#snippetcrate-app h6,
+#snippetcrate-app p,
+#snippetcrate-app figure {
   margin: 0;
 }
 
-#ccsm-app button {
+#snippetcrate-app button {
   margin: 0;
   padding: 0;
   background: none;
@@ -72,21 +72,21 @@
   color: inherit;
 }
 
-#ccsm-app a {
+#snippetcrate-app a {
   color: inherit;
   text-decoration: inherit;
 }
 
-#ccsm-app img,
-#ccsm-app svg {
+#snippetcrate-app img,
+#snippetcrate-app svg {
   display: inline-block;
   max-width: 100%;
 }
 
 /* Neutralise wp-admin's form-control chrome inside the app. */
-#ccsm-app input,
-#ccsm-app textarea,
-#ccsm-app select {
+#snippetcrate-app input,
+#snippetcrate-app textarea,
+#snippetcrate-app select {
   margin: 0;
   font: inherit;
   color: inherit;
@@ -94,15 +94,15 @@
   min-height: 0;
 }
 
-#ccsm-app input:focus,
-#ccsm-app textarea:focus,
-#ccsm-app select:focus {
+#snippetcrate-app input:focus,
+#snippetcrate-app textarea:focus,
+#snippetcrate-app select:focus {
   box-shadow: none;
   outline: none;
 }
 
 /* Radix overlays portal to <body>; make sure their content uses the app font. */
-[data-ccsm-app-portal] {
+[data-snippetcrate-app-portal] {
   font-family:
     "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;

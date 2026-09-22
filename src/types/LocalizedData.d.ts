@@ -9,7 +9,7 @@ interface ccsnptScriptData {
 
 declare global {
   interface Window {
-    ccsnpt_script_data: ccsnptScriptData;
+    snippetcrate_script_data: ccsnptScriptData;
   }
 }
 

@@ -44,5 +44,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload "${GITHUB_REF_NAME}" \
-            "release/custom-code-snippets-manager.zip#custom-code-snippets-manager-${GITHUB_REF_NAME}.zip" \
+            "release/snippetcrate.zip#snippetcrate-${GITHUB_REF_NAME}.zip" \
             --clobber

@@ -15,7 +15,7 @@ The app uses **shadcn/ui (Radix primitives) + Tailwind CSS**, not Chakra (Chakra
 Emotion, framer-motion, chakra-react-select, react-select, react-icons,
 react-date-range and react-responsive-pagination were all removed). Key pieces:
 
-- Tailwind is configured in `tailwind.config.js` with `important: '#ccsm-app'`
+- Tailwind is configured in `tailwind.config.js` with `important: '#snippetcrate-app'`
   (scopes every utility to the mount node so nothing leaks into wp-admin) and
   `corePlugins.preflight = false` (a scoped reset lives in `src/style/globals.css`).
 - `postcss.config.js` runs `tailwindcss` + `autoprefixer`; `webpack.config.js` adds
@@ -25,7 +25,7 @@ react-date-range and react-responsive-pagination were all removed). Key pieces:
   Plus Jakarta Sans via `@fontsource/plus-jakarta-sans` (self-hosted, no CDN).
 - Vendored shadcn components live in `src/components/ui/*`; `cn()` is in
   `src/lib/utils.ts`. Radix overlays (select/popover/dropdown/tooltip) portal into
-  the `#ccsm-app` container via `src/components/PortalContext.tsx` — required
+  the `#snippetcrate-app` container via `src/components/PortalContext.tsx` — required
   so the scoped Tailwind utilities still match portalled content.
 - Icons are `lucide-react`; toasts are `sonner`; the date range uses
   `react-day-picker` (v9 API) through `src/components/ui/calendar.tsx`.
@@ -76,7 +76,7 @@ with a `build:` prefix. Set `ANALYZE=true` to also emit the bundle-analyzer repo
 ## PHP checks
 
 ```bash
-for f in $(find includes custom-code-snippets-manager.php -name '*.php'); do php -l "$f"; done
+for f in $(find includes snippetcrate.php -name '*.php'); do php -l "$f"; done
 ```
 
 Full WordPress Coding Standards (`composer run-script phpcs`) require WPCS installed

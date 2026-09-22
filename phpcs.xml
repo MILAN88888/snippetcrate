@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress Coding Standards - Custom Code Snippets Manager">
-	<description>Custom PHPCS ruleset for Custom Code Snippets Manager development (PHP 7.4+).</description>
+<ruleset name="WordPress Coding Standards - SnippetCrate">
+	<description>Custom PHPCS ruleset for SnippetCrate development (PHP 7.4+).</description>
 
 	<!-- Base WordPress Coding Standards -->
 	<rule ref="WordPress-Core" />
@@ -16,7 +16,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="custom-code-snippets-manager"/>
+				<element value="snippetcrate"/>
 			</property>
 		</properties>
 	</rule>

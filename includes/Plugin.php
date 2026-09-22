@@ -4,22 +4,22 @@
  *
  * @since 1.0.0
  *
- * @package CustomCodeSnippetsManager
+ * @package SnippetCrate
  */
 
-namespace CustomCodeSnippetsManager;
+namespace SnippetCrate;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use CustomCodeSnippetsManager\Controllers\Admin\ScriptStyleController;
-use CustomCodeSnippetsManager\Controllers\Admin\MenusController;
-use CustomCodeSnippetsManager\Controllers\InitController;
-use CustomCodeSnippetsManager\Migration\Migration;
-use CustomCodeSnippetsManager\RestApi;
-use CustomCodeSnippetsManager\Traits\Singleton;
+use SnippetCrate\Controllers\Admin\ScriptStyleController;
+use SnippetCrate\Controllers\Admin\MenusController;
+use SnippetCrate\Controllers\InitController;
+use SnippetCrate\Migration\Migration;
+use SnippetCrate\RestApi;
+use SnippetCrate\Traits\Singleton;
 
 /**
- * Custom Code Snippets Manager setup.
+ * SnippetCrate setup.
  *
  * @since 1.0.0
  */
@@ -47,9 +47,9 @@ final class Plugin {
 	 * @return array
 	 */
 	public function plugin_row_meta( $plugin_meta, $plugin_file ) {
-		if ( plugin_basename( CCSM_PLUGIN_FILE ) === $plugin_file ) {
+		if ( plugin_basename( SNIPPETCRATE_PLUGIN_FILE ) === $plugin_file ) {
 			$new_plugin_meta = array(
-				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'custom-code-snippets-manager' ) . '">' . esc_html__( 'Docs', 'custom-code-snippets-manager' ) . '</a>',
+				'docs' => '<a href="' . esc_url( 'https://www.milanc.com.np/projects/snippet-master' ) . '" aria-label="' . esc_attr__( 'View Docs', 'snippetcrate' ) . '">' . esc_html__( 'Docs', 'snippetcrate' ) . '</a>',
 			);
 
 			return array_merge( $plugin_meta, $new_plugin_meta );

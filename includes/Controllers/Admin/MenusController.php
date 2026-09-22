@@ -3,15 +3,15 @@
  *  Menus class.
  *
  * @since 1.0.0
- * @package CustomCodeSnippetsManager\Menus
+ * @package SnippetCrate\Menus
  */
 
-namespace CustomCodeSnippetsManager\Controllers\Admin;
+namespace SnippetCrate\Controllers\Admin;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-use CustomCodeSnippetsManager\Helper;
-use CustomCodeSnippetsManager\Traits\Singleton;
+use SnippetCrate\Helper;
+use SnippetCrate\Traits\Singleton;
 
 /**
  * Menus class.
@@ -49,7 +49,7 @@ class MenusController {
   </g>
 </svg>';
 		$base64_svg = 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore
-		$page       = add_menu_page( esc_html__( 'Custom Code Snippets Manager', 'custom-code-snippets-manager' ), esc_html__( 'Code Snippets', 'custom-code-snippets-manager' ), 'manage_options', 'custom-code-snippets-manager', array( $this, 'main_page' ), $base64_svg );
+		$page       = add_menu_page( esc_html__( 'SnippetCrate', 'snippetcrate' ), esc_html__( 'Code Snippets', 'snippetcrate' ), 'manage_options', 'snippetcrate', array( $this, 'main_page' ), $base64_svg );
 
 		add_action( "admin_print_scripts-$page", array( $this, 'enqueue' ) );
 	}
@@ -58,8 +58,8 @@ class MenusController {
 	 * Handles output of the reports page in admin.
 	 */
 	public function main_page() {
-		wp_enqueue_style( 'ccsm-main' );
-		echo '<div id="ccsm-app"></div>';
+		wp_enqueue_style( 'snippetcrate-main' );
+		echo '<div id="snippetcrate-app"></div>';
 	}
 
 	/**
@@ -68,6 +68,6 @@ class MenusController {
 	 * @since 1.0.0
 	 */
 	public function enqueue() {
-		wp_enqueue_script( 'ccsm-main' );
+		wp_enqueue_script( 'snippetcrate-main' );
 	}
 }

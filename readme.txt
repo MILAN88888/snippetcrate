@@ -27,6 +27,37 @@ Everything is managed from a clean, modern admin screen with a built-in code edi
 * **Contained execution**: a PHP snippet that throws an error is caught and the snippet is automatically deactivated, so one bad snippet does not break every page load that follows.
 * All snippet management is restricted to administrators (`manage_options`).
 
+**How SnippetCrate runs your PHP, and why that is safe**
+
+Running administrator-written PHP is what this plugin is for, so it does use
+`eval()`. That is the feature, not a shortcut, and it is fenced in on every
+side:
+
+* **Only administrators can write a snippet.** Every route that saves or edits
+  one requires the `manage_options` capability and a valid REST nonce. On a
+  multisite network a Super Admin is required as well, because a single-site
+  administrator must not gain network-wide code execution.
+* **Nothing from a visitor is ever executed.** There is no front-end form, no
+  AJAX endpoint and no import path that reaches the executor. Snippet code
+  comes only from the database, written there by an administrator.
+* **PHP is parsed before it can be saved.** The code is run through
+  `token_get_all()` with the `TOKEN_PARSE` flag, which fully parses it without
+  executing anything. Code that does not parse is rejected, and the error is
+  shown in the editor as you type.
+* **A snippet that fails is switched off.** Every execution is wrapped in a
+  `try`/`catch`. If a snippet throws, it is deactivated immediately, so the
+  next page load no longer runs it.
+* **It only runs on the front end.** Global snippets are hooked to `wp`, which
+  never fires in wp-admin, REST requests or cron, so a broken snippet cannot
+  lock you out of your own dashboard.
+* **JavaScript, CSS and HTML are never evaluated.** They are printed as markup
+  in the header or footer.
+
+To be straight about the limit: this contains anything PHP can throw, which is
+the overwhelming majority of mistakes. It cannot rescue you from a snippet that
+loops forever or exhausts the memory limit, because PHP cannot catch those. Test
+substantial snippets on a staging site first.
+
 **Scopes explained**
 
 * **Global** (PHP only) — runs on every front-end request.
@@ -65,6 +96,40 @@ No. The admin app, code editor and fonts are all bundled with the plugin and ser
 = Does uninstalling remove my data? =
 
 Yes. Deleting the plugin removes its database table and options. Deactivating the plugin leaves your snippets intact.
+
+== Source Code and Build Process ==
+
+This plugin is fully open source (GPLv2 or later) and contains no obfuscated or
+minified-only code.
+
+**Where the source lives**
+
+The human-readable source for everything in `dist/` ships inside the plugin:
+
+* `src/` — the admin application (TypeScript and React), one directory per screen
+* `src/style/globals.css` — the admin stylesheet
+* `includes/` — all PHP, unminified
+
+`dist/` contains nothing but the compiled output of those files.
+
+**How to rebuild it**
+
+The bundle is produced from the sources above with webpack and Babel. Requires
+Node.js 18+:
+
+`npm install`
+`npm run build`
+
+**Bundled third-party libraries**
+
+All are MIT licensed and GPL compatible:
+
+* CodeMirror 6 — https://github.com/codemirror/dev — the code editor
+* acorn — https://github.com/acornjs/acorn — browser-side JavaScript syntax checking
+* React and React DOM — https://github.com/facebook/react
+* TanStack Query — https://github.com/TanStack/query — admin data fetching
+* Radix UI primitives — https://github.com/radix-ui/primitives — accessible UI components
+* lucide-react — https://github.com/lucide-icons/lucide — icons
 
 == Screenshots ==
 

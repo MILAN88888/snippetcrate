@@ -35,6 +35,12 @@ const fileList = {
   dist: {
     src: "dist/**/*",
     dest: `build/${pkg.name}/dist`
+  },
+  // WordPress.org requires the human-readable source behind any minified
+  // bundle to ship alongside it.
+  src: {
+    src: "src/**/*",
+    dest: `build/${pkg.name}/src`
   }
 };
 
@@ -98,7 +104,8 @@ const copyToBuild = [
     src(fileList.other.src, { allowEmpty: true }).pipe(
       dest(fileList.other.dest)
     ),
-  () => src(fileList.dist.src).pipe(dest(fileList.dist.dest))
+  () => src(fileList.dist.src).pipe(dest(fileList.dist.dest)),
+  () => src(fileList.src.src).pipe(dest(fileList.src.dest))
 ];
 
 async function compressBuildWithoutVersion() {

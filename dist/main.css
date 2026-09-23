@@ -1,35 +1,3 @@
-/* plus-jakarta-sans-latin-400-normal */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400;
-  src: url(9f8e82b03bc918aa7453.woff2) format('woff2'), url(9b54eb6212ad30fb4eda.woff) format('woff');
-}
-/* plus-jakarta-sans-latin-500-normal */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 500;
-  src: url(0f5f4e5cb6954b2e0a1a.woff2) format('woff2'), url(235218374fc744e25f95.woff) format('woff');
-}
-/* plus-jakarta-sans-latin-600-normal */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 600;
-  src: url(14e9ac2b9c3856d74c46.woff2) format('woff2'), url(0d67b34fa6ab9af10c67.woff) format('woff');
-}
-/* plus-jakarta-sans-latin-700-normal */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 700;
-  src: url(40bea82836028d7f200e.woff2) format('woff2'), url(e0b756a75897aa702f81.woff) format('woff');
-}
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -952,7 +920,7 @@
   background-color: var(--background);
   color: var(--foreground);
   font-family:
-    "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -1019,7 +987,7 @@
 /* Radix overlays portal to <body>; make sure their content uses the app font. */
 [data-snippetcrate-app-portal] {
   font-family:
-    "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
 }
 

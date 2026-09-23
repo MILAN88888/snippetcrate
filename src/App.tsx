@@ -5,10 +5,6 @@ import { HashRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PortalContainerProvider } from "@/components/PortalContext";
-import "@fontsource/plus-jakarta-sans/latin-400.css";
-import "@fontsource/plus-jakarta-sans/latin-500.css";
-import "@fontsource/plus-jakarta-sans/latin-600.css";
-import "@fontsource/plus-jakarta-sans/latin-700.css";
 import "./style/globals.css";
 
 const queryClient = new QueryClient();

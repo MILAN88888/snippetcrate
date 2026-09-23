@@ -60,7 +60,7 @@ beside in this WordPress install.
 - **shadcn/ui (Radix primitives) + Tailwind CSS** (not Chakra), `@tanstack/react-query`,
   `react-router-dom` (HashRouter), **CodeMirror 6** editor (`src/screen/addnew/components/CodeEditor.tsx`), `react-hook-form`, `acorn`. Tailwind
   is scoped to the `#snippetcrate-app` mount via `important` + a disabled preflight (scoped
-  reset in `src/style/globals.css`); tokens are oklch CSS vars; font is Plus Jakarta Sans.
+  reset in `src/style/globals.css`); tokens are oklch CSS vars; the UI uses the system font stack (no bundled webfont).
   Vendored primitives live in `src/components/ui/*` (`cn()` in `src/lib/utils.ts`); Radix
   overlays portal into the mount node via `src/components/PortalContext.tsx`. Icons =
   `lucide-react`, toasts = `sonner`, date range = `react-day-picker`. See the
